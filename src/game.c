@@ -36,7 +36,7 @@ void gme_run()
 
     // draws all team members
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
-        unit_draw_team(currentMatch.teams[i]);
+        mth_draw_team(currentMatch.teams[i]);
 
     uint8_t win;
 
@@ -178,7 +178,7 @@ void gme_select_b()
     {
         hud_hide_action();
         unit_t *def = unit_get(mth_get_opponent(), cx, cy);
-        if(def)
+        if(def && unit_get_distance(selectedUnit, def) <= selectedUnit->stats.damageRadius)
         {
             unit_attack(selectedUnit, def);
             hud_draw_hotbar(currentTeam);
@@ -311,4 +311,23 @@ bool mth_has_alive(team_t *team)
 inline match_t *mth_get_match()
 {
     return &currentMatch;
+}
+
+
+/**
+ * Draws all of the units in a team
+ */
+void mth_draw_team(team_t *team)
+{
+    for(uint8_t i = 0; i < team->size; i++)
+    {
+        if(team->units[i]->isDead) {
+            unit_hide(team->units[i]);
+        } else {
+            unit_draw(team->units[i]);
+            // draw team 1 with a different palette
+            if(team == currentMatch.teams[1])
+                set_sprite_prop(team->units[i]->spriteNumber, 0x10 | 1);
+        }
+    }
 }

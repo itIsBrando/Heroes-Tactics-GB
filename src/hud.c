@@ -36,6 +36,7 @@ void hud_draw_hotbar(team_t *team)
  */
 void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow)
 {
+    fill_win_rect(x, y, 5, 1, 0);
     for(int8_t i = 0; i < unit->stats.maxHealth; i++)
         {
             uint8_t tile = (i < unit->stats.health) ? 0x11 : 0x12; // heart tile

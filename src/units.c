@@ -65,6 +65,7 @@ unit_t *unit_new(type_of_unit type) {
     unit->hasMoved = unit->isDead = unit->hasAttacked = false;
     unit->spriteNumber = spr_allocate();
     unit->type = type;
+    unit->strategy = AI_TARGET_NONE;
 
     do {
         unit->row = (rand() & 0x7) + 1;
@@ -265,7 +266,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
 
     // redraw all teams
     for(i = 0; i < currentMatch.numTeams; i++)
-       unit_draw_team(currentMatch.teams[i]);
+       mth_draw_team(currentMatch.teams[i]);
     
     return death;
 }
@@ -295,31 +296,49 @@ void unit_destroy(unit_t *unit)
 
 
 /**
- * Gets the distance between two points
+ * Returns the Manhattan distance
  * @param remainder pointer to a single byte that will hold the remainder, or NULL if unneeded
- * - has a lot of overhead
  */
 uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 {
-    uint8_t diff1, diff2;
-    if(x1 > x2)
-        diff1 = x1 - x2;
-    else
-        diff1 = x2 - x1;
+    const int8_t dx = x1 > x2 ? -1 : 1;
+    const int8_t dy = y1 > y2 ? -1 : 1;
+    uint8_t distance = 0;
     
-    if(y1 > y2)
-        diff2 = y1 - y2;
-    else
-        diff2 = y2 - y1;
+    while(x1 != x2)
+    {
+        distance++;
+        x1 += dx;
+    }
+    
+    while(y1 != y2) {
+        distance++;
+        y1 += dy;
+    }
+
+    if(remainder) *remainder = 0;
+
+    return distance;
+
+    // uint8_t diff1, diff2;
+    // if(x1 > x2)
+    //     diff1 = x1 - x2;
+    // else
+    //     diff1 = x2 - x1;
+    
+    // if(y1 > y2)
+    //     diff2 = y1 - y2;
+    // else
+    //     diff2 = y2 - y1;
    
-    diff1 = diff1 * diff1 + diff2 * diff2;
+    // diff1 = diff1 * diff1 + diff2 * diff2;
 
-    uint8_t out = sqrt(diff1);
+    // uint8_t out = sqrt(diff1);
 
-    // this value is essentially boolean. 0 = no remainder, otherwise remainder
-    if(remainder)
-        *remainder = diff1 - out*out;
-    return out;
+    // // this value is essentially boolean. 0 = no remainder, otherwise remainder
+    // if(remainder)
+    //     *remainder = diff1 - out*out;
+    // return out;
 }
 
 
@@ -431,19 +450,15 @@ void unit_heal(unit_t *unit, uint8_t hp)
 
 
 /**
- * Draws all of the units in a team
+ * @returns true if `unit` is in the attackable range of `other`
  */
-void unit_draw_team(team_t *team)
+bool unit_in_atk_range(unit_t *unit, unit_t *other)
 {
-    for(uint8_t i = 0; i < team->size; i++)
-    {
-        if(team->units[i]->isDead) {
-            unit_hide(team->units[i]);
-        } else {
-            unit_draw(team->units[i]);
-            // draw team 1 with a different palette
-            if(team == currentMatch.teams[1])
-                set_sprite_prop(team->units[i]->spriteNumber, 0x10 | 1);
-        }
-    }
+    uint8_t atkRadius = unit->stats.damageRadius;
+
+    if(!unit->hasMoved)
+        atkRadius += unit->stats.movePoints;
+        
+    return unit_get_distance(unit, other) <= atkRadius;
 }
+

@@ -4,6 +4,11 @@
 
 #include <gb/gb.h>
 
+#include "data/mapdata.h"
+#include "data/map2.h"
+
+uint8_t *all_maps[] = {MAP_DATA, MAP2_DATA};
+
 static map_t *activeMap;
 
 static const uint8_t map_tile_flags[] = {

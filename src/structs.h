@@ -11,6 +11,15 @@ typedef enum {
 } type_of_unit;
 
 
+typedef enum {
+    AI_TARGET_NONE, // assign to an AI unit so it can choose a new strategy
+    AI_TARGET_NEAR, // attack nearest enemy
+    AI_TARGET_ATK, // attacks the enemy with lowest HP
+    AI_TARGET_RUN, // runs away from an enemy
+    AI_TARGET_HEAL // unimplemented
+} ai_strat_t;
+
+
 typedef struct {
     int8_t health;
     int8_t maxHealth;
@@ -27,6 +36,7 @@ typedef struct {
     bool hasAttacked;
     uint8_t spriteNumber;
     uint8_t tile;
+    ai_strat_t strategy;
     type_of_unit type;
     stat_t stats;
     void (*idk);

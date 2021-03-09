@@ -4,6 +4,8 @@
 #include "defines.h"
 #include "structs.h"
 
+extern uint8_t *all_maps[];
+
 typedef struct {
     uint8_t width, height;
     uint8_t *data;

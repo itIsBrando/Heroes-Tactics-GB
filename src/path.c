@@ -17,6 +17,26 @@ static uint8_t queue_size, visited_size;
 
 const uint16_t MAX_ITER = 800;
 
+
+/**
+ * Creates a path between two positions
+ * @param start position to start from
+ * @param stop position to end with
+ * @param size size of the array that will be returned
+ * @returns an array of positions that will go from `start` to `end` **IN REVERSE ORDER**
+ */
+position_t *pf_find_xy(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEnd, uint8_t *size)
+{
+    position_t start;
+    position_t end;
+    start.x = xStart;
+    start.y = yStart;
+    end.x = xEnd;
+    end.y = yEnd;
+    return pf_find(&start, &end, size);
+}
+
+
 /**
  * Creates a path between two positions
  * @param start position to start from

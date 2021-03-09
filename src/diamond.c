@@ -5,10 +5,6 @@
 #include "map.h"
 
 
-#define tri_get(x, y) tri_active_diamond[(x) + MAP_WIDTH * (y)]
-#define tri_set(x, y, v) tri_active_diamond[(x) + MAP_WIDTH * (y)] = v
-
-
 uint8_t tri_active_diamond[MAP_SIZE];
 
 /**
@@ -50,6 +46,24 @@ void tri_make(uint8_t row, uint8_t column, uint8_t radius)
         }
     }
 }
+
+
+inline uint8_t tri_get_width()
+{
+    return MAP_WIDTH;
+}
+
+inline uint8_t tri_get(uint8_t x, uint8_t y)
+{
+    return tri_active_diamond[(x) + tri_get_width() * (y)];
+}
+
+inline void tri_set(uint8_t x, uint8_t y, uint8_t v)
+{
+    tri_active_diamond[(x) + tri_get_width() * (y)] = v;
+}
+
+
 
 /**
  * Applies clipping to the active triangle

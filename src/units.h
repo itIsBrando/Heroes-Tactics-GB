@@ -8,6 +8,7 @@ extern unit_t UNIT_BRAWN;
 extern unit_t UNIT_HEALER;
 
 uint8_t min(uint8_t a, uint8_t b);
+uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 unit_t *unit_new(type_of_unit type);
 unit_t *unit_get(team_t *team, uint8_t x, uint8_t y);
@@ -29,6 +30,6 @@ void unit_move_diamond(unit_t *unit);
 void unit_atk_diamond(unit_t *unit);
 void unit_hide_triangle();
 
-void unit_draw_team(team_t *team);
+bool unit_in_atk_range(unit_t *unit, unit_t *other);
 
 #endif

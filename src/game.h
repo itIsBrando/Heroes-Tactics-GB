@@ -20,4 +20,5 @@ match_t *mth_get_match();
 bool mth_has_alive(team_t *team);
 uint8_t mth_finished();
 void mth_change_turn();
+void mth_draw_team(team_t *team);
 #endif

@@ -55,6 +55,14 @@ void initGame() {
     team_t enemyTeam;
     team_t player_team;
     unit_t *units[3];
+    
+    // creates a map
+    map_t m;
+    m.width = 10;
+    m.height = 10;
+    m.data = all_maps[0];
+    map_load(&m); // loads the map
+
     units[0] = unit_new(UNIT_TYPE_BRAWN);
     units[1] = unit_new(UNIT_TYPE_ARCHER);
     units[2] = unit_new(UNIT_TYPE_HEALER);
@@ -68,10 +76,6 @@ void initGame() {
     enemyTeam.control = CONTROLLER_COMPUTER;
     enemyTeam.size = 2;
     enemyTeam.units = enemyUnits;
-
-    // creates a map
-    map_t m = {10, 10, MAP_DATA};
-    map_load(&m); // loads the map
     
     gme_init(&player_team, &enemyTeam, NULL);
 

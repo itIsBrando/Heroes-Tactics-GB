@@ -53,6 +53,11 @@ inline uint8_t tri_get_width()
     return MAP_WIDTH;
 }
 
+inline uint8_t tri_get_height()
+{
+    return MAP_HEIGHT;
+}
+
 inline uint8_t tri_get(uint8_t x, uint8_t y)
 {
     return tri_active_diamond[(x) + tri_get_width() * (y)];
@@ -66,7 +71,8 @@ inline void tri_set(uint8_t x, uint8_t y, uint8_t v)
 
 
 /**
- * Applies clipping to the active triangle
+ * Applies clipping to the active triangle.
+ *  Anything tile that has a solid block or a unit is set to `false`
  */
 void tri_clip()
 {

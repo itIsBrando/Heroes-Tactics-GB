@@ -184,6 +184,11 @@ void printInt(uint16_t num, uint8_t tx, uint8_t ty, const bool onWindow) {
     } while(i > 0);
 }
 
+// prints stuff to screen
+inline void debug(char *s) {
+    print(s, 0, 10);
+}
+
 /**
  * Empties all of the sprites in the shadow OAM
  */

@@ -1,6 +1,7 @@
 #include "defines.h"
 #include "oam.h"
 #include "units.h"
+#include "game.h"
 #include "main.h"
 #include "map.h"
 #include "hud.h"
@@ -349,6 +350,27 @@ uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint
 inline uint8_t unit_get_distance(unit_t *u1, unit_t *u2)
 {
     return getDistance(NULL, u1->row, u1->column, u2->row, u2->column);
+}
+
+unit_t *unit_find_nearest(team_t *opponent, unit_t *unit)
+{
+    uint8_t bestIndex = 0, min = 255;
+    for(uint8_t i = 0; i < opponent->size; i++)
+    {
+        // skip if this unit is dead
+        if(opponent->units[i]->isDead)
+            continue;
+        
+        // otherwise compare distances
+        const uint8_t dist = unit_get_distance(opponent->units[i], unit);
+        if(dist < min)
+        {
+            bestIndex = i;
+            min = dist;
+        }
+    }
+
+    return opponent->units[bestIndex];
 }
 
 

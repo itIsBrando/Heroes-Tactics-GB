@@ -9,6 +9,7 @@ extern uint8_t tri_active_diamond[MAP_SIZE];
 void tri_make(uint8_t, uint8_t, uint8_t);
 
 uint8_t tri_get_width();
+uint8_t tri_get_height();
 uint8_t tri_get(uint8_t x, uint8_t y);
 void tri_set(uint8_t x, uint8_t y, uint8_t v);
 

@@ -22,6 +22,7 @@ void unit_hide(unit_t *unit);
 bool unit_move_to(unit_t *unit, uint8_t x, uint8_t y);
 void unit_set_pos(unit_t *unit, uint8_t x, uint8_t y);
 uint8_t unit_get_distance(unit_t *u1, unit_t *u2);
+unit_t *unit_find_nearest(team_t *opponent, unit_t *unit);
 
 bool unit_attack(unit_t *attacker, unit_t *defender);
 void unit_heal(unit_t *unit, uint8_t hp);

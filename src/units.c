@@ -377,6 +377,14 @@ unit_t *unit_find_nearest(team_t *opponent, unit_t *unit)
     return opponent->units[bestIndex];
 }
 
+/**
+ * Checks to see if (x, y) is a valid place to move the unit
+ * @returns true if the tile at (x, y) is empty, otherwise false
+ */
+bool unit_can_move_to(uint8_t x, uint8_t y)
+{
+    return !(unit_get_any(x, y) || map_fget(map_get(x, y)));
+}
 
 /**
  * Moves a unit to a coordinate
@@ -389,7 +397,7 @@ unit_t *unit_find_nearest(team_t *opponent, unit_t *unit)
  */
 bool unit_move_to(unit_t *unit, uint8_t x, uint8_t y)
 {
-    if(unit_get_any(x, y) || map_fget(map_get(x, y)))
+    if(!unit_can_move_to(x, y))
         return false;
 
     // check to see if another unit occupies this area

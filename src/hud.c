@@ -16,8 +16,9 @@ static bool hasVblank = false;
 void hud_draw_hotbar(team_t *team)
 {
     SHOW_WIN;
-    fill_win_rect(0, 0, 20, 1, 4); // clear visible window
-    fill_win_rect(0, 4, 20, 1, 4); // clear visible window
+    fill_win_rect(0, 0, 20, 1, 4); // set window border
+    fill_win_rect(0, 4, 20, 1, 4); // set window border
+    fill_win_rect(0, 1, 19, 3, 0); // clear visible window
     move_win(7, 144 - 40); // set window position
 
     for(uint8_t x = 0; x < team->size; x++)
@@ -52,11 +53,12 @@ void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow)
  * Shows informative text to the user on what they are doing
  * @param action type of text to say HUD_ACTION_...
  */
-void hud_show_action(hud_action_t action)
+void hud_show_action(const hud_action_t action)
 {
     char ACTIONS[][5] = {
         "MOVE",
-        "ATK"
+        "ATK",
+        "PEAK"
     };
 
     print_window(ACTIONS[action], 0, 3);
@@ -80,6 +82,8 @@ void hud_show_details(uint8_t x, uint8_t y)
 {
     unit_t *unit = unit_get(mth_get_current_team(), x, y);
     bool isYours = unit != NULL;
+
+    hud_show_action(HUD_ACTION_PEAK);
 
     if(!isYours)
         unit = unit_get_any(x, y);
@@ -117,6 +121,7 @@ void hud_show_details(uint8_t x, uint8_t y)
 void hud_hide_details()
 {
     fill_bkg_rect(20-5, 0, 5, 5, 0);
+    hud_hide_action();
 }
 
 

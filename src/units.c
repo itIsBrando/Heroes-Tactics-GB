@@ -352,6 +352,10 @@ inline uint8_t unit_get_distance(unit_t *u1, unit_t *u2)
     return getDistance(NULL, u1->row, u1->column, u2->row, u2->column);
 }
 
+/**
+ * Finds the unit closest to `unit` in `opponent`
+ * @returns returns that unit
+ */
 unit_t *unit_find_nearest(team_t *opponent, unit_t *unit)
 {
     uint8_t bestIndex = 0, min = 255;
@@ -402,6 +406,7 @@ bool unit_move_to(unit_t *unit, uint8_t x, uint8_t y)
     unit_set_pos(unit, x, y);
     return true;
 }
+
 
 /**
  * Sets the unit's new position and redraws it. Sets the 'hasMoved' flag
@@ -478,8 +483,8 @@ bool unit_in_atk_range(unit_t *unit, unit_t *other)
 {
     uint8_t atkRadius = unit->stats.damageRadius;
 
-    if(!unit->hasMoved)
-        atkRadius += unit->stats.movePoints;
+    // if(!unit->hasMoved)
+    //     atkRadius += unit->stats.movePoints;
         
     return unit_get_distance(unit, other) <= atkRadius;
 }

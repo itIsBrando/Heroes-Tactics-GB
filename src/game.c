@@ -95,6 +95,9 @@ void gme_computer_turn()
 void gme_player_turn()
 {
     uint8_t pad;
+
+    selectedUnit = NULL;
+
     do {
         pad = joypad();
 
@@ -129,6 +132,9 @@ void gme_player_turn()
         wait_vbl_done();
 
     } while(pad != J_START);
+
+    if(selectedUnit)
+        unit_hide_triangle();
 }
 
 /**

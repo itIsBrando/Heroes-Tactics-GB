@@ -21,7 +21,9 @@ void ai_do_turn(unit_t *unit)
     uint8_t size;
     position_t targetPos, aiPos;
 
-    ai_get_destination_position(&targetPos, unit, unit->strategy);
+    targetPos.x = targetPos.y = 0;
+
+    ai_get_destination_position(&targetPos, unit);
 
     aiPos.x = unit->row;
     aiPos.y = unit->column;
@@ -67,10 +69,10 @@ void ai_set_strategy(unit_t *unit)
     // find the closest enemy
     unit_t *target = unit_find_nearest(opponent, unit);
         
-    if(ai_should_run(unit, target))
-        strat = AI_TARGET_RUN;
-    else if(ai_should_attack(unit, target))
+    if(ai_would_kill(unit, target))
         strat = AI_TARGET_ATK;
+    else if(ai_should_run(unit, target))
+        strat = AI_TARGET_RUN;
     else
         strat = AI_TARGET_NEAR;
 
@@ -85,17 +87,21 @@ void ai_set_strategy(unit_t *unit)
  * @param unit AI unit
  * @param strat strategy to employ
  */
-void ai_get_destination_position(position_t *position, unit_t *unit, ai_strat_t strat)
+void ai_get_destination_position(position_t *position, unit_t *unit)
 {
     ai_set_strategy(unit);
 
-    if(strat == AI_TARGET_RUN)
+    if(unit->strategy == AI_TARGET_RUN)
     {
-        ai_run_from(position, unit, NULL);
+        ai_run_from(position, unit, unit_find_nearest(mth_get_opponent(), unit));
     } else {
         unit_t *target = ai_get_target(unit, unit->strategy);
-        position->x = target->row;
-        position->y = target->column;
+        
+        if(target)
+        {
+            position->x = target->row;
+            position->y = target->column;
+        }
     }
 }
 
@@ -110,30 +116,9 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
     team_t *opponent = mth_get_opponent();
     uint8_t i = 0;
     uint8_t min = 255, bestIndex = 0;
-    team_t *team;
 
     switch (strategy)
     {
-    case AI_TARGET_RUN:
-        // target our healer
-        team = mth_get_current_team();
-        
-        for(uint8_t i = 0; i < team->size; i++)
-        {
-            // find a healer
-            if(team->units[i]->type == UNIT_TYPE_HEALER && team->units[i] != unit)
-            {
-                return team->units[i];
-            }
-        }
-        
-        for(uint8_t i = 0; i < team->size; i++)
-        {
-            // find a healer
-            if(team->units[i] != unit)
-                return team->units[i];
-        }
-
     case AI_TARGET_NONE:
         debug("AI has no STRAT setup");
     case AI_TARGET_HEAL: // @todo
@@ -156,16 +141,13 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
 
     // target the unit that can be killed the easiest
     case AI_TARGET_ATK:
+        // find the first unit that we should attack
         for(; i < opponent->size; i++)
         {
-            const uint8_t hp = opponent->units[i]->stats.health;
-            if(hp < min && !opponent->units[i]->isDead) {
-                bestIndex = i;
-                min = hp;
-            }
-            
+            if(ai_would_kill(unit, opponent->units[i]))
+                return opponent->units[i];
         }
-        return opponent->units[bestIndex];
+        break;
     }
 
     return NULL;
@@ -227,16 +209,22 @@ bool ai_check_attack(unit_t *unit, unit_t *target)
     if(!target)
         return false;
 
-    if(target->stats.damagePoints >= unit->stats.health)
-        return false;
-
     // if AI will kill target, then proceed with the kill
-    if(!(unit->stats.damagePoints >= target->stats.health))
-        // if the target is in range and would kill AI, do not attack
-        if(!(target->stats.health - unit->stats.damagePoints <= 0) && unit_get_distance(unit, target) > unit->stats.damageRadius)
-            return false;
+    if(ai_would_kill(unit, target))
+    {
+        unit_attack(unit, target);
+        return true;
+    }
+
+    // if the target is in range and would kill AI, do not attack
+    if(ai_should_run(unit, target) || ai_would_kill(target, unit))
+        return false;
     
-    unit_attack(unit, target);
+    // if(target->stats.damagePoints >= unit->stats.health)
+    //     return false;
+
+    if(unit_in_atk_range(unit, target))
+       unit_attack(unit, target);
 
     return true;
 }
@@ -244,17 +232,18 @@ bool ai_check_attack(unit_t *unit, unit_t *target)
 
 /**
  * the AI unit should only attack if it can kill opponent, or it can damage opponent, but won't die from counter attack
- * @returns true if the AI unit should attack `other`
+ * @returns true if the AI unit could attack AND kill `other`
  */
-bool ai_should_attack(unit_t *unit, unit_t *other)
+bool ai_would_kill(unit_t *unit, unit_t *other)
 {
     // if our attack can kill enemy and we are in range
     if(unit->stats.damagePoints >= other->stats.health
-     && unit_in_atk_range(unit, other))
+     && unit_in_atk_range(unit, other) && !other->isDead)
         return true;
     
     return false;
 }
+
 
 /**
  * The AI unit should run when the opponent can kill the opponent 
@@ -263,7 +252,8 @@ bool ai_should_attack(unit_t *unit, unit_t *other)
 bool ai_should_run(unit_t *unit, unit_t *other)
 {
     // run away if `other` will kill AI
-    if(other->stats.damagePoints > unit->stats.health && unit_in_atk_range(other, unit))
+    if(other->stats.damagePoints >= unit->stats.health
+     && unit_in_atk_range(other, unit) && !other->isDead)
         return true;
 
     return false;

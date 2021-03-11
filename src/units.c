@@ -300,7 +300,7 @@ void unit_destroy(unit_t *unit)
  * Returns the Manhattan distance
  * @param remainder pointer to a single byte that will hold the remainder, or NULL if unneeded
  */
-uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
+uint8_t getDistance(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 {
     const int8_t dx = x1 > x2 ? -1 : 1;
     const int8_t dy = y1 > y2 ? -1 : 1;
@@ -316,8 +316,6 @@ uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint
         distance++;
         y1 += dy;
     }
-
-    if(remainder) *remainder = 0;
 
     return distance;
 
@@ -349,7 +347,7 @@ uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint
  */
 inline uint8_t unit_get_distance(unit_t *u1, unit_t *u2)
 {
-    return getDistance(NULL, u1->row, u1->column, u2->row, u2->column);
+    return getDistance(u1->row, u1->column, u2->row, u2->column);
 }
 
 /**
@@ -401,12 +399,7 @@ bool unit_move_to(unit_t *unit, uint8_t x, uint8_t y)
         return false;
 
     // check to see if another unit occupies this area
-    uint8_t remainder;
-    uint8_t dist = getDistance(&remainder, x, y, unit->row, unit->column);
-    // printInt(dist, 0, 13, false);
-    // this is necessary to round up
-    if(remainder)
-        dist++;
+    uint8_t dist = getDistance(x, y, unit->row, unit->column);
 
     if(dist > unit->stats.movePoints)
         return false;

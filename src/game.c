@@ -223,8 +223,7 @@ void gme_init(team_t *t1, team_t *t2, team_t *t3)
     currentMatch.teams[1] = t2;
     currentMatch.teams[2] = t3;
 
-    mnu_choose_teams(&currentMatch);
-
+    mnu_choose_teams_init(&currentMatch);
 }
 
 /**

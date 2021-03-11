@@ -8,9 +8,9 @@
 #include <string.h>
 #include <gb/gb.h>
 
-static queue_t queue[MAP_SIZE * 2];
-static position_t pf_out[MAP_SIZE];
-static position_t visited[MAP_SIZE];
+static queue_t queue[MAP_MAX_SIZE * 2];
+static position_t pf_out[MAP_MAX_SIZE];
+static position_t visited[MAP_MAX_SIZE];
 static uint8_t queue_size, visited_size;
 
 #define push_queue(curX, curY, lastPos) queue[queue_size].curPos.x = (curX), queue[queue_size].curPos.y = (curY); queue[queue_size++].lastEntry = lastPos

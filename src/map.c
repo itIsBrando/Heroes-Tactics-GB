@@ -7,8 +7,12 @@
 #include "data/mapdata.h"
 #include "data/map2.h"
 
-uint8_t *all_maps[] = {MAP_DATA, MAP2_DATA};
+uint8_t *all_maps[2] = {MAP_DATA, MAP2_DATA};
+uint8_t map_widths[] = {10, 9};
+uint8_t map_heights[] = {10, 8};
 
+
+static map_t internalMap;
 static map_t *activeMap;
 
 static const uint8_t map_tile_flags[] = {
@@ -17,6 +21,21 @@ static const uint8_t map_tile_flags[] = {
 
 void map_draw() {
     set_bkg_tiles(0, 0, activeMap->width, activeMap->height, activeMap->data);
+}
+
+
+/**
+ * Loads a map from a pointer
+ * @param data pointer to tilemap data
+ * @param width width of data
+ * @param height height of data
+ */
+void map_load_from_data(uint8_t *data, uint8_t w, uint8_t h)
+{
+    internalMap.width = w;
+    internalMap.height = h;
+    internalMap.data = data;
+    map_load(&internalMap);
 }
 
 /**
@@ -34,7 +53,7 @@ void map_load(map_t *map)
  */
 uint8_t map_get(uint8_t x, uint8_t y)
 {
-    return activeMap->data[x + y * activeMap->width];
+    return activeMap->data[x + y * map_get_width()];
 }
 
 /**

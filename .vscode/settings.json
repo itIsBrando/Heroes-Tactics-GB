@@ -7,6 +7,7 @@
     ],
     "files.associations": {
         "malloc.h": "c",
-        "diamond.h": "c"
+        "diamond.h": "c",
+        "map.h": "c"
     }
 }

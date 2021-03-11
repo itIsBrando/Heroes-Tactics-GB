@@ -9,7 +9,7 @@ extern unit_t UNIT_HEALER;
 
 
 uint8_t min(uint8_t a, uint8_t b);
-uint8_t getDistance(uint8_t *remainder, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+uint8_t getDistance(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 
 unit_t *unit_new(type_of_unit type);

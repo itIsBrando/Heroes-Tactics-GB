@@ -5,7 +5,7 @@
 #include "map.h"
 
 
-uint8_t tri_active_diamond[MAP_SIZE];
+uint8_t tri_active_diamond[MAP_MAX_SIZE];
 
 /**
  * Creates a new diamond
@@ -25,12 +25,12 @@ void tri_make(uint8_t row, uint8_t column, uint8_t radius)
     {
         column = starty + y;
         // check for underflow & overflow
-        if(column < MAP_HEIGHT)
+        if(column < map_get_height())
         {
             for(uint8_t j = 0; j < stopx - startx+1; j++)
             {
                 row = startx + j;
-                if(row < MAP_WIDTH)
+                if(row < map_get_width())
                     tri_set(row, column, 1);
             }
         }
@@ -50,12 +50,12 @@ void tri_make(uint8_t row, uint8_t column, uint8_t radius)
 
 inline uint8_t tri_get_width()
 {
-    return MAP_WIDTH;
+    return map_get_width();
 }
 
 inline uint8_t tri_get_height()
 {
-    return MAP_HEIGHT;
+    return map_get_height();
 }
 
 inline uint8_t tri_get(uint8_t x, uint8_t y)
@@ -83,7 +83,7 @@ void tri_clip()
         if(unit_get_any(x, y) || map_fget(map_get(x, y)))
             tri_active_diamond[i] = false;
 
-        if(++x >= MAP_WIDTH)
+        if(++x >= tri_get_width())
             x = 0, y++;
     }
 }
@@ -100,7 +100,7 @@ void tri_draw(const uint8_t tile)
         if(tri_active_diamond[i])
             fill_bkg_rect(x, y, 1, 1, tile);
 
-        if(++x >= MAP_WIDTH)
+        if(++x >= map_get_width())
             x = 0, y++;
     }
 }

@@ -70,63 +70,66 @@ Area                       Addr        Size        Decimal Bytes (Attributes)
      00000003  l__HEADER |    00000005  l__HEADER |    00000006  l__HEADER
      00000007  l__HEADER |    00000008  l__HEADER |    0000001A  l__BSS   
      0000002C  l__HEADER |    00000033  l__HEADER |    0000006A  l__HOME  
-     0000007E  l__HEADER |    00000200  s__CODE   |    00000629  l__BASE  
-     000009B8  l__DATA   |    00000C05  l__GSINIT |    000028C6  l__CODE  
-     00002AC6  s__HOME   |    00002B30  s__BASE   |    00003159  s__CODE_0
-     00003159  s__GSINIT |    00003159  s__LIT    |    00003D5E  s__GSFINA
-     0000C000  _shadow_O |    0000C0A0  s__DATA   |    0000CA58  s__BSS   
-     0000CA72  s__HEAP   |    0000E000  .STACK    |    0000FF80  .refresh_
+     0000007E  l__HEADER |    00000200  s__CODE   |    0000062A  l__BASE  
+     000009C5  l__DATA   |    00000C1E  l__GSINIT |    00002950  l__CODE  
+     00002B50  s__HOME   |    00002BBA  s__BASE   |    000031E4  s__CODE_0
+     000031E4  s__GSINIT |    000031E4  s__LIT    |    00003E02  s__GSFINA
+     0000C000  _shadow_O |    0000C0A0  s__DATA   |    0000CA65  s__BSS   
+     0000CA7F  s__HEAP   |    0000E000  .STACK    |    0000FF80  .refresh_
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_CODE                  00000200    000028C6 =       10438. bytes (REL,CON)
+_CODE                  00000200    00002950 =       10576. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     00000200  _ai_do_tu |    0000038F  _ai_set_s |    000003D2  _ai_get_d
-     00000418  _ai_get_t |    00000648  _ai_run_f |    000007E3  _ai_check
-     000008D1  _ai_shoul |    00000927  _ai_shoul |    0000097F  _cur_init
-     000009A2  _cur_dest |    000009B5  _cur_move |    000009EE  _cur_hide
-     00000A0A  _cur_show |    00000A14  _cur_draw |    00000A4B  _cur_anim
-     00000A62  _cur_vbl  |    00000A78  _cur_get_ |    00000A7D  _cur_get_
-     00000A82  _tri_make |    00000B60  _tri_get_ |    00000B63  _tri_get_
-     00000B66  _tri_get  |    00000B7A  _tri_set  |    00000B92  _tri_clip
-     00000BE8  _tri_draw |    00000C1D  _gme_run  |    00000C9A  _gme_do_t
-     00000CE9  _gme_comp |    00000D11  _gme_play |    00000DAD  _gme_sele
-     00000E36  _gme_sele |    00000F11  _gme_init |    00000F4C  _mth_get_
-     00000F54  _mth_get_ |    00000F89  _mth_fini |    00000FBA  _mth_chan
-     000010AA  _mth_has_ |    000010DF  _mth_get_ |    000010E3  _mth_draw
-     00001193  _hud_draw |    0000124E  _hud_draw |    00001308  _hud_show
-     00001374  _hud_hide |    00001386  _hud_show |    000014B2  _hud_hide
-     000014C6  _hud_vbl_ |    000014EF  _hud_warn |    0000151A  _main    
-     000015A3  _initGame |    000016B1  _waitjoyp |    000016BE  _print   
-     000017A6  _print_wi |    00001891  _printInt |    0000194D  _debug   
-     00001960  _empty_oa |    00001970  _clear_bg |    000019AA  _map_draw
-     000019E0  _map_load |    000019EA  _map_get  |    00001A25  _map_get_
-     00001A38  _map_in_b |    00001A55  _map_fget |    00001A74  _control_
-     00001B0B  _mnu_choo |    00001C48  _spr_flus |    00001C58  _spr_allo
-     00001CAA  _spr_free |    00001CB8  _pf_find_ |    00001CFB  _MAX_ITER
-     00001CFD  _pf_find  |    00001E30  _pf_check |    00002025  _pf_has_v
-     00002057  _pf_can_m |    00002091  _min      |    0000209E  _ARCHER_S
-     000020A3  _HEALER_S |    000020A8  _BRAWN_ST |    000020AD  _malloc  
-     000020EF  _unit_new |    000021CA  _unit_get |    0000221A  _unit_get
-     00002258  _unit_dra |    000022AB  _unit_dra |    000022FA  _unit_hid
-     00002333  _unit_do_ |    0000236B  _unit_att |    000025EF  _sqrt    
-     00002632  _unit_des |    00002642  _getDista |    00002689  _unit_get
-     000026BF  _unit_fin |    00002797  _unit_mov |    0000281C  _unit_set
-     00002838  _unit_get |    0000284F  _unit_mov |    00002873  _unit_atk
-     00002897  _unit_hid |    0000289A  _unit_hea |    000028BA  _unit_in_
-     00002908  __divsuch |    00002917  __modsuch |    00002923  __divusch
-     00002935  __modusch |    00002945  __divscha |    00002953  __modscha
-     0000295F  __divsint |    00002972  __modsint |    00002983  __divucha
-     00002991  __moducha |    0000299D  __divuint |    000029B0  __moduint
-     000029C1  .div8     |    000029C1  .mod8     |    000029C9  .div16   
-     000029C9  .mod16    |    000029FF  .divu8    |    000029FF  .modu8   
-     00002A02  .divu16   |    00002A02  .modu16   |    00002A43  _rand    
-     00002A43  _randw    |    00002A6E  __mulsuch |    00002A78  __mulusch
-     00002A82  __mulscha |    00002A94  __mulucha |    00002AA0  __mulint 
+     00000200  _ai_do_tu |    00000381  _ai_set_s |    000003C4  _ai_get_d
+     00000411  _ai_get_t |    00000560  _ai_run_f |    0000073B  _ai_check
+     000007C1  _ai_would |    0000081C  _ai_shoul |    0000087A  _cur_init
+     0000089D  _cur_dest |    000008B0  _cur_move |    000008E5  _cur_hide
+     00000901  _cur_show |    0000090B  _cur_draw |    00000942  _cur_anim
+     00000959  _cur_vbl  |    0000096F  _cur_get_ |    00000974  _cur_get_
+     00000979  _tri_make |    00000A6A  _tri_get_ |    00000A6D  _tri_get_
+     00000A70  _tri_get  |    00000A8E  _tri_set  |    00000AAF  _tri_clip
+     00000B09  _tri_draw |    00000B46  _gme_run  |    00000BC3  _gme_do_t
+     00000C12  _gme_comp |    00000C3A  _gme_play |    00000CE8  _gme_sele
+     00000D71  _gme_sele |    00000E4C  _gme_init |    00000E87  _mth_get_
+     00000E8F  _mth_get_ |    00000EC4  _mth_fini |    00000EF5  _mth_chan
+     00000FE5  _mth_has_ |    0000101A  _mth_get_ |    0000101E  _mth_draw
+     000010CE  _hud_draw |    0000119A  _hud_draw |    00001254  _hud_show
+     000012DE  _hud_hide |    000012F0  _hud_show |    00001429  _hud_hide
+     0000143F  _hud_vbl_ |    00001468  _hud_warn |    00001493  _main    
+     0000151C  _initGame |    000015F6  _waitjoyp |    00001603  _print   
+     000016EB  _print_wi |    000017D6  _printInt |    00001892  _debug   
+     000018A5  _empty_oa |    000018B5  _clear_bg |    000018EF  _map_draw
+     00001925  _map_load |    00001947  _map_load |    00001951  _map_get 
+     0000198C  _map_get_ |    0000199F  _map_in_b |    000019BC  _map_fget
+     000019CA  _map_get_ |    000019D4  _map_get_ |    000019F0  _control_
+     00001A87  _mnu_choo |    00001B5C  _mnu_curs |    00001B73  _mnu_curs
+     00001BF1  _mnu_curs |    00001C8A  _mnu_choo |    00001D02  _spr_flus
+     00001D12  _spr_allo |    00001D64  _spr_free |    00001D72  _pf_find_
+     00001DB5  _MAX_ITER |    00001DB7  _pf_find  |    00001EEA  _pf_check
+     000020DF  _pf_has_v |    00002111  _pf_can_m |    0000214B  _min     
+     00002158  _ARCHER_S |    0000215D  _HEALER_S |    00002162  _BRAWN_ST
+     00002167  _malloc   |    000021A9  _unit_new |    00002284  _unit_get
+     000022D4  _unit_get |    00002312  _unit_dra |    00002365  _unit_dra
+     000023B4  _unit_hid |    000023ED  _unit_do_ |    00002425  _unit_att
+     000026A9  _sqrt     |    000026EC  _unit_des |    000026FC  _getDista
+     00002737  _unit_get |    00002769  _unit_fin |    0000283C  _unit_can
+     0000286D  _unit_mov |    000028BC  _unit_set |    000028D8  _unit_get
+     000028EF  _unit_mov |    00002913  _unit_atk |    00002937  _unit_hid
+     0000293A  _unit_hea |    0000295A  _unit_in_ |    00002992  __divsuch
+     000029A1  __modsuch |    000029AD  __divusch |    000029BF  __modusch
+     000029CF  __divscha |    000029DD  __modscha |    000029E9  __divsint
+     000029FC  __modsint |    00002A0D  __divucha |    00002A1B  __moducha
+     00002A27  __divuint |    00002A3A  __moduint |    00002A4B  .div8    
+     00002A4B  .mod8     |    00002A53  .div16    |    00002A53  .mod16   
+     00002A89  .divu8    |    00002A89  .modu8    |    00002A8C  .divu16  
+     00002A8C  .modu16   |    00002ACD  _rand     |    00002ACD  _randw   
+     00002AF8  __mulsuch |    00002B02  __mulusch |    00002B0C  __mulscha
+     00002B1E  __mulucha |    00002B2A  __mulint 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 Hexadecimal  [32-Bits]
 
@@ -292,49 +295,49 @@ Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_HOME                  00002AC6    0000006A =         106. bytes (REL,CON)
+_HOME                  00002B50    0000006A =         106. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     00002AC6  .remove_V |    00002AC9  .remove_i |    00002AE6  .add_VBL 
-     00002AE9  .add_int  |    00002AF4  .wait_vbl |    00002AF4  _wait_vbl
-     00002B03  .display_ |    00002B03  _display_ |    00002B1A  _remove_V
-     00002B25  _add_VBL 
+     00002B50  .remove_V |    00002B53  .remove_i |    00002B70  .add_VBL 
+     00002B73  .add_int  |    00002B7E  .wait_vbl |    00002B7E  _wait_vbl
+     00002B8D  .display_ |    00002B8D  _display_ |    00002BA4  _remove_V
+     00002BAF  _add_VBL 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 22.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_BASE                  00002B30    00000629 =        1577. bytes (REL,CON)
+_BASE                  00002BBA    0000062A =        1578. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     00002B30  _fill_win |    00002B42  _initrand |    00002B44  .initrand
-     00002B4D  _set_bkg_ |    00002B4D  _set_win_ |    00002B55  _set_spri
-     00002BC3  _set_win_ |    00002BD7  _set_bkg_ |    00002BD7  _set_win_
-     00002BDF  _set_spri |    00002C0F  .fill_rec |    00002C18  .fill_rec
-     00002C65  .padup    |    00002C65  _waitpadu |    00002C75  .jpad    
-     00002C75  _joypad   |    00002C9D  _waitpad  |    00002CA0  .wait_pad
-     00002CA7  _fill_bkg |    00002CB9  ___memcpy |    00002CB9  _memcpy  
-     00002CFC  _memset   |    00002D2F  _font_ibm |    000030E1  _strlen  
-     000030E6  .strlen   |    000030EF  _set_bkg_ |    00003103  .set_xy_w
-     0000310C  .set_xy_b |    0000311B  .set_xy_t
+     00002BBA  _fill_win |    00002BCC  _initrand |    00002BCE  .initrand
+     00002BD7  _set_bkg_ |    00002BD7  _set_win_ |    00002BDF  _set_spri
+     00002C4D  _set_win_ |    00002C61  _set_bkg_ |    00002C61  _set_win_
+     00002C69  _set_spri |    00002C99  .fill_rec |    00002CA2  .fill_rec
+     00002CEF  .padup    |    00002CEF  _waitpadu |    00002CFF  .jpad    
+     00002CFF  _joypad   |    00002D27  _waitpad  |    00002D2A  .wait_pad
+     00002D31  _fill_bkg |    00002D43  ___memcpy |    00002D43  _memcpy  
+     00002D86  ___sdcc_c |    00002D87  _memset   |    00002DBA  _font_ibm
+     0000316C  _strlen   |    00003171  .strlen   |    0000317A  _set_bkg_
+     0000318E  .set_xy_w |    00003197  .set_xy_b |    000031A6  .set_xy_t
 ASxxxx Linker V03.00 + NoICE + sdld,  page 23.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_GSINIT                00003159    00000C05 =        3077. bytes (REL,CON)
+_GSINIT                000031E4    00000C1E =        3102. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     00003159  gsinit   
+     000031E4  gsinit   
 ASxxxx Linker V03.00 + NoICE + sdld,  page 24.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_GSFINAL               00003D5E    00000001 =           1. bytes (REL,CON)
+_GSFINAL               00003E02    00000001 =           1. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
@@ -343,35 +346,35 @@ Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_DATA                  0000C0A0    000009B8 =        2488. bytes (REL,CON)
+_DATA                  0000C0A0    000009C5 =        2501. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
      0000C0A6  _tri_acti |    0000C10D  _currentT |    0000C111  _currentM
-     0000C118  _all_maps |    0000C80C  _MAP2_DAT |    0000C854  _MAP_DATA
-     0000C8B8  _SPRITE_D
+     0000C118  _all_maps |    0000C11C  _map_widt |    0000C11E  _map_heig
+     0000C819  _MAP2_DAT |    0000C861  _MAP_DATA |    0000C8C5  _SPRITE_D
 ASxxxx Linker V03.00 + NoICE + sdld,  page 26.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_BSS                   0000CA58    0000001A =          26. bytes (REL,CON)
+_BSS                   0000CA65    0000001A =          26. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     0000CA58  __cpu     |    0000CA59  .mode     |    0000CA5A  .sys_time
-     0000CA5A  _sys_time |    0000CA5C  .int_0x40 |    0000CA70  .randhi  
-     0000CA71  .randlo  
+     0000CA65  __cpu     |    0000CA66  .mode     |    0000CA67  .sys_time
+     0000CA67  _sys_time |    0000CA69  .int_0x40 |    0000CA7D  .randhi  
+     0000CA7E  .randlo  
 ASxxxx Linker V03.00 + NoICE + sdld,  page 27.
 Hexadecimal  [32-Bits]
 
 Area                       Addr        Size        Decimal Bytes (Attributes)
 --------------------       ----        ----        ------- ----- ------------
-_HEAP                  0000CA72    00000000 =           0. bytes (REL,CON)
+_HEAP                  0000CA7F    00000000 =           0. bytes (REL,CON)
 
         Value  Global            Value  Global            Value  Global    
         -----  ------            -----  ------            -----  ------    
-     0000CA72  _malloc_h
+     0000CA7F  _malloc_h
 ASxxxx Linker V03.00 + NoICE + sdld,  page 28.
 Hexadecimal  [32-Bits]
 
@@ -938,33 +941,33 @@ Files Linked                              [ module(s) ]
 
 C:\Users\Brand\Documents\gbdk\lib/small/asxxxx/gb/crt0.o
                                           [ Runtime ]
-C:\Users\Brand\AppData\Local\Temp/lcc148360.o
+C:\Users\Brand\AppData\Local\Temp/lcc67800.o
                                           [ ai ]
-C:\Users\Brand\AppData\Local\Temp/lcc148361.o
+C:\Users\Brand\AppData\Local\Temp/lcc67801.o
                                           [ cursor ]
-C:\Users\Brand\AppData\Local\Temp/lcc148362.o
+C:\Users\Brand\AppData\Local\Temp/lcc67802.o
                                           [ diamond ]
-C:\Users\Brand\AppData\Local\Temp/lcc148363.o
+C:\Users\Brand\AppData\Local\Temp/lcc67803.o
                                           [ game ]
-C:\Users\Brand\AppData\Local\Temp/lcc148364.o
+C:\Users\Brand\AppData\Local\Temp/lcc67804.o
                                           [ hud ]
-C:\Users\Brand\AppData\Local\Temp/lcc148365.o
+C:\Users\Brand\AppData\Local\Temp/lcc67805.o
                                           [ main ]
-C:\Users\Brand\AppData\Local\Temp/lcc148366.o
+C:\Users\Brand\AppData\Local\Temp/lcc67806.o
                                           [ map ]
-C:\Users\Brand\AppData\Local\Temp/lcc148367.o
+C:\Users\Brand\AppData\Local\Temp/lcc67807.o
                                           [ menu ]
-C:\Users\Brand\AppData\Local\Temp/lcc148368.o
+C:\Users\Brand\AppData\Local\Temp/lcc67808.o
                                           [ oam ]
-C:\Users\Brand\AppData\Local\Temp/lcc148369.o
+C:\Users\Brand\AppData\Local\Temp/lcc67809.o
                                           [ path ]
-C:\Users\Brand\AppData\Local\Temp/lcc1483610.o
+C:\Users\Brand\AppData\Local\Temp/lcc678010.o
                                           [ units ]
-C:\Users\Brand\AppData\Local\Temp/lcc1483611.o
+C:\Users\Brand\AppData\Local\Temp/lcc678011.o
                                           [ map2 ]
-C:\Users\Brand\AppData\Local\Temp/lcc1483612.o
+C:\Users\Brand\AppData\Local\Temp/lcc678012.o
                                           [ mapdata ]
-C:\Users\Brand\AppData\Local\Temp/lcc1483613.o
+C:\Users\Brand\AppData\Local\Temp/lcc678013.o
                                           [ sprite ]
 
 
@@ -994,6 +997,8 @@ C:\Users\Brand\Documents\gbdk\lib/small/asxxxx/gb/gb.lib
                                           [ fill_rect_bk.o ]
 C:\Users\Brand\Documents\gbdk\lib/small/asxxxx/gbz80/gbz80.lib
                                           [ _memcpy.o ]
+C:\Users\Brand\Documents\gbdk\lib/small/asxxxx/gbz80/gbz80.lib
+                                          [ __sdcc_call_hl.o ]
 C:\Users\Brand\Documents\gbdk\lib/small/asxxxx/gbz80/gbz80.lib
                                           [ _memset.o ]
 C:\Users\Brand\Documents\gbdk\lib/small/asxxxx/gb/gb.lib

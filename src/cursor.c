@@ -1,5 +1,6 @@
 #include "oam.h"
 #include "cursor.h"
+#include "map.h"
 #include "structs.h"
 #include "data/mapdata.h"
 
@@ -34,13 +35,13 @@ void cur_move(int8_t dx, int8_t dy)
 {
     if(lastPressed)
         return; 
-    const int8_t x = cx + dx;
-    const int8_t y = cy + dy;
+    const uint8_t x = cx + dx;
+    const uint8_t y = cy + dy;
 
-    if(x >= 0 && x < MAP_DATAWidth)
+    if(x < map_get_width())
         cx = x;
 
-    if(y >= 0 && y < MAP_DATAHeight)
+    if(y < map_get_height())
         cy = y;
 
     lastPressed = 6;

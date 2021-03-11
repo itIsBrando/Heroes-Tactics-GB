@@ -8,7 +8,7 @@
 
 #include "structs.h"
 #include "main.h"
-#include "map.h"
+#include "menu.h"
 #include "units.h"
 #include "hud.h"
 #include "game.h"
@@ -56,12 +56,7 @@ void initGame() {
     team_t player_team;
     unit_t *units[3];
     
-    // creates a map
-    map_t m;
-    m.width = 10;
-    m.height = 10;
-    m.data = all_maps[0];
-    map_load(&m); // loads the map
+    mnu_choose_map_init();
 
     units[0] = unit_new(UNIT_TYPE_BRAWN);
     units[1] = unit_new(UNIT_TYPE_ARCHER);

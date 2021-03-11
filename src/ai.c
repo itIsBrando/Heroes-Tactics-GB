@@ -48,7 +48,7 @@ void ai_do_turn(unit_t *unit)
             break;
         
         // if we can attack from a distance
-        // if we are running, do not focus on enemy targets
+        // but if we are running, do not focus on enemy targets
         if(unit->strategy != AI_TARGET_RUN
          && unit_get_distance(unit, target) <= unit->stats.damageRadius)
             break;
@@ -172,10 +172,6 @@ void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
     if(!other)
         return;
 
-    debug("AI RUN");
-    while(joypad() != J_B)
-        wait_vbl_done();
-
     const int8_t dx[] = {-1, 1, 0, 0};
     const int8_t dy[] = {0, 0, -1, 1};
 
@@ -185,7 +181,7 @@ void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
         xGoal = unit->row + (int8_t)unit->stats.movePoints * dx[i];
         yGoal = unit->column + (int8_t)unit->stats.movePoints * dy[i];
 
-        curDist = getDistance(NULL, xGoal, yGoal, other->row, other->column);
+        curDist = getDistance(xGoal, yGoal, other->row, other->column);
 
         if(curDist > bestDist && unit_can_move_to(xGoal, yGoal))
         {

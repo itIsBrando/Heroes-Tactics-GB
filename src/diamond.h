@@ -4,7 +4,7 @@
 #include "defines.h"
 #include "structs.h"
 
-extern uint8_t tri_active_diamond[MAP_SIZE];
+extern uint8_t tri_active_diamond[MAP_MAX_SIZE];
 
 void tri_make(uint8_t, uint8_t, uint8_t);
 

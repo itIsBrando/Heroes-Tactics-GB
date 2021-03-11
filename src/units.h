@@ -42,7 +42,7 @@ unit_t *unit_find_nearest(team_t *opponent, unit_t *unit);
 
 bool unit_attack(unit_t *attacker, unit_t *defender);
 
-void unit_heal(unit_t *unit, uint8_t hp);
+bool unit_heal(unit_t *unit, unit_t *healer);
 
 
 void unit_move_diamond(unit_t *unit);

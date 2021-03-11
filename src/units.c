@@ -179,6 +179,40 @@ bool unit_do_damage(unit_t *unit, uint8_t dmg)
     return isDead;
 }
 
+
+/**
+ * Call to graphically indicate that two units are engaging. Unit order is irrelevant
+ * @param u1 one unit
+ * @param u2 second unit
+ */
+void unit_engage(unit_t *u1, unit_t *u2)
+{
+    uint8_t i = 0;
+
+    // flash attacker and defender
+    for(; i < 4; i++)
+    {
+        uint8_t j;
+        unit_hide(u1);
+        unit_hide(u2);
+        for(j = 0; j < 10;j++)
+            wait_vbl_done();
+        unit_draw(u1);
+        unit_draw(u2);
+        for(j = 0; j < 10;j++)
+            wait_vbl_done();
+    }
+
+    for(i = 0; i < currentMatch.numTeams; i++)
+    {
+        for(uint8_t j = 0; j < currentMatch.teams[i]->size; j++)
+        {
+            unit_hide(currentMatch.teams[i]->units[j]);
+        }
+    }
+}
+
+
 /**
  * Attacks an enemy and allows enemy to counterattack
  * @param attacker does damage to defender. Finishes this unit's turn
@@ -191,26 +225,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
 
     cur_hide(); // hide cursor
 
-    // flash attacker and defender
-    for(; i < 4; i++)
-    {
-        unit_hide(attacker);
-        unit_hide(defender);
-        for(uint8_t j = 0; j < 10;j++)
-            wait_vbl_done();
-        unit_draw(attacker);
-        unit_draw(defender);
-        for(uint8_t j = 0; j < 10;j++)
-            wait_vbl_done();
-    }
-
-    for(i = 0; i < currentMatch.numTeams; i++)
-    {
-        for(uint8_t j = 0; j < currentMatch.teams[i]->size; j++)
-        {
-            unit_hide(currentMatch.teams[i]->units[j]);
-        }
-    }
+    unit_engage(attacker, defender);
 
     // set up battle screen
     clear_bg();
@@ -230,9 +245,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     attacker->hasAttacked = attacker->hasMoved = true;
 
     // wait for joypad input
-    waitjoypad(J_A);
-    while(joypad() != J_A)
-        wait_vbl_done();
+   waitPressed(J_A | J_START);
 
     // only do counterattack if the other man lived
     if(!death)
@@ -256,14 +269,11 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     }
 
     // wait for joypad input
-    waitjoypad(J_A);
-    while(joypad() != J_A)
-        wait_vbl_done();
+    waitPressed(J_A | J_START);
 
     clear_bg();
     map_draw(); // redraw map
     cur_show(); // redraw cursor
-
 
     // redraw all teams
     for(i = 0; i < currentMatch.numTeams; i++)
@@ -468,12 +478,50 @@ inline void unit_hide_triangle()
 
 
 /**
+ * Heals a unit, graphically
  * @param unit unit_t to heal
- * @param hp number health points to heal
+ * @param healer unit that heals
+ * @returns false if we are at full health, otherwise heals unit and returns true
  */
-void unit_heal(unit_t *unit, uint8_t hp)
+bool unit_heal(unit_t *unit, unit_t *healer)
 {
-    unit->stats.health = min(hp + unit->stats.health, unit->stats.maxHealth);
+    const uint8_t x = 68/8, y = 40 / 8 + 2;
+
+    // return if we are at full health
+    if(unit->stats.health == unit->stats.maxHealth)
+        return false;
+
+    cur_hide();
+
+    unit_engage(unit, healer);
+
+    clear_bg();
+    print("HEAL", 0, 0);
+    
+    unit_draw_at(unit, 68, 40);
+    hud_draw_health(unit, x, y, false);
+
+    print(unit_get_name(unit), 0, 10);
+    print(" healed 1 HP", 5, 10);
+
+    unit->stats.health = min(1 + unit->stats.health, unit->stats.maxHealth);
+    healer->hasAttacked = true;
+
+    waitPressed(J_A | J_START);
+
+    hud_draw_health(unit, x, y, false);
+    
+    waitPressed(J_A | J_START);
+
+    clear_bg();
+    map_draw(); // redraw map
+    cur_show(); // redraw cursor
+
+    // redraw all teams
+    for(uint8_t i = 0; i < currentMatch.numTeams; i++)
+       mth_draw_team(currentMatch.teams[i]);
+
+    return true;
 }
 
 

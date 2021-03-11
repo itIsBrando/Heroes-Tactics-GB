@@ -12,9 +12,6 @@
 
 #include <gb/gb.h>
 
-#define gme_deselect_unit() selectedUnit = NULL;
-
-
 static unit_t *selectedUnit = NULL;
 static bool isAttacking;
 team_t *currentTeam;
@@ -55,6 +52,13 @@ void gme_run()
     printInt(win + 1, 4, 0, false);
 
     cur_destroy();
+}
+
+
+void gme_deselect_unit()
+{
+    selectedUnit = NULL;
+    unit_hide_triangle();
 }
 
 
@@ -164,7 +168,7 @@ void gme_select_a()
 
         // if the unit is already moved, prevent it from selecting
         if(selectedUnit->hasMoved) {
-            gme_deselect_unit();
+            selectedUnit = NULL;
             hud_warn("Unit has moved");
         } else {
             hud_show_action(HUD_ACTION_MOVE);
@@ -183,13 +187,27 @@ void gme_select_b()
     if(selectedUnit)
     {
         hud_hide_action();
+        // check to see if we can heal
+        if(selectedUnit->type == UNIT_TYPE_HEALER)
+        {
+            unit_t *unit = unit_get(mth_get_current_team(), cx, cy);
+            if(unit)
+            {
+                // if we cannot heal, then warn
+                if(!unit_heal(unit, selectedUnit))
+                    hud_warn("Unit cannot heal");
+                gme_deselect_unit();
+                return;
+            }
+        }
+
         unit_t *def = unit_get(mth_get_opponent(), cx, cy);
         if(def && unit_get_distance(selectedUnit, def) <= selectedUnit->stats.damageRadius)
         {
             unit_attack(selectedUnit, def);
             hud_draw_hotbar(currentTeam);
-        } else
-            unit_hide_triangle();
+        }
+
         gme_deselect_unit();
         return;
     }

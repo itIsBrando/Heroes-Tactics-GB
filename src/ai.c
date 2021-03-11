@@ -79,6 +79,37 @@ void ai_set_strategy(unit_t *unit)
     unit->strategy = strat;
 }
 
+typedef struct {
+    unit_t *unit; // pointer to unit that has this priority
+    uint8_t priority; // higher numbers are less favorable
+} heuristic_t;
+
+
+/**
+ * Factors that increase heuristic value:
+ *  - distance
+ *  - health of other unit
+ *  - if other unit is healer
+ * A higher heurisitic value is less favorable
+ */
+void ai_get_heursitic_target(unit_t *unit)
+{
+    team_t *opponents = mth_get_opponent();
+
+    for(uint8_t i = 0; i < opponents->size; i++)
+    {
+        uint8_t priority = 0;
+        unit_t *enemy = opponents->units[i];
+
+        if(enemy->isDead)
+            continue;
+        
+        uint8_t dist = unit_get_distance(unit, enemy);
+        priority += dist;
+        priority += enemy->stats.health;
+        priority += enemy->type == UNIT_TYPE_HEALER;
+    }
+}
 
 
 /**
@@ -193,13 +224,8 @@ void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
     xGoal = unit->row + unit->stats.movePoints * dx[bestIndex];
     yGoal = unit->column + unit->stats.movePoints * dy[bestIndex];
 
-    printInt(xGoal, 5, 10, false);
-    printInt(yGoal, 5, 11, false);
-    waitjoypad(J_B);
-
     position->x = xGoal;
     position->y = yGoal;
-
 }
 
 

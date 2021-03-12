@@ -65,11 +65,12 @@ void initGame() {
     player_team.size = 3;
     player_team.units = units;
 
-    unit_t *enemyUnits[2];
+    unit_t *enemyUnits[3];
     enemyUnits[0] = unit_new(rand() & 1);
     enemyUnits[1] = unit_new(rand() & 1);
+    enemyUnits[2] = unit_new(UNIT_TYPE_HEALER);
     enemyTeam.control = CONTROLLER_COMPUTER;
-    enemyTeam.size = 2;
+    enemyTeam.size = sizeof(enemyUnits) / sizeof(enemyUnits[0]);
     enemyTeam.units = enemyUnits;
     
     gme_init(&player_team, &enemyTeam, NULL);

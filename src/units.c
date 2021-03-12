@@ -7,6 +7,7 @@
 #include "hud.h"
 #include "diamond.h"
 #include "cursor.h"
+#include "path.h"
 
 #include <gb/gb.h>
 #include <rand.h>
@@ -43,6 +44,7 @@ void *malloc(size_t s)
     if(malloc_offset > 512)
     {
         print("END OF HEAP", 5, 5);
+        waitPressed(J_SELECT);
         return NULL;
     }
     malloc_offset += s;
@@ -195,11 +197,11 @@ void unit_engage(unit_t *u1, unit_t *u2)
         uint8_t j;
         unit_hide(u1);
         unit_hide(u2);
-        for(j = 0; j < 10;j++)
+        for(j = 0; j < 8;j++)
             wait_vbl_done();
         unit_draw(u1);
         unit_draw(u2);
-        for(j = 0; j < 10;j++)
+        for(j = 0; j < 8;j++)
             wait_vbl_done();
     }
 
@@ -420,6 +422,45 @@ bool unit_move_to(unit_t *unit, uint8_t x, uint8_t y)
 
 
 /**
+ * Moves a unit to a position using path finding to achieve it.
+ * @param unit unit to move
+ * @param destination position to end at
+ * @returns false if a path could not be generated
+ */
+bool unit_move_path_find(unit_t *unit, position_t *destination)
+{
+    uint8_t size;
+    position_t unitPos;
+    unitPos.x = unit->row;
+    unitPos.y = unit->column;
+
+    debug("PF move");
+    position_t *steps = pf_find(&unitPos, destination, &size);
+    debug("PF finished");
+
+    // stop if we cannot make a path
+    if(!steps)
+        return false;
+    
+    // now move the enemy
+    uint8_t iter = 0; // keeps track of the number of steps we've moved
+
+    for(int8_t i = size-1; i >= 0; i--)
+    {
+        unit_move_to(unit, steps[i].x, steps[i].y);
+
+        for(uint8_t j = 0; j < 10; j++)
+            wait_vbl_done();
+
+        // if(++iter > unit->stats.movePoints)
+        //     break;
+    }
+
+    return true;
+}
+
+
+/**
  * Sets the unit's new position and redraws it. Sets the 'hasMoved' flag
  * @param unit
  * @param x
@@ -473,7 +514,24 @@ void unit_atk_diamond(unit_t *unit)
  */
 inline void unit_hide_triangle()
 {
-    map_draw();
+    tri_hide();
+}
+
+
+/**
+ * Finds the healer in a team
+ * @param team team to search
+ * @returns NULL if no LIVING healer is in the team, otherwise returns a pointer to the healer
+ */
+unit_t *unit_get_healer(team_t *team)
+{
+    for(uint8_t i = 0; i < team->size; i++)
+    {
+        if(team->units[i]->type == UNIT_TYPE_HEALER && !team->units[i]->isDead)
+            return team->units[i];
+    }
+
+    return NULL;
 }
 
 
@@ -489,6 +547,10 @@ bool unit_heal(unit_t *unit, unit_t *healer)
 
     // return if we are at full health
     if(unit->stats.health == unit->stats.maxHealth)
+        return false;
+
+    // if healer is not in range, return false
+    if(unit_get_distance(unit, healer) > healer->stats.damageRadius)
         return false;
 
     cur_hide();

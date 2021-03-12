@@ -6,10 +6,11 @@
 
 #include "data/mapdata.h"
 #include "data/map2.h"
+#include "data/map3.h"
 
-uint8_t *all_maps[2] = {MAP_DATA, MAP2_DATA};
-uint8_t map_widths[] = {10, 9};
-uint8_t map_heights[] = {10, 8};
+uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA};
+uint8_t map_widths[] = {10, 9,  7};
+uint8_t map_heights[]= {10, 8,  8};
 
 
 static map_t internalMap;

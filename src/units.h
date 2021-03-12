@@ -20,6 +20,7 @@ unit_t *unit_get(team_t *team, uint8_t x, uint8_t y);
 
 unit_t *unit_get_any(uint8_t x, uint8_t y);
 
+unit_t *unit_get_healer(team_t *team);
 
 char *unit_get_name(unit_t *unit);
 
@@ -32,6 +33,8 @@ void unit_hide(unit_t *unit);
 bool unit_can_move_to(uint8_t x, uint8_t y);
 
 bool unit_move_to(unit_t *unit, uint8_t x, uint8_t y);
+
+bool unit_move_path_find(unit_t *unit, position_t *destination);
 
 void unit_set_pos(unit_t *unit, uint8_t x, uint8_t y);
 

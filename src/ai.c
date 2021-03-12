@@ -54,6 +54,7 @@ void ai_do_turn(unit_t *unit)
             break;
     }
 
+    if(!ai_check_heal(unit))
     ai_check_attack(unit, target);
 }
 
@@ -63,7 +64,7 @@ void ai_do_turn(unit_t *unit)
  */
 void ai_set_strategy(unit_t *unit)
 {
-    const team_t *opponent = mth_get_opponent();
+    team_t *opponent = mth_get_opponent();
     ai_strat_t strat = AI_TARGET_NONE;
 
     // find the closest enemy
@@ -72,7 +73,11 @@ void ai_set_strategy(unit_t *unit)
     if(ai_would_kill(unit, target))
         strat = AI_TARGET_ATK;
     else if(ai_should_run(unit, target))
-        strat = AI_TARGET_RUN;
+        // attempt to heal
+        if(unit->stats.health < unit->stats.maxHealth && unit_get_healer(mth_get_current_team()))
+            strat = AI_TARGET_HEAL;
+        else
+            strat = AI_TARGET_RUN;
     else
         strat = AI_TARGET_NEAR;
 
@@ -153,7 +158,10 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
     {
     case AI_TARGET_NONE:
         debug("AI has no STRAT setup");
-    case AI_TARGET_HEAL: // @todo
+    case AI_TARGET_HEAL:
+        // move towards our healer
+        return unit_get_healer(mth_get_current_team());
+        
     case AI_TARGET_NEAR:
         for(; i < opponent->size; i++)
         {
@@ -226,6 +234,34 @@ void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
 
     position->x = xGoal;
     position->y = yGoal;
+}
+
+
+/**
+ * Checks to see if `unit` can heal nearby units
+ * @returns true if healing could and did happen, otherwise false
+ */
+bool ai_check_heal(unit_t *unit)
+{
+    if(unit->type != UNIT_TYPE_HEALER)
+        return false;
+
+    team_t *team = mth_get_current_team();
+
+    for(uint8_t i = 0; i < team->size; i++)
+    {
+        unit_t *target = team->units[i];
+
+        if(target->isDead || target == unit || target->stats.health == target->stats.maxHealth)
+            continue;
+
+        // proceed with healing
+        if(unit_heal(target, unit))
+            return true;
+
+    }
+
+    return false;
 }
 
 

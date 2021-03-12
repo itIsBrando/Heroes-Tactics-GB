@@ -135,7 +135,8 @@ static void mnu_draw_map()
  */
 void mnu_choose_map_init()
 {
-    uint8_t pad, totalMaps = 2;
+    const uint8_t totalMaps = MAPS_TOTAL;
+    uint8_t pad;
 
     clear_bg();
     cur_x = 10;
@@ -161,6 +162,5 @@ void mnu_choose_map_init()
 
         wait_vbl_done();
     } while(pad != J_A);
-
 
 }

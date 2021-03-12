@@ -15,5 +15,6 @@ void tri_set(uint8_t x, uint8_t y, uint8_t v);
 
 void tri_clip();
 void tri_draw(const uint8_t);
+void tri_hide();
 
 #endif

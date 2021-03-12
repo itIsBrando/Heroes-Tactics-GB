@@ -4,6 +4,8 @@
 #include "defines.h"
 #include "structs.h"
 
+#define MAPS_TOTAL 3
+
 extern uint8_t *all_maps[];
 extern uint8_t map_widths[];
 extern uint8_t map_heights[];

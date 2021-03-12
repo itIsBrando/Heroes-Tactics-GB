@@ -6,6 +6,7 @@
 
 
 uint8_t tri_active_diamond[MAP_MAX_SIZE];
+static bool tri_is_shown;
 
 /**
  * Creates a new diamond
@@ -69,6 +70,16 @@ inline void tri_set(uint8_t x, uint8_t y, uint8_t v)
 }
 
 
+/**
+ * Hides the graphically drawn diamond, only if it is drawn
+ */
+inline void tri_hide()
+{
+    if(tri_is_shown)
+        map_draw();
+
+    tri_is_shown = false;
+}
 
 /**
  * Applies clipping to the active triangle.
@@ -94,6 +105,8 @@ void tri_clip()
 void tri_draw(const uint8_t tile)
 {
     uint8_t x = 0, y = 0;
+
+    tri_is_shown = true;
 
     for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
     {

@@ -151,11 +151,13 @@ void gme_select_a()
     // performs a move
     if(selectedUnit)
     {
-        hud_hide_action();
+        position_t pos;
+        pos.x = cx;
+        pos.y = cy;
 
-        unit_move_to(selectedUnit, cx, cy);
-        unit_hide_triangle();
         hud_hide_action();
+        unit_hide_triangle();
+        unit_move_path_find(selectedUnit, &pos);
         gme_deselect_unit();
         return; 
     } else

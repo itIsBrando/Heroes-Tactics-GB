@@ -72,10 +72,13 @@ void ai_set_strategy(unit_t *unit)
         
     if(ai_would_kill(unit, target))
         strat = AI_TARGET_ATK;
-    else if(ai_should_run(unit, target))
+    else if(unit->type == UNIT_TYPE_HEALER)
+    {
+        strat = AI_TARGET_HEAL;
+    } else if(ai_should_run(unit, target))
         // attempt to heal
         if(unit->stats.health < unit->stats.maxHealth && unit_get_healer(mth_get_current_team()))
-            strat = AI_TARGET_HEAL;
+            strat = AI_TARGET_HEALER;
         else
             strat = AI_TARGET_RUN;
     else
@@ -84,11 +87,6 @@ void ai_set_strategy(unit_t *unit)
     unit->strategy = strat;
 }
 
-typedef struct {
-    unit_t *unit; // pointer to unit that has this priority
-    uint8_t priority; // higher numbers are less favorable
-} heuristic_t;
-
 
 /**
  * Factors that increase heuristic value:
@@ -96,8 +94,9 @@ typedef struct {
  *  - health of other unit
  *  - if other unit is healer
  * A higher heurisitic value is less favorable
+ * @param t array of pointers of heuristic_t. Should have at least `opponent team size` indexes
  */
-void ai_get_heursitic_target(unit_t *unit)
+void ai_get_heursitic_target(unit_t *unit, heuristic_t *t)
 {
     team_t *opponents = mth_get_opponent();
 
@@ -107,12 +106,18 @@ void ai_get_heursitic_target(unit_t *unit)
         unit_t *enemy = opponents->units[i];
 
         if(enemy->isDead)
+        {
+            t[i].unit = NULL;
+            t[i].priority = 255;
             continue;
+        }
         
         uint8_t dist = unit_get_distance(unit, enemy);
         priority += dist;
         priority += enemy->stats.health;
         priority += enemy->type == UNIT_TYPE_HEALER;
+        t[i].unit = enemy;
+        t[i].priority = priority;
     }
 }
 
@@ -151,33 +156,43 @@ void ai_get_destination_position(position_t *position, unit_t *unit)
 unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
 {
     team_t *opponent = mth_get_opponent();
+    team_t *curTeam = mth_get_current_team();
     uint8_t i = 0;
     uint8_t min = 255, bestIndex = 0;
+    heuristic_t priorities[4];
+    ai_get_heursitic_target(unit, priorities);
 
     switch (strategy)
     {
     case AI_TARGET_NONE:
         debug("AI has no STRAT setup");
-    case AI_TARGET_HEAL:
+    case AI_TARGET_HEALER:
         // move towards our healer
-        return unit_get_healer(mth_get_current_team());
-        
-    case AI_TARGET_NEAR:
-        for(; i < opponent->size; i++)
+        return unit_get_healer(curTeam);
+    case AI_TARGET_HEAL:
+        // move towards weakest unit on same team
+
+        for(; i < curTeam->size; i++)
         {
-            // skip if this unit is dead
-            if(opponent->units[i]->isDead)
-                continue;
-            
-            // otherwise compare distances
-            const uint8_t dist = unit_get_distance(opponent->units[i], unit);
-            if(dist < min) {
+            const uint8_t hp = curTeam->units[i]->stats.health;
+            if(hp < min)
+            {
                 bestIndex = i;
-                min = dist;
+                min = hp;
             }
         }
 
-        return opponent->units[bestIndex];
+        return curTeam->units[bestIndex];
+    case AI_TARGET_NEAR:
+        for(; i < opponent->size; i++)
+        {
+            if(priorities[i].unit && priorities[i].priority < min) {
+                bestIndex = i;
+                min = priorities[i].priority;
+            }
+        }
+
+        return priorities[bestIndex].unit;
 
     // target the unit that can be killed the easiest
     case AI_TARGET_ATK:

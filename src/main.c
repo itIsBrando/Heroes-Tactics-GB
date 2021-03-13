@@ -74,6 +74,7 @@ void initGame() {
     gme_run();
 }
 
+
 /**
  * Better alternative of `waitpad`. Power efficient. Waits until button(s) is/are released
  */
@@ -82,6 +83,7 @@ void waitjoypad(const uint8_t mask)
     while((joypad() & mask) != 0)
         wait_vbl_done();
 }
+
 
 /**
  * Waits until one or multiple buttons are pressed and released
@@ -99,11 +101,9 @@ void waitPressed(const uint8_t mask)
 
 
 /**
- * Prints a string at (x, y). Checks for newlines
- * @param tx x coordinate of string
- * @param ty y coordinate of string
+ * For internal operation
  */
-void print(unsigned char *str, uint8_t tx, uint8_t ty)
+static void _print_(char *str, uint8_t x, uint8_t y, bool isWindow)
 {
     const uint8_t len = strlen(str);
     char c;
@@ -120,13 +120,26 @@ void print(unsigned char *str, uint8_t tx, uint8_t ty)
         else if(c == ' ')
             c = 0;
         
-        if(c == '\n' || tx >= 20)
-            tx = 0, ty++;
+        if(c == '\n' || x >= 20)
+            x = 0, y++;
 
-        set_bkg_tiles(tx++, ty, 1, 1, &c);
+        if(isWindow)
+            set_win_tiles(x++, y, 1, 1, &c);
+        else
+            set_bkg_tiles(x++, y, 1, 1, &c);
 
     }
 
+}
+
+/**
+ * Prints a string at (x, y). Checks for newlines
+ * @param tx x coordinate of string
+ * @param ty y coordinate of string
+ */
+inline void print(unsigned char *str, uint8_t tx, uint8_t ty)
+{
+    _print_(str, tx, ty, false);
 }
 
 
@@ -135,32 +148,9 @@ void print(unsigned char *str, uint8_t tx, uint8_t ty)
  * @param tx x coordinate of string
  * @param ty y coordinate of string
  */
-void print_window(unsigned char *str, uint8_t tx, uint8_t ty)
+inline void print_window(unsigned char *str, uint8_t tx, uint8_t ty)
 {
-    const uint8_t len = strlen(str);
-    char c;
-
-    for(uint8_t i = 0; i < len; i++)
-    {
-        c = str[i];
-        if(c >= 'A' && c <= 'Z')
-            c = c - 'A' + 0xA1;
-        else if(c >= 'a' && c <= 'z')
-            c = c - 'a' + 0xC1;
-        else if(c >= '!' && c <= '9')
-            c = c - '!' + 0x81;
-        else if(c == ' ')
-            c = 0;
-        else if(c == '\n') {
-            tx = 0, ty++; continue;
-        }
-
-        if(tx >= 20)
-            tx = 0, ty++;
-
-        set_win_tiles(tx++, ty, 1, 1, &c);
-    }
-
+    _print_(str, tx, ty, true);
 }
 
 
@@ -202,6 +192,9 @@ void empty_oam() {
     memset(shadow_OAM, 0, 40 * 4);
 }
 
+/**
+ * Clears the visible background
+ */
 void clear_bg() {
     fill_bkg_rect(0, 0, 20, 18, 0);
 }

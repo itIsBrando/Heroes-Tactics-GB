@@ -24,6 +24,8 @@ unit_t *unit_get_healer(team_t *team);
 
 char *unit_get_name(unit_t *unit);
 
+void unit_upd_sprite_tile(unit_t *unit);
+
 void unit_draw(unit_t *unit);
 
 void unit_draw_at(unit_t *unit, uint8_t x, uint8_t y);
@@ -42,6 +44,9 @@ uint8_t unit_get_distance(unit_t *u1, unit_t *u2);
 
 unit_t *unit_find_nearest(team_t *opponent, unit_t *unit);
 
+void unit_vbl_int();
+
+void unit_animate(team_t *team);
 
 bool unit_attack(unit_t *attacker, unit_t *defender);
 

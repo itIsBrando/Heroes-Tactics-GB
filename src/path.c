@@ -14,6 +14,7 @@ static position_t visited[MAP_MAX_SIZE];
 static uint8_t queue_size, visited_size;
 
 #define push_queue(curX, curY, lastPos) queue[queue_size].curPos.x = (curX), queue[queue_size].curPos.y = (curY); queue[queue_size++].lastEntry = lastPos
+#define push_visited(xPos, yPos) visited[visited_size].x = xPos, visited[visited_size++].y = yPos;
 
 const uint16_t MAX_ITER = 800;
 
@@ -46,7 +47,7 @@ position_t *pf_find_xy(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEn
  */
 position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
 {
-    uint8_t i = 0;
+    uint8_t i;
     uint16_t iter = 0;
     visited_size = queue_size = 0;
     push_queue(start->x, start->y, NULL);
@@ -55,6 +56,7 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
     if((map_fget(map_get_pos(start)) | map_fget(map_get_pos(end))) & 0x1)
         return NULL;
 
+    i = 0;
     while(iter++ < MAX_ITER)
     {
         // break if we have made it to our goal
@@ -63,7 +65,7 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
         i++;
     }
 
-    queue_t *q = (queue[i].lastEntry);
+    queue_t *q = queue[i].lastEntry;
 
     pf_out[0] = *end;
     i = 1; // reuse `i`
@@ -73,10 +75,9 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
         q = (queue_t*)(q->lastEntry);
     }
 
-    printInt(i, 0, 12, false);
-    // printInt(queue_size, 0, 11, false);
+    // printInt(i, 0, 12, false);
 
-    (*size) = i;
+    (*size) = i-1;
     return pf_out;
 }
 
@@ -85,7 +86,7 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
  * This is horribly written
  * @returns true if we reached the goal, otherwise false
  */
-bool pf_check_cell(queue_t *curEntry, position_t *goal, uint8_t *index)
+inline bool pf_check_cell(queue_t *curEntry, position_t *goal, uint8_t *index)
 {
     position_t *curPos = &(curEntry->curPos);
     // delete position if it is irrelevant
@@ -112,14 +113,16 @@ bool pf_check_cell(queue_t *curEntry, position_t *goal, uint8_t *index)
         position_t pos;
         pos.x = curPos->x + dx[i];
         pos.y = curPos->y + dy[i];
-        if(!pf_has_visited(&pos) && pf_can_move(&pos))
+        // if(!pf_has_visited(&pos) && pf_can_move(&pos))
             push_queue(pos.x, pos.y, curEntry);
     }
     
     return false;
 }
 
-
+/**
+ * Returns true if a position has already been visited
+ */
 bool pf_has_visited(position_t *pos)
 {
     for(uint8_t i = 0; i < visited_size; i++)
@@ -138,7 +141,7 @@ bool pf_has_visited(position_t *pos)
 bool pf_can_move(position_t *pos)
 {
     const uint8_t tile = map_get(pos->x, pos->y);
-    if(map_fget(tile))
+    if(map_fget(tile) & 0x1)
         return false;
     
     if(!map_in_bounds(pos->x, pos->y))

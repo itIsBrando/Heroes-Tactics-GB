@@ -9,7 +9,7 @@
 static uint8_t cx, cy;
 static uint8_t csn, ctn;
 static uint8_t lastPressed = 0;
-
+static bool isShown = false;
 
 void cur_init()
 {
@@ -17,7 +17,7 @@ void cur_init()
     csn = spr_allocate();
     ctn = 0x14;
     cur_draw();
-    add_VBL(cur_vbl);
+    cur_show();
 }
 
 /**
@@ -31,6 +31,11 @@ void cur_destroy()
 }
 
 
+/**
+ * Moves the cursor by a certain distance
+ * @param dx x displacement
+ * @param dy y displacement
+ */
 void cur_move(int8_t dx, int8_t dy)
 {
     if(lastPressed)
@@ -55,12 +60,21 @@ void cur_move(int8_t dx, int8_t dy)
 void cur_hide()
 {
     move_sprite(csn, 0, 0);
-    remove_VBL(cur_vbl);
+    if(isShown)
+        remove_VBL(cur_vbl);
+    
+    isShown = false;
 }
 
+/**
+ * Shows the cursor
+ */
 void cur_show()
 {
-    add_VBL(cur_vbl);
+    if(!isShown)
+        add_VBL(cur_vbl);
+    
+    isShown = true;
 }
 
 

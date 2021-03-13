@@ -15,9 +15,11 @@
 const stat_t ARCHER_STAT = {3, 3, 1, 2, 2};
 const stat_t HEALER_STAT = {2, 2, 1, 3, 1};
 const stat_t BRAWN_STAT = {5, 5, 2, 1, 1};
+static uint8_t unit_vbl_counter;
 
 static uint16_t malloc_offset = 0;
 static uint8_t malloc_start[512];
+
 
 // a list of strings that name each unit
 static char unit_names[][6] = {
@@ -55,6 +57,47 @@ void *malloc(size_t s)
 // does absolutely nothing
 inline void free(void *ptr) {
     ptr;
+}
+
+
+static uint8_t animations[][2] = {
+    {0xB, 0x15},
+    {0xC, 0xD},
+    {0xA, 0x16},
+};
+
+/**
+ * Animates all of the units in a team
+ * @param team team to animate
+ */
+inline void unit_animate(team_t *team)
+{
+    for(uint8_t i = 0; i < team->size; i++)
+    {
+        uint8_t j = team->units[i]->type;
+        // check each animation
+        if(team->units[i]->tile == animations[j][0])
+            team->units[i]->tile = animations[j][1];
+        else
+            team->units[i]->tile = animations[j][0];
+        
+        unit_upd_sprite_tile(team->units[i]);
+    }
+
+}
+
+
+/**
+ * Used to animate units of a team
+ */
+void unit_vbl_int()
+{
+    unit_vbl_counter++;
+    if(unit_vbl_counter == 0x14)
+    {
+        unit_animate(mth_get_current_team());
+        unit_vbl_counter = 0;
+    }
 }
 
 
@@ -129,15 +172,24 @@ unit_t *unit_get_any(uint8_t x, uint8_t y) {
     return NULL;
 }
 
+
+/**
+ * Changes the OAM tile for this unit
+ * @param unit unit to update
+ */
+inline void unit_upd_sprite_tile(unit_t *unit)
+{
+    set_sprite_tile(unit->spriteNumber, unit->tile);
+}
+
+
 /**
  * @param unit sets the position and tile of this unit
  */
 void unit_draw(unit_t *unit)
 {
-    const uint8_t i = unit->spriteNumber;
-
-    move_sprite(i, (unit->row << 3) + 8, (unit->column << 3) + 16);
-    set_sprite_tile(i, unit->tile);
+    move_sprite(unit->spriteNumber, (unit->row << 3) + 8, (unit->column << 3) + 16);
+    unit_upd_sprite_tile(unit);
 }
 
 
@@ -197,11 +249,11 @@ void unit_engage(unit_t *u1, unit_t *u2)
         uint8_t j;
         unit_hide(u1);
         unit_hide(u2);
-        for(j = 0; j < 8;j++)
+        for(j = 0; j < 6;j++)
             wait_vbl_done();
         unit_draw(u1);
         unit_draw(u2);
-        for(j = 0; j < 8;j++)
+        for(j = 0; j < 6;j++)
             wait_vbl_done();
     }
 
@@ -466,8 +518,8 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
 /**
  * Sets the unit's new position and redraws it. Sets the 'hasMoved' flag
  * @param unit
- * @param x
- * @param y
+ * @param x must be in bounds
+ * @param y must be in bounds
  */
 inline void unit_set_pos(unit_t *unit, uint8_t x, uint8_t y)
 {
@@ -550,6 +602,10 @@ bool unit_heal(unit_t *unit, unit_t *healer)
 
     // return if we are at full health
     if(unit->stats.health == unit->stats.maxHealth)
+        return false;
+
+    // prevent a healer from healing itself
+    if(unit == healer)
         return false;
 
     // if healer is not in range, return false

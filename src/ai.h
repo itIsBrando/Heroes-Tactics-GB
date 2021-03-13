@@ -3,6 +3,12 @@
 
 #include "structs.h"
 
+typedef struct {
+    unit_t *unit; // pointer to unit that has this priority
+    uint8_t priority; // higher numbers are less favorable
+} heuristic_t;
+
+
 void ai_do_turn(unit_t *);
 bool ai_check_attack(unit_t *unit, unit_t *target);
 bool ai_check_heal(unit_t *unit);

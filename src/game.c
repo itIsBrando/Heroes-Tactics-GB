@@ -21,6 +21,8 @@ team_t *currentTeam;
  */
 void gme_run()
 {
+    add_VBL(unit_vbl_int);
+
     currentTeam = currentMatch.teams[0];
     hud_draw_hotbar(currentTeam);
 
@@ -51,6 +53,7 @@ void gme_run()
     print("Team  has won.", 0, 0);
     printInt(win + 1, 4, 0, false);
 
+    remove_VBL(unit_vbl_int);
     cur_destroy();
 }
 
@@ -101,6 +104,7 @@ void gme_player_turn()
     uint8_t pad;
 
     selectedUnit = NULL;
+    cur_show();
 
     do {
         pad = joypad();
@@ -139,6 +143,8 @@ void gme_player_turn()
 
     if(selectedUnit)
         unit_hide_triangle();
+
+    cur_hide();
 }
 
 /**
@@ -208,6 +214,8 @@ void gme_select_b()
         {
             unit_attack(selectedUnit, def);
             hud_draw_hotbar(currentTeam);
+        } else {
+            hud_warn("Cannot atk here");
         }
 
         gme_deselect_unit();

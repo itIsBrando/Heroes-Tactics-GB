@@ -16,7 +16,8 @@ typedef enum {
     AI_TARGET_NEAR, // attack nearest enemy
     AI_TARGET_ATK, // attacks the enemy with lowest HP
     AI_TARGET_RUN, // runs away from an enemy
-    AI_TARGET_HEAL // unimplemented
+    AI_TARGET_HEAL, // (unimplemented) healer unit move towards weakest unit
+    AI_TARGET_HEALER // cause a unit to move towards the healer
 } ai_strat_t;
 
 

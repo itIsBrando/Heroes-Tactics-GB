@@ -55,7 +55,7 @@ void ai_do_turn(unit_t *unit)
     }
 
     if(!ai_check_heal(unit))
-    ai_check_attack(unit, target);
+        ai_check_attack(unit, target);
 }
 
 

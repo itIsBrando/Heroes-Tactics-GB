@@ -73,7 +73,7 @@ unit_t *unit_new(type_of_unit type) {
     do {
         unit->row = (rand() & 0x7) + 1;
         unit->column = (rand() & 0x7) + 1;
-    } while(map_fget(map_get(unit->row, unit->column)));
+    } while(map_is_solid(unit->row, unit->column));
 
     switch (type)
     {
@@ -434,15 +434,18 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
     unitPos.x = unit->row;
     unitPos.y = unit->column;
 
-    debug("PF move");
     position_t *steps = pf_find(&unitPos, destination, &size);
-    debug("PF finished");
 
     // stop if we cannot make a path
     if(!steps)
         return false;
+
+    if(size-1 > unit->stats.movePoints)
+    {
+        hud_warn("Too far");
+        return false;
+    }
     
-    // now move the enemy
     uint8_t iter = 0; // keeps track of the number of steps we've moved
 
     for(int8_t i = size-1; i >= 0; i--)
@@ -452,8 +455,8 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
         for(uint8_t j = 0; j < 10; j++)
             wait_vbl_done();
 
-        // if(++iter > unit->stats.movePoints)
-        //     break;
+        if(++iter > unit->stats.movePoints)
+            break;
     }
 
     return true;

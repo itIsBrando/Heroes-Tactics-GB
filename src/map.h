@@ -22,6 +22,7 @@ bool map_in_bounds(uint8_t x, uint8_t y);
 uint8_t map_get_pos(position_t *position);
 uint8_t map_get(uint8_t x, uint8_t y);
 uint8_t map_fget(uint8_t tile);
+bool map_is_solid(uint8_t x, uint8_t y);
 
 uint8_t map_get_width();
 uint8_t map_get_height();

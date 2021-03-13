@@ -24,7 +24,7 @@ void main(void) {
     // load the font
     set_bkg_1bit_data(0x80, 102, font_ibm + 130, 3);
 
-    OBP1_REG = 0b01011000;
+    OBP1_REG = 0b01011000; // set other sprite palette
     set_sprite_data(1, 35, SPRITE_DATA);
     set_bkg_data(1, 35, SPRITE_DATA);
 
@@ -35,13 +35,7 @@ void main(void) {
     enable_interrupts();
 
     spr_flush();
-
     clear_bg();
-    
-    print("Press button to start", 0, 0x10);
-    while(!joypad())
-        wait_vbl_done();
-    initrand(DIV_REG);
 
     initGame();
 }
@@ -57,6 +51,8 @@ void initGame() {
     unit_t *units[3];
     
     mnu_choose_map_init();
+
+    initrand(DIV_REG);
 
     units[0] = unit_new(UNIT_TYPE_BRAWN);
     units[1] = unit_new(UNIT_TYPE_ARCHER);
@@ -208,6 +204,4 @@ void empty_oam() {
 
 void clear_bg() {
     fill_bkg_rect(0, 0, 20, 18, 0);
-    print("\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0\xe0", 0, 144/8-3);
-
 }

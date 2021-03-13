@@ -51,7 +51,8 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
     visited_size = queue_size = 0;
     push_queue(start->x, start->y, NULL);
 
-    if(map_fget(map_get_pos(start)) == 1 || map_fget(map_get_pos(end)) == 1)
+    // if the starting or ending position is a solid block, then we don't have a path
+    if((map_fget(map_get_pos(start)) | map_fget(map_get_pos(end))) & 0x1)
         return NULL;
 
     while(iter++ < MAX_ITER)
@@ -60,7 +61,6 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
         if(pf_check_cell(&queue[i], end, &i))
             break;
         i++;
-        
     }
 
     queue_t *q = (queue[i].lastEntry);
@@ -73,7 +73,8 @@ position_t *pf_find(position_t *start, position_t *end, uint8_t *size)
         q = (queue_t*)(q->lastEntry);
     }
 
-    printInt(queue_size, 0, 11, false);
+    printInt(i, 0, 12, false);
+    // printInt(queue_size, 0, 11, false);
 
     (*size) = i;
     return pf_out;
@@ -103,10 +104,17 @@ bool pf_check_cell(queue_t *curEntry, position_t *goal, uint8_t *index)
     visited[visited_size++] = *curPos;
     // fill_bkg_rect(curPos->x, curPos->y, 1, 1, 4);
     
-    push_queue(curPos->x + 1, curPos->y, curEntry);
-    push_queue(curPos->x - 1, curPos->y, curEntry);
-    push_queue(curPos->x, curPos->y + 1, curEntry);
-    push_queue(curPos->x, curPos->y - 1, curEntry);
+    int8_t dx[] = {-1, 1, 0, 0};
+    int8_t dy[] = {0, 0, -1, 1};
+
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        position_t pos;
+        pos.x = curPos->x + dx[i];
+        pos.y = curPos->y + dy[i];
+        if(!pf_has_visited(&pos) && pf_can_move(&pos))
+            push_queue(pos.x, pos.y, curEntry);
+    }
     
     return false;
 }

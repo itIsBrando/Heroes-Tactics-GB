@@ -5,6 +5,7 @@
 
 void ai_do_turn(unit_t *);
 bool ai_check_attack(unit_t *unit, unit_t *target);
+bool ai_check_heal(unit_t *unit);
 
 void ai_get_destination_position(position_t *, unit_t *);
 unit_t *ai_get_target(unit_t *, ai_strat_t);

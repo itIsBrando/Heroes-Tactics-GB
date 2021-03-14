@@ -6,6 +6,7 @@
 #include "structs.h"
 #include "main.h"
 
+#include <limits.h>
 #include <gb/gb.h>
 
 /**
@@ -92,9 +93,12 @@ void ai_set_strategy(unit_t *unit)
  * Factors that increase heuristic value:
  *  - distance
  *  - health of other unit
- *  - if other unit is healer
+ *  - if other unit is brawn (because they are strong)
+ * *Factors that decrease heurisitc value:
+ *  - if unit could kill other unit
  * A higher heurisitic value is less favorable
- * @param t array of pointers of heuristic_t. Should have at least `opponent team size` indexes
+ * @param unit AI unit that relates to the heuristic value
+ * @param t array of heuristic_t. Should have at least have `opponent's team size` indexes
  */
 void ai_get_heursitic_target(unit_t *unit, heuristic_t *t)
 {
@@ -102,20 +106,23 @@ void ai_get_heursitic_target(unit_t *unit, heuristic_t *t)
 
     for(uint8_t i = 0; i < opponents->size; i++)
     {
-        uint8_t priority = 0;
+        int8_t priority = 0;
         unit_t *enemy = opponents->units[i];
 
         if(enemy->isDead)
         {
             t[i].unit = NULL;
-            t[i].priority = 255;
+            t[i].priority = SCHAR_MAX;
             continue;
         }
         
         uint8_t dist = unit_get_distance(unit, enemy);
-        priority += dist;
+        priority += dist >> 1; // don't really want distance being a HUGE influence in value
         priority += enemy->stats.health;
-        priority += enemy->type == UNIT_TYPE_HEALER;
+        priority += enemy->type == UNIT_TYPE_BRAWN;
+        if(ai_would_kill(unit, enemy))
+            priority -= 2;
+
         t[i].unit = enemy;
         t[i].priority = priority;
     }
@@ -158,7 +165,7 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
     team_t *opponent = mth_get_opponent();
     team_t *curTeam = mth_get_current_team();
     uint8_t i = 0;
-    uint8_t min = 255, bestIndex = 0;
+    int8_t min = SCHAR_MAX, bestIndex = 0;
     heuristic_t priorities[4];
     ai_get_heursitic_target(unit, priorities);
 

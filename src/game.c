@@ -105,7 +105,7 @@ void gme_player_turn()
 
     selectedUnit = NULL;
     cur_show();
-
+begin:
     do {
         pad = joypad();
 
@@ -139,7 +139,11 @@ void gme_player_turn()
 
         wait_vbl_done();
 
-    } while(pad != J_START);
+        // break condition depends on short circuiting
+        if((pad & J_START) && hud_confirm_end_turn())
+            break;
+    } while(true);
+
 
     if(selectedUnit)
         unit_hide_triangle();

@@ -5,7 +5,7 @@
 
 typedef struct {
     unit_t *unit; // pointer to unit that has this priority
-    uint8_t priority; // higher numbers are less favorable
+    int8_t priority; // higher numbers are less favorable
 } heuristic_t;
 
 

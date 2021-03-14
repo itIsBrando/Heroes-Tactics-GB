@@ -115,6 +115,51 @@ void hud_show_details(uint8_t x, uint8_t y)
 }
 
 
+static void hud_confirm_end_turn_left()
+{
+    fill_win_rect(10, 3, 1, 1, 0x9E);
+    fill_win_rect(14, 3, 1, 1, 0);
+}
+
+static void hud_confirm_end_turn_right()
+{
+    fill_win_rect(10, 3, 1, 1, 0);
+    fill_win_rect(14, 3, 1, 1, 0x9E);
+}
+
+
+/**
+ * Presents a dialog on the window. Allows the user to end their turn or to continue
+ * @returns true if the user said yes
+ */
+bool hud_confirm_end_turn()
+{
+    uint8_t pad;
+    bool cursor = true;
+
+    print_window("End Turn:  YES  NO", 0, 3);
+    hud_confirm_end_turn_left();
+
+    do {
+        pad = joypad();
+
+        if(pad & J_LEFT) {
+            hud_confirm_end_turn_left();
+            cursor = true;
+        } else if(pad & J_RIGHT) {
+            hud_confirm_end_turn_right();
+            cursor = false;
+        }
+
+        wait_vbl_done();
+    } while(pad != J_A);
+
+    waitjoypad(J_A);
+    fill_win_rect(0, 3, 20, 1, 0);
+
+    return cursor;
+}
+
 /**
  * Hides the details of a tile
  */

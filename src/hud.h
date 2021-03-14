@@ -10,6 +10,8 @@ typedef enum {
 void hud_draw_hotbar(team_t *);
 void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow);
 
+bool hud_confirm_end_turn();
+
 void hud_show_action(const hud_action_t);
 void hud_hide_action();
 

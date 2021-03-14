@@ -18,9 +18,11 @@ static void mnu_choose_team_draw(match_t *match)
 {
     for(uint8_t i = 0; i < match->numTeams; i++)
     {
-        print("team", 1, i + 3);
-        printInt(i, 6, i + 3, false);
-        print(mnu_getControllerType(match->teams[i]->control), 9, i + 3);
+        const uint8_t y = i + 3;
+        print("team", 1, y);
+        printInt(i, 6, y, false);
+        print("<   >", 8, y);
+        print(mnu_getControllerType(match->teams[i]->control), 9, y);
     }
 }
 

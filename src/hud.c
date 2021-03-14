@@ -23,8 +23,10 @@ void hud_draw_hotbar(team_t *team)
 
     for(uint8_t x = 0; x < team->size; x++)
     {
-        print_window(unit_get_name(team->units[x]), x * 7, 1);
-        hud_draw_health(team->units[x], x * 7, 2, true);
+        const uint8_t tx = x * 7;
+        print_window(unit_get_name(team->units[x]), tx, 1);
+        hud_draw_health(team->units[x], tx, 2, true);
+        fill_win_rect(tx + 5, 1, 1, 1, team->units[x]->tile);
     }
 }
 
@@ -38,6 +40,17 @@ void hud_draw_hotbar(team_t *team)
 void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow)
 {
     fill_win_rect(x, y, 5, 1, 0);
+
+    // print a message if we are dead rather than a visual
+    if(unit->isDead)
+    {
+        if(useWindow)
+            print_window("DEAD", x, y);
+        else
+            print("DEAD", x, y);
+        return;
+    }
+
     for(int8_t i = 0; i < unit->stats.maxHealth; i++)
         {
             uint8_t tile = (i < unit->stats.health) ? 0x11 : 0x12; // heart tile

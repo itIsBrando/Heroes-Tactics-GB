@@ -17,3 +17,4 @@
 - [ ] Fix units that spawn outside of the map
 - [ ] Fix the unit's ability to move 1 tile additional outside its `movePoints` (**high**)
 - [ ] Healers can move after healing (**high**)
+- [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy

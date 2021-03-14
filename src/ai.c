@@ -4,6 +4,7 @@
 #include "diamond.h"
 #include "path.h"
 #include "structs.h"
+#include "map.h"
 #include "main.h"
 
 #include <limits.h>
@@ -41,17 +42,17 @@ void ai_do_turn(unit_t *unit)
 
     for(int8_t i = size-1; i > 0; i--)
     {
+        // if we can attack from a distance
+        // but if we are running, do not focus on enemy targets
+        if(unit->strategy != AI_TARGET_RUN
+         && unit_get_distance(unit, target) <= unit->stats.damageRadius)
+            break;
+        
         unit_move_to(unit, steps[i].x, steps[i].y);
 
         for(uint8_t j = 0; j < 15; j++)
             wait_vbl_done();
         if(++iter > unit->stats.movePoints)
-            break;
-        
-        // if we can attack from a distance
-        // but if we are running, do not focus on enemy targets
-        if(unit->strategy != AI_TARGET_RUN
-         && unit_get_distance(unit, target) <= unit->stats.damageRadius)
             break;
     }
 
@@ -78,9 +79,10 @@ void ai_set_strategy(unit_t *unit)
         strat = AI_TARGET_HEAL;
     } else if(ai_should_run(unit, target))
         // attempt to heal
-        if(unit->stats.health < unit->stats.maxHealth && unit_get_healer(mth_get_current_team()))
-            strat = AI_TARGET_HEALER;
-        else
+        // if(unit->stats.health < unit->stats.maxHealth
+        //  && unit_get_healer(mth_get_current_team()))
+        //     strat = AI_TARGET_HEALER;
+        // else
             strat = AI_TARGET_RUN;
     else
         strat = AI_TARGET_NEAR;
@@ -99,12 +101,16 @@ void ai_set_strategy(unit_t *unit)
  * A higher heurisitic value is less favorable
  * @param unit AI unit that relates to the heuristic value
  * @param t array of heuristic_t. Should have at least have `opponent's team size` indexes
+ * @param size number of elements in `t` array
+ * @returns `t` is the modified array. Sorted in ascending priority order
  */
-void ai_get_heursitic_target(unit_t *unit, heuristic_t *t)
+void ai_get_heursitic_target(unit_t *unit, heuristic_t *t, uint8_t size)
 {
     team_t *opponents = mth_get_opponent();
+    // ensure that we do not overflow
+    size = min(size, opponents->size);
 
-    for(uint8_t i = 0; i < opponents->size; i++)
+    for(uint8_t i = 0; i < size; i++)
     {
         int8_t priority = 0;
         unit_t *enemy = opponents->units[i];
@@ -125,6 +131,22 @@ void ai_get_heursitic_target(unit_t *unit, heuristic_t *t)
 
         t[i].unit = enemy;
         t[i].priority = priority;
+    }
+    
+    // sort array from lowest priority value to highest
+    uint8_t i, j;
+    for(i = 0; i < size; i++)
+    {
+        for(j = i + 1; j < size; j++)
+        {
+            if(t[i].priority > t[j].priority)
+            {
+                heuristic_t temp;
+                temp = t[i];
+                t[i] = t[j];
+                t[j] = temp;
+            }
+        }
     }
 }
 
@@ -167,7 +189,6 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
     uint8_t i = 0;
     int8_t min = SCHAR_MAX, bestIndex = 0;
     heuristic_t priorities[4];
-    ai_get_heursitic_target(unit, priorities);
 
     switch (strategy)
     {
@@ -191,15 +212,18 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
 
         return curTeam->units[bestIndex];
     case AI_TARGET_NEAR:
+        // find the most favorable unit
+        ai_get_heursitic_target(unit, priorities, sizeof(priorities) / sizeof(priorities[0]));
+        
+        // if there is a unit that we can kill, then choose that one to target
         for(; i < opponent->size; i++)
         {
-            if(priorities[i].unit && priorities[i].priority < min) {
-                bestIndex = i;
-                min = priorities[i].priority;
-            }
+            if(ai_would_kill(unit, priorities[i].unit))
+                return priorities[i].unit;
         }
 
-        return priorities[bestIndex].unit;
+        // first index is the best unit to attack
+        return priorities[0].unit;
 
     // target the unit that can be killed the easiest
     case AI_TARGET_ATK:
@@ -225,34 +249,36 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
  */
 void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
 {
-    uint8_t xGoal, yGoal;
+    uint8_t xGoal, yGoal, x, y;
     uint8_t bestDist = 0;
     uint8_t bestIndex = 0;
+    const uint8_t xOther = other->row, yOther = other->column;
 
     // this will hopefully never trigger
     if(!other)
         return;
 
-    const int8_t dx[] = {-1, 1, 0, 0};
-    const int8_t dy[] = {0, 0, -1, 1};
+    debug("AI RUN");
 
-    for(uint8_t i = 0; i < 4; i++)
+    tri_make(unit->row, unit->column, unit->stats.movePoints);
+
+    for(y = 0; y < tri_get_height(); y++)
     {
-        uint8_t curDist;
-        xGoal = unit->row + (int8_t)unit->stats.movePoints * dx[i];
-        yGoal = unit->column + (int8_t)unit->stats.movePoints * dy[i];
-
-        curDist = getDistance(xGoal, yGoal, other->row, other->column);
-
-        if(curDist > bestDist && unit_can_move_to(xGoal, yGoal))
+        for(x = 0; x < tri_get_width(); x++)
         {
-            bestDist = curDist;
-            bestIndex = i;
+            // only check distance if we can move to this point
+            if(!tri_get(x, y) || map_is_solid(x, y))
+                continue;
+            
+            uint8_t dist = getDistance(x, y, xOther, yOther);
+            if(dist > bestDist)
+            {
+                xGoal = x, yGoal = y;
+                bestDist = dist;
+            }
+
         }
     }
-
-    xGoal = unit->row + unit->stats.movePoints * dx[bestIndex];
-    yGoal = unit->column + unit->stats.movePoints * dy[bestIndex];
 
     position->x = xGoal;
     position->y = yGoal;

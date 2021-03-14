@@ -72,6 +72,19 @@ void hud_hide_action()
     fill_win_rect(0, 3, 4, 1, 0);
 }
 
+static char str[][5] = {
+    "NONE",
+    "NEAR",
+    "ATK",
+    "RUN",
+    "HEAL",
+    "HLER"
+};
+
+static char *get_strat_string(ai_strat_t strat)
+{
+    return str[strat];
+}
 
 /**
  * Shows the details about the tile at (x, y)
@@ -102,6 +115,8 @@ void hud_show_details(uint8_t x, uint8_t y)
 
         if(unit->hasAttacked)
             print("ATKED", 20-5, 4);
+        // DEBUG ONLY
+        print(get_strat_string(unit->strategy), 20-5, 5);
         // show tile of the unit
         fill_bkg_rect(20 - 4, 1, 1, 1, unit->tile);
     } else
@@ -165,7 +180,8 @@ bool hud_confirm_end_turn()
  */
 void hud_hide_details()
 {
-    fill_bkg_rect(20-5, 0, 5, 5, 0);
+    // decrease height by one when debug is fixed @todo
+    fill_bkg_rect(20-5, 0, 5, 6, 0);
     hud_hide_action();
 }
 

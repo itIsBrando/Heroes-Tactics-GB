@@ -28,7 +28,6 @@ void gme_run()
 
     // draw background
     clear_bg();
-    map_draw();
     
     // initialize cursor
     cur_init();
@@ -37,18 +36,16 @@ void gme_run()
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
         mth_draw_team(currentMatch.teams[i]);
 
-    uint8_t win;
+    map_draw();
+
+    int8_t win;
 
     // main loop
     do {
         gme_do_turn();
 
         win = mth_finished();
-        if(win != 255) {
-            
-            break;
-        }
-    } while(true);
+    } while(win == -1);
 
     print("Team  has won.", 0, 0);
     printInt(win + 1, 4, 0, false);
@@ -280,20 +277,20 @@ team_t *mth_get_opponent()
 }
 
 /**
- * @return the index of the team that has won, otherwise 0xFF
+ * @return the index of the team that has won, otherwise -1
  */
-uint8_t mth_finished()
+int8_t mth_finished()
 {
-    uint8_t index = 0xff;
+    int8_t index = -1;
 
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
     {
         if(mth_has_alive(currentMatch.teams[i]))
         {
-            if(index == 0xFF)
+            if(index == -1)
                 index = i;
             else
-                return 0xFF;
+                return -1;
         }
     }
 
@@ -301,7 +298,9 @@ uint8_t mth_finished()
 }
 
 
-// does not support third teams yet
+/*
+ * does not support third teams yet
+ */
 void mth_change_turn()
 {
     if(currentTeam == currentMatch.teams[1])

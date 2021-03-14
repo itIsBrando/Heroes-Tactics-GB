@@ -18,6 +18,7 @@ void hud_hide_action();
 void hud_show_details(uint8_t x, uint8_t y);
 void hud_hide_details();
 
+void hud_force_hide_warn();
 void hud_warn(char *);
 void hud_vbl_int();
 

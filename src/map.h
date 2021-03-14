@@ -16,8 +16,10 @@ typedef struct {
 } map_t;
 
 void map_draw();
-void map_load_from_data(uint8_t *data, uint8_t w, uint8_t h);
-void map_load(map_t *);
+void map_load_from_data(uint8_t *data, uint8_t w, uint8_t h, bool useFog);
+void map_load(map_t *, bool);
+void map_draw_fog();
+void map_blit();
 bool map_in_bounds(uint8_t x, uint8_t y);
 uint8_t map_get_pos(position_t *position);
 uint8_t map_get(uint8_t x, uint8_t y);

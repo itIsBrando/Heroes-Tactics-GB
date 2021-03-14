@@ -8,19 +8,12 @@
 uint8_t tri_active_diamond[MAP_MAX_SIZE];
 static bool tri_is_shown;
 
-/**
- * Creates a new diamond
- * @param row x center
- * @param column y center
- * @param radius self-explainatory
- */
-void tri_make(uint8_t row, uint8_t column, uint8_t radius)
+
+void tri_make_no_clear(uint8_t row, uint8_t column, uint8_t radius)
 {
     int8_t startx = row;
     uint8_t stopx = startx;
     uint8_t starty = column - radius;
-
-    memset(tri_active_diamond, 0, sizeof(tri_active_diamond));
 
     for(uint8_t y = 0; y <= radius << 1; y++)
     {
@@ -46,6 +39,19 @@ void tri_make(uint8_t row, uint8_t column, uint8_t radius)
             startx--;
         }
     }
+}
+
+
+void tri_make(uint8_t row, uint8_t column, uint8_t radius)
+{
+    tri_clear();
+    tri_make_no_clear(row, column, radius);
+}
+
+
+void tri_clear()
+{
+    memset(tri_active_diamond, 0, sizeof(tri_active_diamond));
 }
 
 

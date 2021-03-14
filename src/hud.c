@@ -146,13 +146,13 @@ void hud_show_details(uint8_t x, uint8_t y)
 static void hud_confirm_end_turn_left()
 {
     fill_win_rect(10, 3, 1, 1, 0x9E);
-    fill_win_rect(14, 3, 1, 1, 0);
+    fill_win_rect(15, 3, 1, 1, 0);
 }
 
 static void hud_confirm_end_turn_right()
 {
     fill_win_rect(10, 3, 1, 1, 0);
-    fill_win_rect(14, 3, 1, 1, 0x9E);
+    fill_win_rect(15, 3, 1, 1, 0x9E);
 }
 
 
@@ -165,6 +165,7 @@ bool hud_confirm_end_turn()
     uint8_t pad;
     bool cursor = true;
 
+    hud_force_hide_warn();
     print_window("End Turn:  YES  NO", 0, 3);
     hud_confirm_end_turn_left();
 
@@ -223,4 +224,15 @@ void hud_warn(char *str)
         hasVblank = true;
     }
     
+}
+
+/**
+ * If there is a warning displayed on the HUD, then this function 
+ *  will hide it
+ */
+void hud_force_hide_warn()
+{
+    counter = 0xFF; // force comparsion to result in `true`
+    if(hasVblank)
+        hud_vbl_int();
 }

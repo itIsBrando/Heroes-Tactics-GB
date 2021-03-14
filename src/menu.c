@@ -126,8 +126,12 @@ void mnu_cursor_up() {
 static void mnu_draw_map()
 {
     fill_bkg_rect(0, 0, 10, 10, 0);
-    map_load_from_data(all_maps[cursor], map_widths[cursor], map_heights[cursor]);
-    map_draw();
+    map_load_from_data(
+        all_maps[cursor],
+        map_widths[cursor],
+        map_heights[cursor],
+        false);
+    map_blit();
 }
 
 

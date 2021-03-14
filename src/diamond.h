@@ -6,7 +6,26 @@
 
 extern uint8_t tri_active_diamond[MAP_MAX_SIZE];
 
+/**
+ * Creates a new diamond without clearing the buffer
+ * @param row x center
+ * @param column y center
+ * @param radius self-explanatory
+ */
+void tri_make_no_clear(uint8_t, uint8_t, uint8_t);
+
+/**
+ * Creates a new diamond
+ * @param row x center
+ * @param column y center
+ * @param radius self-explanatory
+ */
 void tri_make(uint8_t, uint8_t, uint8_t);
+
+/**
+ * Clears the active triangle. Usually, calling this is not required
+ */
+void tri_clear();
 
 uint8_t tri_get_width();
 uint8_t tri_get_height();

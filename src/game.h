@@ -18,7 +18,7 @@ team_t *mth_get_opponent();
 team_t *mth_get_current_team();
 match_t *mth_get_match();
 bool mth_has_alive(team_t *team);
-uint8_t mth_finished();
+int8_t mth_finished();
 void mth_change_turn();
 void mth_draw_team(team_t *team);
 #endif

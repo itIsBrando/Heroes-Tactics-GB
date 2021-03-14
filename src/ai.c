@@ -181,7 +181,7 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
 
         for(; i < curTeam->size; i++)
         {
-            const uint8_t hp = curTeam->units[i]->stats.health;
+            const int8_t hp = curTeam->units[i]->stats.health;
             if(hp < min)
             {
                 bestIndex = i;

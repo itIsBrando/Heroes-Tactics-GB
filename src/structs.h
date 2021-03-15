@@ -2,7 +2,11 @@
 #define TYPES_H
 
 #include "defines.h"
+#include <asm/types.h>
+#include <stdint.h>
+#include <stdbool.h>
 
+// typedef unsigned char bool;
 
 typedef enum {
     UNIT_TYPE_BRAWN,

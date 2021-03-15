@@ -35,11 +35,9 @@ void mnu_choose_teams_init(match_t *match)
 {
     clear_bg();
     print("MATCH SET UP:", 0, 0);
-    print("(A) to start game", 0, 144/8-1);
+    print("(A) to start game", 0, 144 / 8 - 1);
 
-    cur_x = 0;
-    mnu_cursor_init(match->numTeams, NULL);
-    
+    mnu_cursor_init(0, match->numTeams, NULL);
 
     mnu_choose_team_draw(match);
 
@@ -74,11 +72,13 @@ void mnu_choose_teams_init(match_t *match)
 
 
 /**
+ * @param xCursor x alignment for the cursor
  * @param maxSize Number of menu items
  * @param onchange function pointer to call whenever the cursor is moved
  */
-void mnu_cursor_init(uint8_t maxSize, void (*onchange)(void) )
+void mnu_cursor_init(uint8_t xCursor, uint8_t maxSize, void (*onchange)(void) )
 {
+    cur_x = xCursor;
     cursor = 0;
     maxCursor = maxSize;
     onchange_ptr = onchange;
@@ -145,8 +145,7 @@ void mnu_choose_map_init()
     uint8_t pad;
 
     clear_bg();
-    cur_x = 10;
-    mnu_cursor_init(totalMaps, mnu_draw_map);
+    mnu_cursor_init(10, totalMaps, mnu_draw_map);
     print("MAP SELECT", 10, 0);
 
     mnu_cursor_up();
@@ -169,4 +168,33 @@ void mnu_choose_map_init()
         wait_vbl_done();
     } while(pad != J_A);
 
+}
+
+
+/**
+ * Displays the main menu
+ * @returns index of cursor position when `J_A` is pressed
+ */
+uint8_t mnu_main_menu()
+{
+    uint8_t pad;
+
+    print("HEROES TACTICS", 0, 0);
+    print("Play\nCampaign\nHelp", 1, 3);
+    mnu_cursor_init(0, 3, NULL);
+    
+    waitjoypad(J_A);
+
+    do {
+        pad = joypad();
+
+        if(pad & J_DOWN)
+            mnu_cursor_down();
+        else if(pad & J_UP)
+            mnu_cursor_up();
+
+        wait_vbl_done();
+    } while (pad != J_A);
+    
+    return cursor;
 }

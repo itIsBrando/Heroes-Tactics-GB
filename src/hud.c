@@ -10,6 +10,7 @@
 static uint8_t counter;
 static bool hasVblank = false;
 
+
 /**
  * Draws the player's units onto the window
  */
@@ -29,6 +30,7 @@ void hud_draw_hotbar(team_t *team)
         fill_win_rect(tx + 5, 1, 1, 1, team->units[x]->tile);
     }
 }
+
 
 /**
  * Draws the UI for the health bar of a unit. Width of tiles drawn is variable
@@ -61,6 +63,7 @@ void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow)
                 set_bkg_tiles(x + i, y, 1, 1, &tile);
         }
 }
+
 
 /**
  * Shows informative text to the user on what they are doing

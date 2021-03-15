@@ -1,4 +1,4 @@
-
+#include "cgb.h"
 #include "game.h"
 #include "units.h"
 #include "structs.h"
@@ -37,6 +37,7 @@ void gme_run()
         mth_draw_team(currentMatch.teams[i]);
 
     map_draw();
+    cgb_map();
 
     int8_t win;
 
@@ -102,7 +103,7 @@ void gme_player_turn()
 
     selectedUnit = NULL;
     cur_show();
-begin:
+    
     do {
         pad = joypad();
 

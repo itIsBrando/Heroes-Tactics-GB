@@ -13,6 +13,7 @@
 #include "hud.h"
 #include "game.h"
 #include "oam.h"
+#include "cgb.h"
 #include "data/mapdata.h"
 
 
@@ -36,7 +37,10 @@ void main(void) {
 
     spr_flush();
     clear_bg();
+    
+    cgb_init();
 
+    mnu_main_menu();
     initGame();
 }
 

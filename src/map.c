@@ -151,6 +151,7 @@ inline uint8_t map_fget(uint8_t tile)
     return map_tile_flags[tile];
 }
 
+
 /**
  * Checks to see if a tile is solid
  * @param x tile x coordinate

@@ -103,7 +103,7 @@ void waitPressed(const uint8_t mask)
 /**
  * For internal operation
  */
-static void _print_(char *str, uint8_t x, uint8_t y, bool isWindow)
+static void _print_(const char *str, uint8_t x, uint8_t y, bool isWindow)
 {
     const uint8_t len = strlen(str);
     char c;
@@ -137,7 +137,7 @@ static void _print_(char *str, uint8_t x, uint8_t y, bool isWindow)
  * @param tx x coordinate of string
  * @param ty y coordinate of string
  */
-inline void print(unsigned char *str, uint8_t tx, uint8_t ty)
+inline void print(const unsigned char *str, uint8_t tx, uint8_t ty)
 {
     _print_(str, tx, ty, false);
 }
@@ -148,7 +148,7 @@ inline void print(unsigned char *str, uint8_t tx, uint8_t ty)
  * @param tx x coordinate of string
  * @param ty y coordinate of string
  */
-inline void print_window(unsigned char *str, uint8_t tx, uint8_t ty)
+inline void print_window(const unsigned char *str, uint8_t tx, uint8_t ty)
 {
     _print_(str, tx, ty, true);
 }

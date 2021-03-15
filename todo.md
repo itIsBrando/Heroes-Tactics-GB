@@ -8,14 +8,14 @@
 - [ ] Add CGB sprite coloration
 - [ ] Detect winning/losing condition immediately after battle, not at the end of a turn
 - [ ] Add fog (**high**)
-- [ ] Make fog toggable
+- [ ] Make fog optional
 - [ ] Add title screen (**high**)
 - [ ] Link cable multiplayer (**low**)
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` accept the size of the `heursitic_t` as a parameter
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` sort the `heursitic_t` array in order of smallest priority to largest priority (**high**)
 
 ## Polish:
-- [ ] Remove much whitespace from *match set up screen*
+- [ ] Remove much white-space from *match set up screen*
 - [ ] Water animation
 - [ ] Improve visuals on the banner that appear when changing turns
 - [ ] Add game over screen

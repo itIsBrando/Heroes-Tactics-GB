@@ -2,18 +2,21 @@
 #include <gb/cgb.h>
 #include <gb/gb.h>
 
+#include "units.h"
+#include "diamond.h"
+#include "game.h"
 #include "map.h"
+#include "cgb.h"
 
-#define is_cgb() (_cpu == CGB_TYPE)
 uint16_t palette[] = {
     RGB_WHITE, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_BLACK,
-    RGB_WHITE, RGB_WHITE, RGB_AQUA, RGB_WHITE,
+    RGB_WHITE, RGB_PINK, RGB_BLUE, RGB_PURPLE,
     RGB_WHITE, RGB_DARKGRAY, RGB_GREEN, RGB_BROWN
 };
 
 uint16_t palette_sprite[] = {
-    0x0000, 0x9BBD, RGB_BLACK, RGB_BLUE,
-    0x0000, 0x9BBD, RGB_BLACK, RGB_RED,
+    0x0000, RGB_LIGHTFLESH, RGB_CYAN, RGB_BLACK,
+    0x0000, RGB_LIGHTFLESH, RGB_RED, RGB_BLACK,
 };
 
 
@@ -31,8 +34,17 @@ void cgb_init()
 }
 
 
+#define TEAM_COLOR_BLUE 10
+#define TEAM_COLOR_RED 1
+
+uint8_t cgb_get_team_color(team_t *team)
+{
+    return (team == mth_get_match()->teams[0]) ? TEAM_COLOR_BLUE : TEAM_COLOR_RED; // blue : red;
+}
+
+
 /**
- * Sets up the palettes in cgb
+ * Sets up the palettes in cgb mode. Only does the map
  */
 void cgb_map()
 {
@@ -63,4 +75,48 @@ void cgb_map()
     }
 
     VBK_REG = 0;
+}
+
+
+/**
+ * Sets the palette for CGB
+ * *external checking required*
+ * @param x tile x
+ * @param y tile y
+ */
+void cgb_diamond(uint8_t x, uint8_t y)
+{
+    VBK_REG = 1;
+    fill_bkg_rect(x, y, 1, 1, 1);
+    VBK_REG = 0;
+}
+
+
+/**
+ * Hides any actively drawn triangle
+ */
+void cgb_hide_diamond()
+{
+    uint8_t x = 0, y = 0;
+
+    VBK_REG = 1;
+    for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
+    {
+        if(tri_get(x, y))
+            fill_bkg_rect(x, y, 1, 1, 0);
+
+        if(++x >= tri_get_width())
+            x = 0, y++;
+    }
+
+    VBK_REG = 0;
+}
+
+
+/**
+ * @returns true if we are running on a CGB
+ */
+bool is_cgb()
+{
+     return _cpu == CGB_TYPE;
 }

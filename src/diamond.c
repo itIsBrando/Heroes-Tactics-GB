@@ -3,7 +3,7 @@
 #include "diamond.h"
 #include "units.h"
 #include "map.h"
-
+#include "cgb.h"
 
 uint8_t tri_active_diamond[MAP_MAX_SIZE];
 static bool tri_is_shown;
@@ -82,7 +82,11 @@ inline void tri_set(uint8_t x, uint8_t y, uint8_t v)
 inline void tri_hide()
 {
     if(tri_is_shown)
+    {
         map_draw();
+        if(is_cgb())
+            cgb_hide_diamond();
+    }
 
     tri_is_shown = false;
 }
@@ -111,13 +115,18 @@ void tri_clip()
 void tri_draw(const uint8_t tile)
 {
     uint8_t x = 0, y = 0;
+    const bool isCGB = is_cgb();
 
     tri_is_shown = true;
 
     for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
     {
         if(tri_active_diamond[i])
+        {
             fill_bkg_rect(x, y, 1, 1, tile);
+            if(isCGB)
+                cgb_diamond(x, y);
+        }
 
         if(++x >= map_get_width())
             x = 0, y++;

@@ -8,10 +8,17 @@
 #include "map.h"
 #include "cgb.h"
 
+#define CGB_BG_DEFAULT  0
+#define CGB_BG_WATER    1
+#define CGB_BG_TREE     2
+#define CGB_BG_HEART    3
+#define CGB_BG_SAND     3
+
 uint16_t palette[] = {
     RGB_WHITE, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_BLACK,
-    RGB_WHITE, RGB_PINK, RGB_BLUE, RGB_PURPLE,
-    RGB_WHITE, RGB_DARKGRAY, RGB_GREEN, RGB_BROWN
+    RGB_DARKYELLOW, RGB_PINK, RGB_BLUE, RGB_PURPLE,
+    RGB_DARKYELLOW, RGB_DARKGRAY, RGB_GREEN, RGB_BROWN,
+    RGB_DARKYELLOW, RGB_WHITE, RGB_RED, RGB_DARKRED
 };
 
 uint16_t palette_sprite[] = {
@@ -28,7 +35,7 @@ void cgb_init()
     if(!is_cgb())
         return;
     
-    set_bkg_palette(0, 3, palette);
+    set_bkg_palette(0, 4, palette);
 
     set_sprite_palette(0, 2, palette_sprite);
 }
@@ -40,6 +47,34 @@ void cgb_init()
 uint8_t cgb_get_team_color(team_t *team)
 {
     return (team == mth_get_match()->teams[0]) ? TEAM_COLOR_BLUE : TEAM_COLOR_RED; // blue : red;
+}
+
+
+/**
+ * Updates the palette of the tile at (x, y)
+ * @param x tile x
+ * @param y tile y
+ */
+void cgb_write_tile(uint8_t x, uint8_t y)
+{
+    uint8_t pal;
+    switch(map_get(x, y))
+    {
+    case 0x1:
+        pal = CGB_BG_SAND;
+        break;
+    case 0xF:
+        pal = CGB_BG_WATER;
+        break;
+    case 0x5:
+    case 0x10:
+        pal = CGB_BG_TREE;
+        break;
+    case 0x14: // bridge
+    default:
+        pal = CGB_BG_DEFAULT;
+    }
+    fill_bkg_rect(x, y, 1, 1, pal);
 }
 
 
@@ -57,20 +92,7 @@ void cgb_map()
     {
         for(uint8_t x = 0; x < map_get_width(); x++)
         {
-            uint8_t pal = 0;
-            switch(map_get(x, y))
-            {
-            case 0xF:
-                pal = 1;
-                break;
-            case 0x5:
-            case 0x10:
-                pal = 2;
-                break;
-            default:
-                continue;
-            }
-            fill_bkg_rect(x, y, 1, 1, pal);
+            cgb_write_tile(x, y);
         }
     }
 
@@ -103,13 +125,63 @@ void cgb_hide_diamond()
     for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
     {
         if(tri_get(x, y))
-            fill_bkg_rect(x, y, 1, 1, 0);
+            cgb_write_tile(x, y);
 
         if(++x >= tri_get_width())
             x = 0, y++;
     }
 
     VBK_REG = 0;
+}
+
+
+/**
+ * Initializes the coloring for window HUD
+ * @note Hooked from `hud_draw_hotbar`
+ */
+void cgb_draw_hud()
+{
+    if(!is_cgb())
+        return;
+
+    VBK_REG = 1;
+    fill_win_rect(0, 0, 20, 1, 2);
+    fill_win_rect(0, 1, 20, 1, 3); // change later
+    fill_win_rect(0, 2, 20, 1, CGB_BG_HEART);
+    fill_win_rect(0, 3, 20, 2, 2);
+    VBK_REG = 0;
+}
+
+
+/**
+ * Setups palette for a battle between two units
+ * @note hooked in `unit_attack`
+ */
+void cgb_draw_battle()
+{
+    if(!is_cgb())
+        return;
+
+    VBK_REG = 1;
+    // fill bg
+    fill_bkg_rect(0, 0, 20, 13, CGB_BG_SAND);
+    // fill row with heart palette
+    fill_bkg_rect(2, 7, 16, 1, CGB_BG_HEART);
+    VBK_REG = 0;
+}
+
+
+/**
+ * Deinitializes the palettes after a battle has commenced
+ * @note hooked in `unit_attack`
+ */
+void cgb_cleanup_battle()
+{
+    if(!is_cgb())
+        return;
+
+
+    cgb_map();
 }
 
 

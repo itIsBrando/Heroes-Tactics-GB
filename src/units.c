@@ -8,6 +8,7 @@
 #include "diamond.h"
 #include "cursor.h"
 #include "path.h"
+#include "cgb.h"
 
 #include <gb/gb.h>
 #include <rand.h>
@@ -234,13 +235,14 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     clear_bg();
     unit_draw_at(attacker, 40, 40);
     unit_draw_at(defender, 120, 40);
-    hud_draw_health(attacker, 40 / 8 - 3, 40/ 8 + 2, false);
+    cgb_draw_battle();
+    hud_draw_health(attacker, 40 / 8 - 3, 7, false);
     
     print("BATTLE", 0, 0);
 
     bool death = unit_do_damage(defender, attacker->stats.damagePoints);
 
-    hud_draw_health(defender, 120 / 8 - 3, 40/ 8 + 2, false);
+    hud_draw_health(defender, 120 / 8 - 3, 7, false);
     print(unit_get_name(attacker), 0, 10);
     print("did", 6, 10);
     printInt(attacker->stats.damagePoints, 10, 10, false);
@@ -276,6 +278,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
 
     clear_bg();
     map_draw(); // redraw map
+    cgb_cleanup_battle();
     cur_show(); // redraw cursor
 
     // redraw all teams

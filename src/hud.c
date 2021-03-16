@@ -4,6 +4,7 @@
 #include "units.h"
 #include "map.h"
 #include "game.h"
+#include "cgb.h"
 
 #include <gb/gb.h>
 
@@ -29,6 +30,8 @@ void hud_draw_hotbar(team_t *team)
         hud_draw_health(team->units[x], tx, 2, true);
         fill_win_rect(tx + 5, 1, 1, 1, team->units[x]->tile);
     }
+
+    cgb_draw_hud();
 }
 
 

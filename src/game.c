@@ -31,6 +31,7 @@ void gme_run()
     
     // initialize cursor
     cur_init();
+    mth_print_team();
 
     // draws all team members
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
@@ -304,7 +305,9 @@ int8_t mth_finished()
  */
 void mth_change_turn()
 {
-    if(currentTeam == currentMatch.teams[1])
+    team_t *prevTeam = currentTeam;
+
+    if(mth_get_team_number() == 2)
         currentTeam = currentMatch.teams[0];
     else
         currentTeam = currentMatch.teams[1];
@@ -314,18 +317,44 @@ void mth_change_turn()
         currentTeam->units[i]->hasAttacked = currentTeam->units[i]->hasMoved = false;
 
     // make a banner
+    //@todo improve!!!
     print(currentTeam->control == CONTROLLER_PLAYER ? "PLR" : "CPU", 0, 10);
     printInt(currentTeam == currentMatch.teams[0] ? 1 : 2, 4, 10, false);
     print("turn.\n (A) to continue", 6, 10);
 
+    // redraw old team (necessary for CGB pal & fog)
+    mth_draw_team(prevTeam);
+
+    mth_print_team();    
+
     // redraw window HUD
     hud_draw_hotbar(currentTeam);
+
 
     // wait until `A` button pressed
     while(joypad() != J_A)
         wait_vbl_done();
 
     fill_bkg_rect(0, 10, 20, 2, 0);
+}
+
+
+/**
+ * Draws the team that is currently playing
+ */
+void mth_print_team()
+{
+    // draw team number
+    uint8_t teamNum = mth_get_team_number();
+    print("TEAM", map_get_width(), 0);
+    printInt(teamNum, map_get_width() + 4, 0, false);
+
+    if(is_cgb())
+    {
+        VBK_REG = 1;
+        fill_bkg_rect(map_get_width(), 0, 5, 1, cgb_get_team_palette(mth_get_current_team()));
+        VBK_REG = 0;
+    }
 }
 
 
@@ -352,19 +381,38 @@ inline match_t *mth_get_match()
 
 
 /**
+ * @returns the team number that is active (1 or 2)
+ */
+inline uint8_t mth_get_team_number()
+{
+    return (currentTeam == currentMatch.teams[0]) ? 1 : 2;
+}
+
+
+/**
  * Draws all of the units in a team
  */
 void mth_draw_team(team_t *team)
 {
+    uint8_t prop;
     for(uint8_t i = 0; i < team->size; i++)
     {
         if(team->units[i]->isDead) {
             unit_hide(team->units[i]);
         } else {
             unit_draw(team->units[i]);
-            // draw team 1 with a different palette
-            if(team == currentMatch.teams[1])
-                set_sprite_prop(team->units[i]->spriteNumber, 0x10 | 1);
+            // draw second team with a different palette
+            // gray-out unit if it has moved
+            if(team->units[i]->hasAttacked && is_cgb() && currentTeam == team)
+                prop = CGB_SPR_GRAY;
+            else {
+                if(team == currentMatch.teams[1])
+                    prop = 0x10 | 1;
+                else
+                    prop = 0;
+                
+            }
+            set_sprite_prop(team->units[i]->spriteNumber, prop);
         }
     }
 }

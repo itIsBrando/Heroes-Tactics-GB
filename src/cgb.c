@@ -8,22 +8,18 @@
 #include "map.h"
 #include "cgb.h"
 
-#define CGB_BG_DEFAULT  0
-#define CGB_BG_WATER    1
-#define CGB_BG_TREE     2
-#define CGB_BG_HEART    3
-#define CGB_BG_SAND     3
 
-uint16_t palette[] = {
-    RGB_WHITE, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_BLACK,
+uint16_t palette_background[] = {
+    /*RGB_WHITE*/ RGB_DARKYELLOW, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_BLACK,
     RGB_DARKYELLOW, RGB_PINK, RGB_BLUE, RGB_PURPLE,
     RGB_DARKYELLOW, RGB_DARKGRAY, RGB_GREEN, RGB_BROWN,
     RGB_DARKYELLOW, RGB_WHITE, RGB_RED, RGB_DARKRED
 };
 
 uint16_t palette_sprite[] = {
-    0x0000, RGB_LIGHTFLESH, RGB_CYAN, RGB_BLACK,
-    0x0000, RGB_LIGHTFLESH, RGB_RED, RGB_BLACK,
+    0, RGB_LIGHTFLESH, RGB_CYAN, RGB_BLACK,
+    0, RGB_LIGHTFLESH, RGB_RED, RGB_BLACK,
+    0, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_BLACK
 };
 
 
@@ -35,18 +31,22 @@ void cgb_init()
     if(!is_cgb())
         return;
     
-    set_bkg_palette(0, 4, palette);
+    set_bkg_palette(0, sizeof(palette_background) >> 3, palette_background);
 
-    set_sprite_palette(0, 2, palette_sprite);
+    set_sprite_palette(0, sizeof(palette_sprite) >> 3, palette_sprite);
 }
 
 
 #define TEAM_COLOR_BLUE 10
 #define TEAM_COLOR_RED 1
 
-uint8_t cgb_get_team_color(team_t *team)
+/**
+ * @param team team??
+ * @returns blue or red background palette
+ */
+uint8_t cgb_get_team_palette(team_t *team)
 {
-    return (team == mth_get_match()->teams[0]) ? TEAM_COLOR_BLUE : TEAM_COLOR_RED; // blue : red;
+    return (team == mth_get_match()->teams[0]) ? 1 : 3; // blue : red;
 }
 
 
@@ -145,10 +145,9 @@ void cgb_draw_hud()
         return;
 
     VBK_REG = 1;
-    fill_win_rect(0, 0, 20, 1, 2);
-    fill_win_rect(0, 1, 20, 1, 3); // change later
+    fill_win_rect(0, 0, 20, 2, 0);
     fill_win_rect(0, 2, 20, 1, CGB_BG_HEART);
-    fill_win_rect(0, 3, 20, 2, 2);
+    fill_win_rect(0, 3, 20, 2, 0);
     VBK_REG = 0;
 }
 

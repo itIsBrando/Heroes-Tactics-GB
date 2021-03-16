@@ -279,6 +279,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     clear_bg();
     map_draw(); // redraw map
     cgb_cleanup_battle();
+    mth_print_team();
     cur_show(); // redraw cursor
 
     // redraw all teams
@@ -326,26 +327,6 @@ uint8_t getDistance(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
     }
 
     return distance;
-
-    // uint8_t diff1, diff2;
-    // if(x1 > x2)
-    //     diff1 = x1 - x2;
-    // else
-    //     diff1 = x2 - x1;
-    
-    // if(y1 > y2)
-    //     diff2 = y1 - y2;
-    // else
-    //     diff2 = y2 - y1;
-   
-    // diff1 = diff1 * diff1 + diff2 * diff2;
-
-    // uint8_t out = sqrt(diff1);
-
-    // // this value is essentially boolean. 0 = no remainder, otherwise remainder
-    // if(remainder)
-    //     *remainder = diff1 - out*out;
-    // return out;
 }
 
 
@@ -375,6 +356,7 @@ unit_t *unit_find_nearest(team_t *opponent, unit_t *unit)
 
     return opponent->units[bestIndex];
 }
+
 
 bool unit_can_move_to(uint8_t x, uint8_t y)
 {
@@ -545,7 +527,7 @@ bool unit_heal(unit_t *unit, unit_t *healer)
     print(" healed 1 HP", 5, 10);
 
     unit->stats.health = min(1 + unit->stats.health, unit->stats.maxHealth);
-    healer->hasAttacked = true;
+    healer->hasMoved = healer->hasAttacked = true;
 
     waitPressed(J_A | J_START);
 
@@ -555,6 +537,10 @@ bool unit_heal(unit_t *unit, unit_t *healer)
 
     clear_bg();
     map_draw(); // redraw map
+    mth_print_team();
+    if(is_cgb())
+        cgb_map();
+
     cur_show(); // redraw cursor
 
     // redraw all teams

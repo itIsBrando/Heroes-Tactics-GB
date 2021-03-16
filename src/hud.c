@@ -11,6 +11,15 @@
 static uint8_t counter;
 static bool hasVblank = false;
 
+static char hud_strat_string[][5] = {
+    "NONE",
+    "NEAR",
+    "ATK",
+    "RUN",
+    "HEAL",
+    "HLER"
+};
+
 
 /**
  * Draws the player's units onto the window
@@ -80,8 +89,10 @@ void hud_show_action(const hud_action_t action)
         "PEAK"
     };
 
+    hud_force_hide_warn();
     print_window(ACTIONS[action], 0, 3);
 }
+
 
 /**
  * Hides any action if it is shown
@@ -91,19 +102,12 @@ void hud_hide_action()
     fill_win_rect(0, 3, 4, 1, 0);
 }
 
-static char str[][5] = {
-    "NONE",
-    "NEAR",
-    "ATK",
-    "RUN",
-    "HEAL",
-    "HLER"
-};
 
 static char *get_strat_string(ai_strat_t strat)
 {
-    return str[strat];
+    return hud_strat_string[strat];
 }
+
 
 /**
  * Shows the details about the tile at (x, y)

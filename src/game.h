@@ -17,8 +17,10 @@ void gme_player_turn();
 team_t *mth_get_opponent();
 team_t *mth_get_current_team();
 match_t *mth_get_match();
+uint8_t mth_get_team_number();
 bool mth_has_alive(team_t *team);
 int8_t mth_finished();
 void mth_change_turn();
+void mth_print_team();
 void mth_draw_team(team_t *team);
 #endif

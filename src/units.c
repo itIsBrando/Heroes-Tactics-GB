@@ -393,7 +393,7 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
     if(!steps)
         return false;
 
-    if(size-1 > unit->stats.movePoints)
+    if(size-1 >= unit->stats.movePoints)
     {
         hud_warn("Too far");
         return false;
@@ -564,3 +564,32 @@ bool unit_in_atk_range(unit_t *unit, unit_t *other)
     return unit_get_distance(unit, other) <= atkRadius;
 }
 
+
+/**
+ * Call to update the unit's palettes
+ * @param unit unit to redraw
+ * @param team team that this unit is part of. Can be NULL
+ * @see unit_draw, mth_draw_team
+ */
+void unit_draw_paletted(unit_t *unit, team_t *team)
+{
+    uint8_t prop;
+
+    if(unit->isDead) {
+        unit_hide(unit);
+    } else {
+        unit_draw(unit);
+        // draw second team with a different palette
+        // gray-out unit if it has moved
+        if(unit->hasAttacked && is_cgb() && currentTeam == team)
+            prop = CGB_SPR_GRAY;
+        else {
+            if(team == currentMatch.teams[1])
+                prop = 0x10 | 1;
+            else
+                prop = 0;
+            
+        }
+        set_sprite_prop(unit->spriteNumber, prop);
+    }
+}

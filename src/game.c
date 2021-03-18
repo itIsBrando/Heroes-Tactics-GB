@@ -12,9 +12,17 @@
 
 #include <gb/gb.h>
 
-static unit_t *selectedUnit = NULL;
 static bool isAttacking;
 team_t *currentTeam;
+
+typedef struct {
+    unit_t *selectedUnit;
+    bool isAttacking; // false if moving, true if attacking
+    bool isSelected;
+} gme_status_t;
+
+static gme_status_t game_state;
+
 
 /**
  * Runs a match
@@ -57,10 +65,57 @@ void gme_run()
 }
 
 
+/**
+ * Stops selecting a unit
+ */
 void gme_deselect_unit()
 {
-    selectedUnit = NULL;
+    game_state.selectedUnit = NULL;
+    hud_hide_action();
     unit_hide_triangle();
+}
+
+/**
+ * @returns true if a unit is selected
+ */
+inline bool gme_is_unit_selected()
+{
+    return game_state.selectedUnit != NULL;
+}
+
+
+/**
+ * Selects a unit
+ * @param unit unit to select. If NULL, then does nothing
+ * @param shouldAttack true if the unit is being selected to attack, otherwise it will move
+ */
+void gme_select_unit(unit_t *unit, bool shouldAttack)
+{
+    game_state.selectedUnit = NULL;
+    
+    if(unit == NULL)
+        return;
+    
+    // if the unit is already moved, prevent it from selecting
+    if(!shouldAttack && unit->hasMoved) {
+        hud_warn("Unit has moved");
+        return;
+    } else if(shouldAttack && unit->hasAttacked) {
+        hud_warn("Unit has attacked");
+        return;
+    }
+
+    if(shouldAttack) {
+        hud_show_action(HUD_ACTION_ATK);
+        unit_atk_diamond(unit);
+    } else {
+        hud_show_action(HUD_ACTION_MOVE);
+        unit_move_diamond(unit);
+    }
+
+    game_state.selectedUnit = unit;
+    game_state.isAttacking = shouldAttack;
+    game_state.isSelected = true;
 }
 
 
@@ -102,7 +157,7 @@ void gme_player_turn()
 {
     uint8_t pad;
 
-    selectedUnit = NULL;
+    game_state.selectedUnit = NULL;
     cur_show();
     
     do {
@@ -144,11 +199,48 @@ void gme_player_turn()
     } while(true);
 
 
-    if(selectedUnit)
+    if(gme_is_unit_selected())
         unit_hide_triangle();
 
     cur_hide();
 }
+
+
+/**
+ * Attacks or heals using the selected unit
+ * @note called when the attack triangle is visible and player has hit the `A` button
+ * 
+ */
+static void gme_attack()
+{
+    const uint8_t cx = cur_get_x(), cy = cur_get_y();
+
+    if(game_state.selectedUnit->type == UNIT_TYPE_HEALER)
+    {
+        unit_t *ally = unit_get(mth_get_current_team(), cx, cy);
+        if(ally)
+        {
+            // if we cannot heal, then warn
+            if(!unit_heal(ally, game_state.selectedUnit))
+                hud_warn("Unit cannot heal");
+            else
+                gme_deselect_unit();
+            return;
+        }
+    }
+
+    unit_t *def = unit_get(mth_get_opponent(), cx, cy);
+    if(def
+      && unit_get_distance(game_state.selectedUnit, def) <= game_state.selectedUnit->stats.damageRadius)
+    {
+        unit_attack(game_state.selectedUnit, def);
+        gme_deselect_unit();
+        hud_draw_hotbar(currentTeam);
+    } else {
+        hud_warn("Cannot atk here");
+    }
+}
+
 
 /**
  * Called when the `A` button is pressed
@@ -158,33 +250,25 @@ void gme_select_a()
     const uint8_t cx = cur_get_x(), cy = cur_get_y();
 
     // performs a move
-    if(selectedUnit)
+    if(gme_is_unit_selected())
     {
         position_t pos;
         pos.x = cx;
         pos.y = cy;
 
-        hud_hide_action();
-        unit_hide_triangle();
-        unit_move_path_find(selectedUnit, &pos);
-        gme_deselect_unit();
-        return; 
+        if(game_state.isAttacking)
+        {
+            gme_attack();
+        } else {
+            unit_hide_triangle();
+            if(unit_move_path_find(game_state.selectedUnit, &pos))
+                gme_select_unit(game_state.selectedUnit, true);
+            else
+                gme_deselect_unit();
+        }
     } else
     {
-        // if nothing is currently selected, then select a unit now
-        selectedUnit = unit_get(mth_get_current_team(), cx, cy);
-
-        if(!selectedUnit)
-            return;
-
-        // if the unit is already moved, prevent it from selecting
-        if(selectedUnit->hasMoved) {
-            selectedUnit = NULL;
-            hud_warn("Unit has moved");
-        } else {
-            hud_show_action(HUD_ACTION_MOVE);
-            unit_move_diamond(selectedUnit);
-        }
+        gme_select_unit(unit_get(mth_get_current_team(), cx, cy), false);
     }
 }
 
@@ -195,48 +279,16 @@ void gme_select_b()
 {
     const uint8_t cx = cur_get_x(), cy = cur_get_y();
 
-    if(selectedUnit)
+    if(gme_is_unit_selected())
     {
+        if(game_state.isAttacking)
+        {
+            game_state.selectedUnit->hasAttacked = true;
+            unit_draw_paletted(game_state.selectedUnit, currentTeam);
+        }
         hud_hide_action();
-        // check to see if we can heal
-        if(selectedUnit->type == UNIT_TYPE_HEALER)
-        {
-            unit_t *unit = unit_get(mth_get_current_team(), cx, cy);
-            if(unit)
-            {
-                // if we cannot heal, then warn
-                if(!unit_heal(unit, selectedUnit))
-                    hud_warn("Unit cannot heal");
-                gme_deselect_unit();
-                return;
-            }
-        }
-
-        unit_t *def = unit_get(mth_get_opponent(), cx, cy);
-        if(def && unit_get_distance(selectedUnit, def) <= selectedUnit->stats.damageRadius)
-        {
-            unit_attack(selectedUnit, def);
-            hud_draw_hotbar(currentTeam);
-        } else {
-            hud_warn("Cannot atk here");
-        }
-
         gme_deselect_unit();
         return;
-    }
-
-    selectedUnit = unit_get(currentTeam, cx, cy);
-    
-    if(!selectedUnit)
-        return;
-    
-    if(selectedUnit->hasAttacked)
-    {
-        selectedUnit = NULL;
-        hud_warn("Unit has attacked");
-    } else {
-        hud_show_action(HUD_ACTION_ATK);
-        unit_atk_diamond(selectedUnit);
     }
 
 }
@@ -394,25 +446,6 @@ inline uint8_t mth_get_team_number()
  */
 void mth_draw_team(team_t *team)
 {
-    uint8_t prop;
     for(uint8_t i = 0; i < team->size; i++)
-    {
-        if(team->units[i]->isDead) {
-            unit_hide(team->units[i]);
-        } else {
-            unit_draw(team->units[i]);
-            // draw second team with a different palette
-            // gray-out unit if it has moved
-            if(team->units[i]->hasAttacked && is_cgb() && currentTeam == team)
-                prop = CGB_SPR_GRAY;
-            else {
-                if(team == currentMatch.teams[1])
-                    prop = 0x10 | 1;
-                else
-                    prop = 0;
-                
-            }
-            set_sprite_prop(team->units[i]->spriteNumber, prop);
-        }
-    }
+        unit_draw_paletted(team->units[i], team);
 }

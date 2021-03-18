@@ -40,7 +40,7 @@ void ai_do_turn(unit_t *unit)
     uint8_t iter = 0; // keeps track of the number of steps we've moved
     unit_t *target = unit_find_nearest(mth_get_opponent(), unit);
 
-    for(int8_t i = size-1; i > 0; i--)
+    for(int8_t i = size-1; i >= 0; i--)
     {
         // if we can attack from a distance
         // but if we are running, do not focus on enemy targets
@@ -52,7 +52,7 @@ void ai_do_turn(unit_t *unit)
 
         for(uint8_t j = 0; j < 15; j++)
             wait_vbl_done();
-        if(++iter > unit->stats.movePoints)
+        if(++iter >= unit->stats.movePoints)
             break;
     }
 

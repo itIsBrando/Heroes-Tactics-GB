@@ -1,6 +1,7 @@
 #include <gb/gb.h>
 #include <string.h>
 #include "diamond.h"
+#include "game.h"
 #include "units.h"
 #include "map.h"
 #include "cgb.h"
@@ -101,7 +102,7 @@ void tri_clip()
 
     for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
     {
-        if(unit_get_any(x, y) || map_fget(map_get(x, y)))
+        if(unit_get(mth_get_current_team(), x, y) || map_fget(map_get(x, y)))
             tri_active_diamond[i] = false;
 
         if(++x >= tri_get_width())

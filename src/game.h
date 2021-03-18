@@ -14,6 +14,9 @@ void gme_do_turn();
 void gme_computer_turn();
 void gme_player_turn();
 
+void gme_select_unit(unit_t *unit, bool shouldAttack);
+bool gme_is_unit_selected();
+
 team_t *mth_get_opponent();
 team_t *mth_get_current_team();
 match_t *mth_get_match();

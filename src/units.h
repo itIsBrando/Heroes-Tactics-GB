@@ -154,4 +154,5 @@ void unit_hide_triangle();
 
 bool unit_in_atk_range(unit_t *unit, unit_t *other);
 
+void unit_draw_paletted(unit_t *unit, team_t *team);
 #endif

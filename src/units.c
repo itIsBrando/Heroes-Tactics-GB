@@ -236,16 +236,24 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
 
     unit_engage(attacker, defender);
 
-    // set up battle screen
     clear_bg();
-    unit_draw_at(attacker, 40, 40);
+    // show stats
+    uint16_t tile = 0x1918;
+    set_bkg_tiles(0, 6, 2, 1, &tile);
+    set_bkg_tiles(17, 6, 2, 1, &tile);
+    printInt(attacker->stats.damagePoints, 2, 6, false);
+    printInt(defender->stats.damagePoints, 19, 6, false);
+
+    // set up battle screen
+    unit_draw_at(attacker, 32, 40);
     unit_draw_at(defender, 120, 40);
-    print(atkName, 3, 3);
+    print(atkName, 2, 3);
     print(defName, 13, 3);
     cgb_draw_battle();
-    hud_draw_health(attacker, 5 - (attacker->stats.maxHealth >> 1), 7, false);
+    hud_draw_health(attacker, 4 - (attacker->stats.maxHealth >> 1), 7, false);
     
-    print("BATTLE", 0, 0);
+    print("BATTLE", 7, 0);
+    fill_bkg_rect(0, 1, 20, 1, 0xE0);
 
     bool death = unit_do_damage(defender, attacker->stats.damagePoints);
 
@@ -271,7 +279,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
 
         death |= unit_do_damage(attacker, dmg);
 
-       hud_draw_health(attacker, 5 - (attacker->stats.maxHealth >> 1), 7, false);
+       hud_draw_health(attacker, 4 - (attacker->stats.maxHealth >> 1), 7, false);
 
         print(defName, 0, 10);
 

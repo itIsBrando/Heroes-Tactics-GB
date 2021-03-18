@@ -8,12 +8,12 @@
 - [ ] Add CGB sprite coloration
 - [ ] Detect winning/losing condition immediately after battle, not at the end of a turn
 - [ ] Allow player to press `B` button after it has moved (but still has attack diamond shown) to return unit to its position pre-movement (**high**)
-- [ ] Allow player to attack an enemy without moving (**high**)
 - [ ] Add fog (**high**)
   - [ ] Make fog optional
 - [ ] Add title screen (**high**)
-- [ ] Add movement arrows that track the cursor (**med**)
+- [ ] Add movement arrows that track the cursor (*optional*)
 - [ ] Link cable multiplayer (**low**)
+- [x] Allow player to attack an enemy without moving (**high**)
 - [x] *FORCE UNIT TO ATTACK IMMEDIATELY AFTER MOVING* (**high**)
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` accept the size of the `heursitic_t` as a parameter
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` sort the `heursitic_t` array in order of smallest priority to largest priority (**high**)
@@ -21,15 +21,15 @@
 ## Polish:
 - [ ] Remove much white-space from *match set up screen*
 - [ ] Water animation
-- [ ] Add the stats of the two units to the battle screen
-  - [ ] Create icons
-- [ ] Add CGB support to `unit_engage`
 - [ ] Improve visuals on the banner that appear when changing turns
 - [ ] Add game over screen
 - [ ] Add a visual on the HUD to indicate unit selection
-- [ ] Add the unit's name above it in a battle
 - [ ] Change palette for house and bridge
 - [ ] Add how-to screen (**low**)
+- [x] Add CGB support to `unit_engage`
+- [x] Add the unit's name above it in a battle
+- [x] Add the stats of the two units to the battle screen
+  - [x] Create icons
 - [x] Change the palette of a unit that has moved
 - [x] Add visual indicating which team is active
   - [x] colorize it

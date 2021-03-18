@@ -12,6 +12,7 @@
 - [ ] Add fog (**high**)
   - [ ] Make fog optional
 - [ ] Add title screen (**high**)
+- [ ] Add movement arrows that track the cursor (**med**)
 - [ ] Link cable multiplayer (**low**)
 - [x] *FORCE UNIT TO ATTACK IMMEDIATELY AFTER MOVING* (**high**)
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` accept the size of the `heursitic_t` as a parameter
@@ -20,6 +21,9 @@
 ## Polish:
 - [ ] Remove much white-space from *match set up screen*
 - [ ] Water animation
+- [ ] Add the stats of the two units to the battle screen
+  - [ ] Create icons
+- [ ] Add CGB support to `unit_engage`
 - [ ] Improve visuals on the banner that appear when changing turns
 - [ ] Add game over screen
 - [ ] Add a visual on the HUD to indicate unit selection

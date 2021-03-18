@@ -209,11 +209,18 @@ void gme_player_turn()
 /**
  * Attacks or heals using the selected unit
  * @note called when the attack triangle is visible and player has hit the `A` button
- * 
  */
 static void gme_attack()
 {
     const uint8_t cx = cur_get_x(), cy = cur_get_y();
+
+    // if we are highlighting our own character, then deselect
+    if(unit_get(mth_get_current_team(), cx, cy) == game_state.selectedUnit)
+    {
+        game_state.selectedUnit->hasAttacked = true;
+        unit_draw_paletted(game_state.selectedUnit, mth_get_current_team());
+        gme_deselect_unit();
+    }
 
     if(game_state.selectedUnit->type == UNIT_TYPE_HEALER)
     {
@@ -235,7 +242,6 @@ static void gme_attack()
     {
         unit_attack(game_state.selectedUnit, def);
         gme_deselect_unit();
-        hud_draw_hotbar(currentTeam);
     } else {
         hud_warn("Cannot atk here");
     }
@@ -260,8 +266,16 @@ void gme_select_a()
         {
             gme_attack();
         } else {
+            unit_t *enemy = unit_get(mth_get_opponent(), cx, cy);
+
             unit_hide_triangle();
-            if(unit_move_path_find(game_state.selectedUnit, &pos))
+            
+            // check if we can attack without moving
+            if(unit_in_atk_range(game_state.selectedUnit, enemy))
+            {
+                gme_attack();
+            // check to see if we can move somewhere
+            } else if(unit_move_path_find(game_state.selectedUnit, &pos))
                 gme_select_unit(game_state.selectedUnit, true);
             else
                 gme_deselect_unit();

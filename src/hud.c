@@ -85,7 +85,7 @@ void hud_show_action(const hud_action_t action)
 {
     char ACTIONS[][5] = {
         "MOVE",
-        "ATK",
+        "ATK ",
         "PEAK"
     };
 
@@ -99,7 +99,8 @@ void hud_show_action(const hud_action_t action)
  */
 void hud_hide_action()
 {
-    fill_win_rect(0, 3, 4, 1, 0);
+    if(!hasVblank)
+        fill_win_rect(0, 3, 4, 1, 0);
 }
 
 

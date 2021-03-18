@@ -195,6 +195,9 @@ bool unit_do_damage(unit_t *unit, uint8_t dmg)
 }
 
 
+/**
+ * Graphically indicates that two units are interacting
+ */
 void unit_engage(unit_t *u1, unit_t *u2)
 {
     uint8_t i = 0;
@@ -226,6 +229,8 @@ void unit_engage(unit_t *u1, unit_t *u2)
 bool unit_attack(unit_t *attacker, unit_t *defender)
 {
     uint8_t i = 0;
+    char *atkName = unit_get_name(attacker);
+    char *defName = unit_get_name(defender);
 
     cur_hide(); // hide cursor
 
@@ -235,15 +240,17 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     clear_bg();
     unit_draw_at(attacker, 40, 40);
     unit_draw_at(defender, 120, 40);
+    print(atkName, 3, 3);
+    print(defName, 13, 3);
     cgb_draw_battle();
-    hud_draw_health(attacker, 40 / 8 - 3, 7, false);
+    hud_draw_health(attacker, 5 - (attacker->stats.maxHealth >> 1), 7, false);
     
     print("BATTLE", 0, 0);
 
     bool death = unit_do_damage(defender, attacker->stats.damagePoints);
 
-    hud_draw_health(defender, 120 / 8 - 3, 7, false);
-    print(unit_get_name(attacker), 0, 10);
+    hud_draw_health(defender, 15 - (defender->stats.maxHealth >> 1), 7, false);
+    print(atkName, 0, 10);
     print("did", 6, 10);
     printInt(attacker->stats.damagePoints, 10, 10, false);
 
@@ -264,9 +271,9 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
 
         death |= unit_do_damage(attacker, dmg);
 
-        hud_draw_health(attacker, 40 / 8 - 3, 40/ 8 + 2, false);
+       hud_draw_health(attacker, 5 - (attacker->stats.maxHealth >> 1), 7, false);
 
-        print(unit_get_name(defender), 0, 10);
+        print(defName, 0, 10);
 
         printInt(dmg, 10, 10, false);        
     } else {
@@ -285,6 +292,9 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     // redraw all teams
     for(i = 0; i < currentMatch.numTeams; i++)
        mth_draw_team(currentMatch.teams[i]);
+
+    
+    hud_draw_hotbar(currentTeam);
     
     return death;
 }
@@ -386,6 +396,9 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
     position_t unitPos;
     unitPos.x = unit->row;
     unitPos.y = unit->column;
+
+    if(unit_get_any(destination->x, destination->y))
+        return false;
 
     position_t *steps = pf_find(&unitPos, destination, &size);
 
@@ -556,12 +569,10 @@ bool unit_heal(unit_t *unit, unit_t *healer)
  */
 bool unit_in_atk_range(unit_t *unit, unit_t *other)
 {
-    uint8_t atkRadius = unit->stats.damageRadius;
-
-    // if(!unit->hasMoved)
-    //     atkRadius += unit->stats.movePoints;
+    if(!other)
+        return false;
         
-    return unit_get_distance(unit, other) <= atkRadius;
+    return unit_get_distance(unit, other) <= unit->stats.damageRadius;
 }
 
 

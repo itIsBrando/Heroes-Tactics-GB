@@ -433,6 +433,9 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
             break;
     }
 
+    if(map_has_fog())
+        map_update_fog();
+
     return true;
 }
 

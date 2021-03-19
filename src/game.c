@@ -31,19 +31,22 @@ void gme_run()
 {
     add_VBL(unit_vbl_int);
 
-    currentTeam = currentMatch.teams[0];
-    hud_draw_hotbar(currentTeam);
-
     // draw background
     clear_bg();
-    
-    // initialize cursor
-    cur_init();
-    mth_print_team();
 
     // draws all team members
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
         mth_draw_team(currentMatch.teams[i]);
+
+    // sneakily set the turn to player 0
+    currentTeam = currentMatch.teams[1];
+    mth_change_turn();
+    
+    hud_draw_hotbar(currentTeam);
+    
+    // initialize cursor
+    cur_init();
+    mth_print_team();
 
     map_draw();
     cgb_map();
@@ -390,6 +393,7 @@ void mth_change_turn()
 
     // redraw old team (necessary for CGB pal & fog)
     mth_draw_team(prevTeam);
+    map_changed_turns();
 
     mth_print_team();    
 
@@ -460,6 +464,11 @@ inline uint8_t mth_get_team_number()
  */
 void mth_draw_team(team_t *team)
 {
+    const bool hasFog = map_has_fog();
+
     for(uint8_t i = 0; i < team->size; i++)
-        unit_draw_paletted(team->units[i], team);
+        if(hasFog && map_get_with_fog(team->units[i]->row, team->units[i]->column) == 23)
+            unit_hide(team->units[i]);
+        else
+            unit_draw_paletted(team->units[i], team);
 }

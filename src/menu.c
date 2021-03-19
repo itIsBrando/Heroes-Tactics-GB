@@ -122,16 +122,23 @@ void mnu_cursor_up() {
     waitjoypad(J_UP);
 }
 
+static bool useFog = false;
 
+/**
+ * Visually shows a preview of the map
+ * @param useFog true to load the map with fog, otherwise false
+ */
 static void mnu_draw_map()
 {
     fill_bkg_rect(0, 0, 10, 10, 0);
-    map_load_from_data(
+    
+    map_blit(
+        map_load_from_data(
         all_maps[cursor],
         map_widths[cursor],
         map_heights[cursor],
-        false);
-    map_blit();
+        useFog)
+    );
 }
 
 
@@ -166,6 +173,13 @@ void mnu_choose_map_init()
             mnu_cursor_up();
 
         wait_vbl_done();
+
+        // hacky way to enable fog
+        if(pad == J_START) {
+            useFog = true;
+            mnu_draw_map();
+            print("using fog", 0, 10);
+        }
     } while(pad != J_A);
 
 }

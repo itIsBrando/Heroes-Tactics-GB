@@ -58,7 +58,7 @@ uint8_t cgb_get_team_palette(team_t *team)
 void cgb_write_tile(uint8_t x, uint8_t y)
 {
     uint8_t pal;
-    switch(map_get(x, y))
+    switch(map_get_with_fog(x, y))
     {
     case 0x1:
         pal = CGB_BG_SAND;

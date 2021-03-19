@@ -4,15 +4,16 @@
 - [ ] Unit spawning on map (**high**)
 - [ ] Add support for more than 3 units per team (**low**)
 - [ ] Replace `map select` with an open world map
-- [ ] Add CGB background coloration
-- [ ] Add CGB sprite coloration
 - [ ] Detect winning/losing condition immediately after battle, not at the end of a turn
 - [ ] Allow player to press `B` button after it has moved (but still has attack diamond shown) to return unit to its position pre-movement (**high**)
-- [ ] Add fog (**high**)
-  - [ ] Make fog optional
-- [ ] Add title screen (**high**)
 - [ ] Add movement arrows that track the cursor (*optional*)
+- [ ] Add campaign world map
 - [ ] Link cable multiplayer (**low**)
+- [x] Add fog (**high**)
+  - [x] Make fog optional
+- [x] Add title screen (**high**)
+- [x] Add CGB background coloration
+- [x] Add CGB sprite coloration
 - [x] Allow player to attack an enemy without moving (**high**)
 - [x] *FORCE UNIT TO ATTACK IMMEDIATELY AFTER MOVING* (**high**)
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` accept the size of the `heursitic_t` as a parameter
@@ -38,6 +39,9 @@
 
 ## Bug Fixes:
 - [ ] Fix newline graphical bug in `print()` function
+- [ ] Enemy units can be seen during movement when fog is enabled
+- [ ] Remove `useFog` static variable in `menu.c`
+  - this was used as a hacky way to enable fog on any map
 - [ ] Fix units that spawn outside of the map
 - [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy
 - [ ] Palettes during unit healing is messed up (**HIGH**)

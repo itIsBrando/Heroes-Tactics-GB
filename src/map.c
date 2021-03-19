@@ -4,20 +4,22 @@
 #include "structs.h"
 
 #include <gb/gb.h>
+#include <string.h>
 
 #include "data/mapdata.h"
 #include "data/map2.h"
 #include "data/map3.h"
 #include "diamond.h"
 #include "units.h"
+#include "cgb.h"
 
 uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA};
 uint8_t map_widths[] = {10, 9,  7};
 uint8_t map_heights[]= {10, 8,  8};
 
-
 static map_t internalMap;
 static map_t *activeMap;
+static uint8_t map_fog[MAP_MAX_SIZE];
 static bool mapHasFog = false;
 
 static const uint8_t map_tile_flags[] = {
@@ -26,61 +28,116 @@ static const uint8_t map_tile_flags[] = {
 
 
 /**
- * Blits the `activeMap` to the screen. Excludes fog
+ * Blits a map to the screen. Does not draw fog
  * @see map_draw
  */
-void map_blit()
+void map_blit(map_t *map)
 {
-    set_bkg_tiles(0, 0, activeMap->width, activeMap->height, activeMap->data);
+    set_bkg_tiles(0, 0, map->width, map->height, map->data);    
 }
 
 
 /**
  * Draws the map from (0, 0) to (w, h). Includes fog
- * @see map_blit()
  */
 void map_draw()
 {
-    map_blit();
-    if(mapHasFog)
-        map_draw_fog();
+    uint8_t *data;
+
+    if(map_has_fog())
+        data = map_fog;
+    else
+        data = activeMap->data;
+
+    set_bkg_tiles(0, 0,activeMap->width,activeMap->height, data);
 }
 
 
 /**
- * Adds a fog overlay to the drawn map
- * @todo PERFORMANCE MUST INCREASE
+ * Applies fog to the map buffer
  */
-void map_draw_fog()
+static void map_apply_fog()
 {
-    team_t *team = mth_get_current_team();
-    team_t *opponents = mth_get_opponent();
+    uint8_t i;
+    const team_t *team = mth_get_current_team();
+    unit_t *unit;
+    tri_clear();
 
-    tri_clear(); // clears triangles
-
-    // create a triangle for each unit
-    for(uint8_t i = 0; i < team->size; i++)
+    for(i = 0; i < team->size; i++)
     {
-        unit_t *unit = team->units[i];
+        unit = team->units[i];
+
+        if(unit->isDead)
+            continue;
+        
         tri_make_no_clear(unit->row, unit->column, 2);
     }
 
-    // Hide tiles and units covered by a fog
-    for(uint8_t y = 0; y < tri_get_height(); y++)
-    {
-        for(uint8_t x = 0; x < tri_get_width(); x++)
-        {
-            if(!tri_get(x, y) && map_get(x, y) != 2)
-            {
-                unit_t *unit = unit_get(opponents, x, y);
+    // now apply the mask that we've created
 
-                fill_bkg_rect(x, y, 1, 1, 0x17);
-                // hide an opposing unit if present
-                if(unit)
-                    unit_hide(unit);
-            }
-        }
+    for(i = 0; i < activeMap->size; i++)
+    {
+        if(!tri_active_diamond[i])
+            map_fog[i] = 23;
+
     }
+
+    map_fog_hide_units(mth_get_opponent());
+}
+
+
+/**
+ * Hides units that are covered by the fog
+ * @param team team of units to hide
+ */
+void map_fog_hide_units(team_t *team)
+{
+    for(uint8_t i = 0; i < team->size; i++)
+    {
+        unit_t *unit = team->units[i];
+
+        if(!unit->isDead && !tri_get(unit->row, unit->column))
+            unit_hide(unit);
+        else
+            unit_draw_paletted(unit, team);
+    }
+}
+
+
+/**
+ * Creates a separate buffer of the map and overlays fog on it
+ * - redraws the map
+ */
+void map_generate_fog()
+{
+    // copy map to buffer
+    memcpy(map_fog, internalMap.data, internalMap.size);
+    
+    // now apply fog
+    map_apply_fog();
+    map_draw();
+}
+
+
+/**
+ * Updates the fog buffer and redraws the map
+ */
+void map_update_fog()
+{
+    team_t *team = mth_get_current_team();
+
+    if(!map_has_fog())
+        return;
+
+    if(team->control != CONTROLLER_PLAYER)
+    {
+        map_fog_hide_units(team);
+        return;
+    }
+
+    map_generate_fog();
+    if(is_cgb())
+        cgb_map();
 }
 
 
@@ -90,13 +147,24 @@ void map_draw_fog()
  * @param width width of data
  * @param height height of data
  * @param useFog true if the map should been drawn with a fog overlay
+ * @returns pointer to map
  */
-void map_load_from_data(uint8_t *data, uint8_t w, uint8_t h, bool useFog)
+map_t *map_load_from_data(uint8_t *data, uint8_t w, uint8_t h, bool useFog)
 {
     internalMap.width = w;
     internalMap.height = h;
     internalMap.data = data;
     map_load(&internalMap, useFog);
+    return &internalMap;
+}
+
+
+/**
+ * @returns true if the loaded map is using fog
+ */
+inline bool map_has_fog()
+{
+    return mapHasFog;
 }
 
 
@@ -108,7 +176,18 @@ void map_load_from_data(uint8_t *data, uint8_t w, uint8_t h, bool useFog)
 void map_load(map_t *map, bool useFog)
 {
     activeMap = map;
+    activeMap->size = activeMap->width * activeMap->height;
     mapHasFog = useFog;
+}
+
+
+/**
+ * Must be called whenever the turn has just changed
+ */
+void map_changed_turns()
+{
+    if(map_has_fog())
+        map_update_fog();
 }
 
 
@@ -120,6 +199,22 @@ void map_load(map_t *map, bool useFog)
 uint8_t map_get(uint8_t x, uint8_t y)
 {
     return activeMap->data[x + y * map_get_width()];
+}
+
+
+/**
+ * Gets a tiles from the map. If fog is enabled, then invisible tiles will return the tile number of fog
+ * @param x row
+ * @param y column
+ * @returns tile number at (x, y)
+ * @see map_get
+ */
+uint8_t map_get_with_fog(uint8_t x, uint8_t y)
+{
+    if(map_has_fog())
+        return map_fog[x + y * map_get_width()];
+    else
+        return activeMap->data[x + y * map_get_width()];
 }
 
 

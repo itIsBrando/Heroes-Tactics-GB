@@ -6,6 +6,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define TILE_HOUSE  16
+#define TILE_FOG    23
+#define TILE_BRIDGE 14
+#define TILE_WATER  15
+#define TILE_TREE   16
+
+#define MAX_TEAM_SIZE 4
+
 // typedef unsigned char bool;
 
 typedef enum {

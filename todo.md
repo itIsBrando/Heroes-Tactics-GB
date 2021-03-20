@@ -9,15 +9,15 @@
 - [ ] Add movement arrows that track the cursor (*optional*)
 - [ ] Add campaign world map
 - [ ] Link cable multiplayer (**low**)
-- [x] Add fog (**high**)
+- [x] Add fog
   - [x] Make fog optional
-- [x] Add title screen (**high**)
+- [x] Add title screen
 - [x] Add CGB background coloration
 - [x] Add CGB sprite coloration
-- [x] Allow player to attack an enemy without moving (**high**)
-- [x] *FORCE UNIT TO ATTACK IMMEDIATELY AFTER MOVING* (**high**)
+- [x] Allow player to attack an enemy without moving
+- [x] FORCE UNIT TO ATTACK IMMEDIATELY AFTER MOVING
 - [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` accept the size of the `heursitic_t` as a parameter
-- [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` sort the `heursitic_t` array in order of smallest priority to largest priority (**high**)
+- [x] have `ai_get_heursitic_target(unit_t *, heursitic_t *)` sort the `heursitic_t` array in order of smallest priority to largest priority
 
 ## Polish:
 - [ ] Remove much white-space from *match set up screen*
@@ -45,5 +45,7 @@
 - [ ] Fix units that spawn outside of the map
 - [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy
 - [ ] Palettes during unit healing is messed up (**HIGH**)
-- [x] Fix the unit's ability to move 1 tile additional outside its `movePoints` (**high**)
-- [x] Healers can move after healing (**high**)
+- [x] Enemy units can be exposed by peaking at tiles in fog
+- [x] Healer must move otherwise it cannot heal an ally
+- [x] Fix the unit's ability to move 1 tile additional outside its `movePoints`
+- [x] Healers can move after healing

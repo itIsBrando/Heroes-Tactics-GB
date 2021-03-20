@@ -33,6 +33,7 @@ void map_update_fog();
 void map_generate_fog();
 void map_fog_hide_units(team_t *);
 void map_changed_turns();
+void map_init_spawn(team_t *, bool);
 
 uint8_t map_get_width();
 uint8_t map_get_height();

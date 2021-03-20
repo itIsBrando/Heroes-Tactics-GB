@@ -179,6 +179,7 @@ void mnu_choose_map_init()
             useFog = true;
             mnu_draw_map();
             print("using fog", 0, 10);
+            waitjoypad(J_START);
         }
     } while(pad != J_A);
 

@@ -182,6 +182,68 @@ void map_load(map_t *map, bool useFog)
 
 
 /**
+ * Sets the spawnpoint of each unit in this team
+ * @param team team of units to setup
+ * @param searchBackwards true to start at the end of map towards top
+ */
+void map_init_spawn(team_t *team, bool searchBackwards)
+{
+    int8_t x, y, i;
+    x = y = 0;
+
+    if(searchBackwards)
+    {
+        x = map_get_width() - 1, y = map_get_height() - 1;
+        for(i = activeMap->size; i >= 0; i--)
+        {
+            // house
+            if(activeMap->data[i] == TILE_HOUSE)
+                break;
+            
+            if(--x < 0)
+                x = map_get_width(), y--;
+        }
+    } else {
+        for(i = 0; i < (int8_t)activeMap->size; i++)
+        {
+            // house
+            if(activeMap->data[i] == TILE_HOUSE)
+                break;
+            
+            if(++x >= (int8_t)map_get_width())
+                x = 0, y++;
+        }
+    }
+
+    int8_t dx[] = {-1, 1, 0, 0};
+    int8_t dy[] = {0, 0, -1, 1};
+
+    // now check for surrounding tiles
+    for(i = 0; i < (int8_t)team->size; i++)
+    {
+        unit_t *unit = team->units[i];
+        unit->row = x;
+        unit->column = y;
+
+        for(uint8_t j = 0; j < 4; j++)
+        {
+            const uint8_t px = x + dx[j],
+              py = y + dy[j];
+            bool isValid = !map_is_solid(px, py);
+            // make sure that no other unit will occupy this space
+            for(int8_t k = 0; k < i; k++)
+            {
+                if(team->units[k]->row == px && team->units[k]->column == py)
+                    isValid = false;
+            }
+            if(isValid)
+                unit->row = px, unit->column = py;
+
+        }
+    }
+}
+
+/**
  * Must be called whenever the turn has just changed
  */
 void map_changed_turns()

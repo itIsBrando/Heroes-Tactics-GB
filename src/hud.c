@@ -118,14 +118,15 @@ static char *get_strat_string(ai_strat_t strat)
 void hud_show_details(uint8_t x, uint8_t y)
 {
     unit_t *unit = unit_get(mth_get_current_team(), x, y);
-    bool isYours = unit != NULL;
+    const uint8_t tile = map_get_with_fog(x, y);
+    const bool isYours = unit != NULL;
 
     hud_show_action(HUD_ACTION_PEAK);
 
     if(!isYours)
         unit = unit_get_any(x, y);
 
-    if(unit)
+    if(unit && tile != TILE_FOG)
     {
         // print unit name
         print(unit_get_name(unit), 20-5, 0);
@@ -145,7 +146,6 @@ void hud_show_details(uint8_t x, uint8_t y)
         fill_bkg_rect(20 - 4, 1, 1, 1, unit->tile);
     } else
     {
-        const uint8_t tile = map_get(x, y);
         print("TILE", 20-5, 0);
         fill_bkg_rect(20 - 3, 1, 1, 1, tile);
         if(map_fget(tile) & 0x1)

@@ -153,6 +153,7 @@ void gme_computer_turn()
         ai_do_turn(currentTeam->units[i]);
 }
 
+
 /**
  * Runs the turn for a human player
  */
@@ -280,8 +281,11 @@ void gme_select_a()
             // check to see if we can move somewhere
             } else if(unit_move_path_find(game_state.selectedUnit, &pos))
                 gme_select_unit(game_state.selectedUnit, true);
-            else
+            else {
+                if(game_state.selectedUnit->type == UNIT_TYPE_HEALER)
+                    gme_attack();
                 gme_deselect_unit();
+            }
         }
     } else
     {
@@ -322,6 +326,9 @@ void gme_init(team_t *t1, team_t *t2, team_t *t3)
     currentMatch.teams[0] = t1;
     currentMatch.teams[1] = t2;
     currentMatch.teams[2] = t3;
+
+    map_init_spawn(t1, false);
+    map_init_spawn(t2, true);
 
     mnu_choose_teams_init(&currentMatch);
 }
@@ -402,8 +409,7 @@ void mth_change_turn()
 
 
     // wait until `A` button pressed
-    while(joypad() != J_A)
-        wait_vbl_done();
+    waitPressed(J_A | J_START);
 
     fill_bkg_rect(0, 10, 20, 2, 0);
 }

@@ -63,11 +63,12 @@ void cgb_write_tile(uint8_t x, uint8_t y)
     case 0x1:
         pal = CGB_BG_SAND;
         break;
-    case 0xF:
+    case TILE_WATER:
         pal = CGB_BG_WATER;
         break;
     case 0x5:
-    case 0x10:
+    case TILE_FOG:
+    case TILE_TREE:
         pal = CGB_BG_TREE;
         break;
     case 0x14: // bridge

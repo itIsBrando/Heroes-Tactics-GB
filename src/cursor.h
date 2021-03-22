@@ -16,4 +16,5 @@ void cur_vbl();
 uint8_t cur_get_x();
 uint8_t cur_get_y();
 
+direction_t cur_get_direction(position_t *pos1, position_t *pos2);
 #endif

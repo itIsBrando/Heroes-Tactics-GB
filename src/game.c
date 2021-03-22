@@ -9,6 +9,7 @@
 #include "map.h"
 #include "path.h"
 #include "ai.h"
+#include "diamond.h"
 
 #include <gb/gb.h>
 
@@ -293,6 +294,7 @@ void gme_select_a()
     }
 }
 
+
 /**
  * Selects a unit at the cursor for attacking
  */
@@ -309,7 +311,22 @@ void gme_select_b()
         }
         hud_hide_action();
         gme_deselect_unit();
-        return;
+    } else
+    {
+        // view attack range of unit
+        unit_t *unit = unit_get_any(cx, cy);
+
+        if(!unit)
+            return;
+        
+        uint8_t range = unit->stats.damageRadius + unit->stats.movePoints;
+        tri_make(unit->row, unit->column, range);
+        tri_clip();
+        tri_draw(0x9);
+        cgb_diamond(3);
+
+        waitjoypad(J_B);
+        tri_hide();
     }
 
 }

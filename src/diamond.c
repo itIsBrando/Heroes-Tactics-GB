@@ -111,7 +111,7 @@ void tri_clip()
 }
 
 /**
- * Draws the active triangle
+ * Draws the active triangle. Includes CGB coloration
  */
 void tri_draw(const uint8_t tile)
 {
@@ -123,13 +123,11 @@ void tri_draw(const uint8_t tile)
     for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
     {
         if(tri_active_diamond[i])
-        {
             fill_bkg_rect(x, y, 1, 1, tile);
-            if(isCGB)
-                cgb_diamond(x, y);
-        }
 
         if(++x >= map_get_width())
             x = 0, y++;
     }
+
+    cgb_diamond(1);
 }

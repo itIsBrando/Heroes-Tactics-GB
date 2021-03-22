@@ -17,7 +17,7 @@
 bool is_cgb();
 void cgb_init();
 void cgb_map();
-void cgb_diamond(uint8_t x, uint8_t y);
+void cgb_diamond(uint8_t);
 void cgb_hide_diamond();
 uint8_t cgb_get_team_palette(team_t *team);
 void cgb_write_tile(uint8_t x, uint8_t y);

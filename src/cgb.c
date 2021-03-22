@@ -86,15 +86,17 @@ void cgb_map()
 {
     if(!is_cgb())
         return;
+    
+    uint8_t x = 0, y = 0;
 
     VBK_REG = 1;
 
-    for(uint8_t y = 0; y < map_get_height(); y++)
+    for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
     {
-        for(uint8_t x = 0; x < map_get_width(); x++)
-        {
-            cgb_write_tile(x, y);
-        }
+        cgb_write_tile(x, y);
+
+        if(++x >= tri_get_width())
+            x = 0, y++;
     }
 
     VBK_REG = 0;
@@ -102,15 +104,27 @@ void cgb_map()
 
 
 /**
- * Sets the palette for CGB
- * *external checking required*
- * @param x tile x
- * @param y tile y
+ * Colorizes all the tiles in a diamond
+ * @param paletteNumber palette to fill the tiles with
  */
-void cgb_diamond(uint8_t x, uint8_t y)
+void cgb_diamond(uint8_t paletteNumber)
 {
+    if(!is_cgb())
+        return;
+
+    uint8_t x = 0, y = 0;
+
     VBK_REG = 1;
-    fill_bkg_rect(x, y, 1, 1, 1);
+
+    for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
+    {
+        if(tri_active_diamond[i])
+            fill_bkg_rect(x, y, 1, 1, paletteNumber);
+
+        if(++x >= tri_get_width())
+            x = 0, y++;
+    }
+
     VBK_REG = 0;
 }
 
@@ -179,7 +193,6 @@ void cgb_cleanup_battle()
 {
     if(!is_cgb())
         return;
-
 
     cgb_map();
 }

@@ -1,7 +1,6 @@
 # **To-Do List**
 
 ## Features:
-- [ ] Unit spawning on map (**high**)
 - [ ] Add support for more than 3 units per team (**low**)
 - [ ] Replace `map select` with an open world map
 - [ ] Detect winning/losing condition immediately after battle, not at the end of a turn
@@ -9,6 +8,8 @@
 - [ ] Add movement arrows that track the cursor (*optional*)
 - [ ] Add campaign world map
 - [ ] Link cable multiplayer (**low**)
+- [x] Hold **`B`** to view attack range
+- [x] Unit spawning on map (**high**)
 - [x] Add fog
   - [x] Make fog optional
 - [x] Add title screen

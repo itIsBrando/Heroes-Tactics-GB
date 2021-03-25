@@ -203,14 +203,17 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
         for(; i < curTeam->size; i++)
         {
             const int8_t hp = curTeam->units[i]->stats.health;
-            if(hp < min)
+            bestIndex = -1;
+            if(hp < min && curTeam->units[i]->stats.maxHealth != hp)
             {
                 bestIndex = i;
                 min = hp;
             }
         }
 
-        return curTeam->units[bestIndex];
+        // if all units are at full health, do AI_TARGET_NEAR
+        if(bestIndex != -1)
+            return curTeam->units[bestIndex];
     case AI_TARGET_NEAR:
         // find the most favorable unit
         ai_get_heursitic_target(unit, priorities, sizeof(priorities) / sizeof(priorities[0]));
@@ -262,9 +265,9 @@ void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
 
     tri_make(unit->row, unit->column, unit->stats.movePoints);
 
-    for(y = 0; y < tri_get_height(); y++)
+    for(y = 0; y < map_get_width(); y++)
     {
-        for(x = 0; x < tri_get_width(); x++)
+        for(x = 0; x < map_get_width(); x++)
         {
             // only check distance if we can move to this point
             if(!tri_get(x, y) || map_is_solid(x, y))

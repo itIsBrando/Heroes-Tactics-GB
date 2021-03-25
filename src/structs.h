@@ -14,13 +14,20 @@
 
 #define MAX_TEAM_SIZE 4
 
-// typedef unsigned char bool;
 
 typedef enum {
     UNIT_TYPE_BRAWN,
     UNIT_TYPE_ARCHER,
     UNIT_TYPE_HEALER
 } type_of_unit;
+
+
+typedef enum {
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+    DIRECTION_UP,
+    DIRECTION_DOWN
+} direction_t;
 
 
 typedef enum {

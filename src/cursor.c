@@ -6,8 +6,10 @@
 
 #include <gb/gb.h>
 
+
+static uint8_t counter = 0;
 static uint8_t cx, cy;
-static uint8_t csn, ctn;
+static uint8_t csn, ctn; // Cursor Sprite Number, Cursor Tile Number
 static uint8_t lastPressed = 0;
 static bool isShown = false;
 
@@ -18,6 +20,8 @@ void cur_init()
     ctn = 0x14;
     cur_draw();
     cur_show();
+
+    set_sprite_prop(csn, 1); // set palette to 1
 }
 
 /**
@@ -97,7 +101,6 @@ void cur_animate() {
 }
 
 
-static uint8_t counter = 0;
 void cur_vbl()
 {
     if(++counter > 15)
@@ -118,4 +121,28 @@ inline uint8_t cur_get_x()
 inline uint8_t cur_get_y()
 {
     return cy;
+}
+
+
+/**
+ * Both positions must be neighboring
+ * @param pos1 position 1
+ * @param pos2 position 2
+ * @returns the direction that `pos1` needs to move to get to `pos2`
+ */
+direction_t cur_get_direction(position_t *pos1, position_t *pos2)
+{
+    const uint8_t x1 = pos1->x, x2 = pos2->x;
+    const uint8_t y1 = pos1->y, y2 = pos2->y;
+
+    if(x1 > x2)
+        return DIRECTION_RIGHT;
+    else if(x1 < x2)
+        return DIRECTION_LEFT;
+    
+    if(y1 > y2)
+        return DIRECTION_UP;
+    else
+        return DIRECTION_DOWN;
+
 }

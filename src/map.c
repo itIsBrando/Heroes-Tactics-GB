@@ -194,7 +194,7 @@ void map_init_spawn(team_t *team, bool searchBackwards)
     if(searchBackwards)
     {
         x = map_get_width() - 1, y = map_get_height() - 1;
-        for(i = activeMap->size; i >= 0; i--)
+        for(i = activeMap->size-1; i >= 0; i--)
         {
             // house
             if(activeMap->data[i] == TILE_HOUSE)
@@ -204,7 +204,7 @@ void map_init_spawn(team_t *team, bool searchBackwards)
                 x = map_get_width(), y--;
         }
     } else {
-        for(i = 0; i < (int8_t)activeMap->size; i++)
+        for(i = 0; i < (int8_t)activeMap->size-map_get_width(); i++)
         {
             // house
             if(activeMap->data[i] == TILE_HOUSE)

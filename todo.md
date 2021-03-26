@@ -40,6 +40,7 @@
 
 ## Bug Fixes:
 - [ ] Fix newline graphical bug in `print()` function
+- [ ] AI run crashes on the 5th map (**HIGH**)
 - [ ] Enemy units can be seen during movement when fog is enabled
 - [ ] Remove `useFog` static variable in `menu.c`
   - this was used as a hacky way to enable fog on any map

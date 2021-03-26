@@ -74,7 +74,11 @@ void gme_run()
  */
 void gme_deselect_unit()
 {
-    game_state.selectedUnit = NULL;
+    if(game_state.selectedUnit)
+    {
+        unit_draw_paletted(game_state.selectedUnit, mth_get_current_team());
+        game_state.selectedUnit = NULL;
+    }
     hud_hide_action();
     unit_hide_triangle();
 }
@@ -281,8 +285,13 @@ void gme_select_a()
                 gme_attack();
             // check to see if we can move somewhere
             } else if(unit_move_path_find(game_state.selectedUnit, &pos))
-                gme_select_unit(game_state.selectedUnit, true);
-            else {
+                if(hud_unit_attack_menu()) {
+                    game_state.selectedUnit->hasAttacked = true;
+                    gme_deselect_unit();                
+                }
+                else
+                    gme_select_unit(game_state.selectedUnit, true);
+            else { // if we cannot move to the tile at the cursor
                 if(game_state.selectedUnit->type == UNIT_TYPE_HEALER)
                     gme_attack();
                 gme_deselect_unit();

@@ -22,4 +22,6 @@ void hud_force_hide_warn();
 void hud_warn(char *);
 void hud_vbl_int();
 
+uint8_t hud_unit_attack_menu();
+
 #endif

@@ -247,3 +247,45 @@ void hud_force_hide_warn()
     if(hasVblank)
         hud_vbl_int();
 }
+
+/**
+ * @param cur cursor
+ */
+static void hud_unit_attack_draw(uint8_t cur)
+{
+    print_window(" ATK END", 0, 3);
+    fill_win_rect(cur << 2, 3, 1, 1, 157); // '>'
+}
+
+
+/**
+ * The menu that appears after a unit has moved
+ * @returns 1 for END TURN or 0 for ATTACK
+ */
+uint8_t hud_unit_attack_menu()
+{
+    uint8_t pad, cur = 0;
+
+    hud_force_hide_warn();
+    hud_unit_attack_draw(0);
+    
+    do {
+        pad = joypad();
+
+        if(pad & J_LEFT)
+        {
+            cur = 0;
+            hud_unit_attack_draw(0);
+        } else if(pad & J_RIGHT)
+        {
+            cur = 1;
+            hud_unit_attack_draw(1);
+        }
+
+        wait_vbl_done();
+    } while(pad != J_A);
+
+    // clear this menu!! @todo
+    
+    return cur;
+}

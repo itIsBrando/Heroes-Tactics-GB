@@ -9,14 +9,15 @@
 #include "data/mapdata.h"
 #include "data/map2.h"
 #include "data/map3.h"
+#include "data/map4.h"
+#include "data/map5.h"
 #include "diamond.h"
 #include "units.h"
 #include "cgb.h"
 
-uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA};
-uint8_t map_widths[] = {10, 9,  7};
-uint8_t map_heights[]= {10, 8,  8};
-
+uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA, MAP4_DATA, MAP5_DATA};
+uint8_t map_widths[] = {10, 9,  7, 7, 12};
+uint8_t map_heights[]= {10, 8,  8, 6, 6};
 static map_t internalMap;
 static map_t *activeMap;
 static uint8_t map_fog[MAP_MAX_SIZE];
@@ -189,12 +190,13 @@ void map_load(map_t *map, bool useFog)
 void map_init_spawn(team_t *team, bool searchBackwards)
 {
     int8_t x, y, i;
+    const uint8_t size = activeMap->size-1;
     x = y = 0;
 
     if(searchBackwards)
     {
         x = map_get_width() - 1, y = map_get_height() - 1;
-        for(i = activeMap->size-1; i >= 0; i--)
+        for(i = size; i >= 0; i--)
         {
             // house
             if(activeMap->data[i] == TILE_HOUSE)
@@ -204,7 +206,7 @@ void map_init_spawn(team_t *team, bool searchBackwards)
                 x = map_get_width(), y--;
         }
     } else {
-        for(i = 0; i < (int8_t)activeMap->size-map_get_width(); i++)
+        for(i = 0; i < (int8_t)size; i++)
         {
             // house
             if(activeMap->data[i] == TILE_HOUSE)
@@ -242,6 +244,7 @@ void map_init_spawn(team_t *team, bool searchBackwards)
         }
     }
 }
+
 
 /**
  * Must be called whenever the turn has just changed

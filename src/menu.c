@@ -157,9 +157,9 @@ void mnu_choose_map_init()
 
     mnu_cursor_up();
 
-    for(uint8_t i = 0; i < totalMaps; i++)
+    for(uint8_t i = 1; i <= totalMaps; i++)
     {
-        printInt(i, 11, 3 + i, false);
+        printInt(i, 11, 2 + i, false);
     }
 
     waitjoypad(0xff);

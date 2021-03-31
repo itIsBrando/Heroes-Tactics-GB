@@ -59,8 +59,15 @@ typedef struct {
     ai_strat_t strategy;
     type_of_unit type;
     stat_t stats;
-    void (*idk);
+    // void (*idk);
 } unit_t;
+
+
+typedef struct {
+    uint8_t width, height;
+    uint8_t size; // width * height
+    uint8_t *data;
+} map_t;
 
 
 typedef enum {

@@ -9,6 +9,7 @@
 #include "cursor.h"
 #include "path.h"
 #include "cgb.h"
+#include "link.h"
 
 #include <gb/gb.h>
 #include <rand.h>
@@ -149,6 +150,20 @@ unit_t *unit_get_any(uint8_t x, uint8_t y) {
 }
 
 
+/**
+ * Gets the index of `unit` in `team`, or -1
+ * @returns index or -1
+ */
+uint8_t unit_get_index(unit_t *unit, team_t *team)
+{
+    for(uint8_t i = 0; i < team->size; i++)
+        if(team->units[i] == unit)
+            return i;
+        
+    return 255;
+}
+
+
 inline void unit_upd_sprite_tile(unit_t *unit)
 {
     set_sprite_tile(unit->spriteNumber, unit->tile);
@@ -228,6 +243,10 @@ void unit_engage(unit_t *u1, unit_t *u2)
 
 bool unit_attack(unit_t *attacker, unit_t *defender)
 {
+
+    if(lnk_is_multiplayer_battle() && mth_get_current_team()->control == CONTROLLER_PLAYER)
+        lnk_send_attack(attacker, defender);
+
     uint8_t i = 0;
     char *atkName = unit_get_name(attacker);
     char *defName = unit_get_name(defender);
@@ -301,8 +320,11 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     for(i = 0; i < currentMatch.numTeams; i++)
        mth_draw_team(currentMatch.teams[i]);
 
-    
     hud_draw_hotbar(currentTeam);
+
+    // wait to resync with opponent if we are multiplayer
+    if(lnk_is_multiplayer_battle())
+        lnk_wait_attack_complete();
     
     return death;
 }
@@ -435,6 +457,12 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
 
     if(map_has_fog())
         map_update_fog();
+
+    // if we are in multiplayer and this is a LOCALLY stored unit
+    if(lnk_is_multiplayer_battle() && mth_get_current_team()->control == CONTROLLER_PLAYER)
+    {
+        lnk_send_unit(unit);
+    }
 
     return true;
 }

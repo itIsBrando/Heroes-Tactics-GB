@@ -7,7 +7,11 @@
 - [ ] Allow player to press `B` button after it has moved (but still has attack diamond shown) to return unit to its position pre-movement (**high**)
 - [ ] Add movement arrows that track the cursor (*optional*)
 - [ ] Add campaign world map
-- [ ] Link cable multiplayer (**low**)
+- [ ] Add a map editor (**low**)
+- [ ] Add healing to link cable support (**HIGH**)
+- [x] Link cable multiplayer (gloriously implemented 03/11/21)
+- [x] Create a map packet for link cable support. This will prevent two different maps from being chosen (**HIGH**)
+- [x] Force both players to finish watching an attack to prevent desync (**HIGH**)
 - [x] Hold **`B`** to view attack range
 - [x] Unit spawning on map (**high**)
 - [x] Add fog

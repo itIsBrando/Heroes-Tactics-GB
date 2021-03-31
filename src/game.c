@@ -10,6 +10,7 @@
 #include "path.h"
 #include "ai.h"
 #include "diamond.h"
+#include "link.h"
 
 #include <gb/gb.h>
 
@@ -140,6 +141,9 @@ void gme_do_turn()
         break;
     case CONTROLLER_COMPUTER:
         gme_computer_turn();
+        break;
+    case CONTROLLER_LINK:
+        lnk_do_turn();
         break;
     default:
         print("Unsupported control method", 0, 0);
@@ -408,6 +412,10 @@ int8_t mth_finished()
 void mth_change_turn()
 {
     team_t *prevTeam = currentTeam;
+
+    // indicate that we are changing turns if we are multiplayer
+    if(lnk_is_multiplayer_battle() && currentTeam->control == CONTROLLER_PLAYER)
+        lnk_change_turn();
 
     if(mth_get_team_number() == 2)
         currentTeam = currentMatch.teams[0];

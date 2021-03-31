@@ -16,8 +16,8 @@
 #include "cgb.h"
 
 uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA, MAP4_DATA, MAP5_DATA};
-uint8_t map_widths[] = {10, 9,  7, 7, 12};
-uint8_t map_heights[]= {10, 8,  8, 6, 6};
+const uint8_t map_widths[] = {10, 9,  7, 7, 12};
+const uint8_t map_heights[]= {10, 8,  8, 6, 6};
 static map_t internalMap;
 static map_t *activeMap;
 static uint8_t map_fog[MAP_MAX_SIZE];
@@ -321,6 +321,15 @@ inline uint8_t map_fget(uint8_t tile)
 bool map_is_solid(uint8_t x, uint8_t y)
 {
     return map_fget(map_get(x, y)) & 0x1;
+}
+
+
+/**
+ * @returns the loaded map
+ */
+inline map_t *map_get_active()
+{
+    return activeMap;
 }
 
 

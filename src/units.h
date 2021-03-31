@@ -145,6 +145,7 @@ bool unit_attack(unit_t *attacker, unit_t *defender);
 
 bool unit_heal(unit_t *unit, unit_t *healer);
 
+uint8_t unit_get_index(unit_t *unit, team_t *team);
 
 void unit_move_diamond(unit_t *unit);
 

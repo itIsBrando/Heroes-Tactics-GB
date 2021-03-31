@@ -7,14 +7,8 @@
 #define MAPS_TOTAL 5
 
 extern uint8_t *all_maps[];
-extern uint8_t map_widths[];
-extern uint8_t map_heights[];
-
-typedef struct {
-    uint8_t width, height;
-    uint8_t size; // width * height
-    uint8_t *data;
-} map_t;
+extern const uint8_t map_widths[];
+extern const uint8_t map_heights[];
 
 
 void map_draw();
@@ -35,6 +29,7 @@ void map_fog_hide_units(team_t *);
 void map_changed_turns();
 void map_init_spawn(team_t *, bool);
 
+map_t *map_get_active();
 uint8_t map_get_width();
 uint8_t map_get_height();
 

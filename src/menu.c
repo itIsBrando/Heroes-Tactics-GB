@@ -4,8 +4,9 @@
 #include "main.h"
 #include "map.h"
 #include "game.h"
+#include "link.h"
 
-const char control_text[][5] = {"PLR", "CPU", "LINK"};
+const char control_text[][4] = {"PLR", "CPU", "LNK"};
 static uint8_t cursor, maxCursor, cur_x = 0;
 static void (*onchange_ptr)(void);
 
@@ -48,26 +49,28 @@ void mnu_choose_teams_init(match_t *match)
     do {
         pad = joypad();
 
-        if((pad & J_LEFT) || (pad & J_RIGHT))
+        if(pad == J_LEFT && match->teams[cursor]->control > 0)
         {
             match->teams[cursor]->control--;
-            match->teams[cursor]->control &= 0x1;
+            mnu_choose_team_draw(match);
+            waitjoypad(J_LEFT | J_RIGHT);
+        } else if((pad == J_RIGHT) && match->teams[cursor]->control < 2)
+        {
+            match->teams[cursor]->control++;
             mnu_choose_team_draw(match);
             waitjoypad(J_LEFT | J_RIGHT);
         }
 
         if(pad & J_DOWN)
-        {
             mnu_cursor_down();
-        }
 
         if(pad & J_UP)
-        {
             mnu_cursor_up();
-        }
         
         wait_vbl_done();
     } while(pad != J_A);
+
+    lnk_init(match);
 }
 
 

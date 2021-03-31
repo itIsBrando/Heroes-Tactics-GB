@@ -40,13 +40,14 @@
 
 ## Bug Fixes:
 - [ ] Fix newline graphical bug in `print()` function
-- [ ] AI run crashes on the 5th map (**HIGH**)
-- [ ] Enemy units can be seen during movement when fog is enabled
+- [ ] Enemy units can be seen during movement when fog is enabled (**HIGH**)
 - [ ] Remove `useFog` static variable in `menu.c`
   - this was used as a hacky way to enable fog on any map
 - [ ] Fix units that spawn outside of the map
 - [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy
 - [ ] Palettes during unit healing is messed up (**HIGH**)
+- [ ] Healers do not switch to `AI RUN`, instead stay on`HEAL`
+- [x] AI run crashes on the 5th map (**HIGH**)
 - [x] Enemy units can be exposed by peaking at tiles in fog
 - [x] Healer must move otherwise it cannot heal an ally
 - [x] Fix the unit's ability to move 1 tile additional outside its `movePoints`

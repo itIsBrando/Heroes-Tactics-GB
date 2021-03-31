@@ -14,7 +14,7 @@
 #include <rand.h>
 
 const stat_t ARCHER_STAT = {3, 3, 1, 2, 2};
-const stat_t HEALER_STAT = {2, 2, 1, 3, 1};
+const stat_t HEALER_STAT = {2, 2, 1, 2, 1};
 const stat_t BRAWN_STAT = {5, 5, 2, 1, 1};
 static uint8_t unit_vbl_counter;
 

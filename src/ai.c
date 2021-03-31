@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <gb/gb.h>
 
+
 /**
  * Does a turn for the AI's unit
  * @param unit
@@ -252,7 +253,7 @@ unit_t *ai_get_target(unit_t *unit, ai_strat_t strategy)
  */
 void ai_run_from(position_t *position, unit_t *unit, unit_t *other)
 {
-    uint8_t xGoal = 0, yGoal = 0, x, y;
+    uint8_t xGoal = unit->row, yGoal = unit->column, x, y;
     uint8_t bestDist = 0;
     uint8_t bestIndex = 0;
     const uint8_t xOther = other->row, yOther = other->column;

@@ -203,7 +203,7 @@ void map_init_spawn(team_t *team, bool searchBackwards)
                 break;
             
             if(--x < 0)
-                x = map_get_width(), y--;
+                x = map_get_width()-1, y--;
         }
     } else {
         for(i = 0; i < (int8_t)size; i++)

@@ -61,8 +61,8 @@ void gme_run()
         win = mth_finished();
     } while(win == -1);
 
-    print("Team  has won.", 0, 0);
-    printInt(win + 1, 4, 0, false);
+    print("Team  has won.", 0, 10);
+    printInt(win + 1, 4, 10, false);
 
     remove_VBL(unit_vbl_int);
     cur_destroy();

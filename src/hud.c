@@ -254,7 +254,7 @@ void hud_force_hide_warn()
 static void hud_unit_attack_draw(uint8_t cur)
 {
     print_window(" ATK END", 0, 3);
-    fill_win_rect(cur << 2, 3, 1, 1, 157); // '>'
+    fill_win_rect(cur << 2, 3, 1, 1, 158); // '>'
 }
 
 
@@ -273,19 +273,15 @@ uint8_t hud_unit_attack_menu()
         pad = joypad();
 
         if(pad & J_LEFT)
-        {
-            cur = 0;
-            hud_unit_attack_draw(0);
-        } else if(pad & J_RIGHT)
-        {
-            cur = 1;
-            hud_unit_attack_draw(1);
-        }
+            hud_unit_attack_draw(cur = 0);
+        else if(pad & J_RIGHT)
+            hud_unit_attack_draw(cur = 1);
 
         wait_vbl_done();
     } while(pad != J_A);
 
-    // clear this menu!! @todo
+    // clear the menu
+    fill_win_rect(0, 3, 8, 1, 0);
     
     return cur;
 }

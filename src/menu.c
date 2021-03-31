@@ -79,7 +79,7 @@ void mnu_choose_teams_init(match_t *match)
 void mnu_cursor_init(uint8_t xCursor, uint8_t maxSize, void (*onchange)(void) )
 {
     cur_x = xCursor;
-    cursor = 0;
+    cursor = 1;
     maxCursor = maxSize;
     onchange_ptr = onchange;
     mnu_cursor_up();
@@ -91,10 +91,12 @@ void mnu_cursor_init(uint8_t xCursor, uint8_t maxSize, void (*onchange)(void) )
  */
 void mnu_cursor_down()
 {
-    fill_bkg_rect(cur_x, 2, 1, 2+maxCursor, 0);
 
-    if(cursor < maxCursor-1)
+    if(cursor < maxCursor-1) {
+        fill_bkg_rect(cur_x, 2, 1, 2+maxCursor, 0);
         cursor++;
+    } else
+        return;
 
     print(">", cur_x, 3 + cursor);
 
@@ -109,10 +111,12 @@ void mnu_cursor_down()
  * Moves and redraws the cursor
  */
 void mnu_cursor_up() {
-    fill_bkg_rect(cur_x, 2, 1, 2+maxCursor, 0);
 
-    if(cursor > 0)
+    if(cursor > 0) {
+        fill_bkg_rect(cur_x, 2, 1, 2+maxCursor, 0);
         cursor--;
+    } else
+        return;
     
     print(">", cur_x, 3 + cursor);
 
@@ -122,6 +126,7 @@ void mnu_cursor_up() {
     waitjoypad(J_UP);
 }
 
+
 static bool useFog = false;
 
 /**
@@ -130,7 +135,7 @@ static bool useFog = false;
  */
 static void mnu_draw_map()
 {
-    fill_bkg_rect(0, 0, 10, 10, 0);
+    fill_bkg_rect(0, 0, 12, 10, 0);
     
     map_blit(
         map_load_from_data(
@@ -152,15 +157,13 @@ void mnu_choose_map_init()
     uint8_t pad;
 
     clear_bg();
-    mnu_cursor_init(10, totalMaps, mnu_draw_map);
-    print("MAP SELECT", 10, 0);
+    mnu_cursor_init(18, totalMaps, mnu_draw_map);
+    print("MAP", 17, 0);
 
     mnu_cursor_up();
 
     for(uint8_t i = 1; i <= totalMaps; i++)
-    {
-        printInt(i, 11, 2 + i, false);
-    }
+        printInt(i, 19, 2 + i, false);
 
     waitjoypad(0xff);
 

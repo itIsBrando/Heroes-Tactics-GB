@@ -28,10 +28,14 @@
 - [ ] Remove much white-space from *match set up screen*
 - [ ] Water animation
 - [ ] Improve visuals on the banner that appear when changing turns
-- [ ] Add game over screen
+- [ ] Add game over screen (**HIGH**)
 - [ ] Add a visual on the HUD to indicate unit selection
 - [ ] Change palette for house and bridge
 - [ ] Add how-to screen (**low**)
+- [ ] Add a menu to return to the main menu when in the game (**HIGH**)
+- [ ] Allow link cable units to use the pathfinding algorithm
+- [ ] Only send new position when a unit moves over link cable
+- [ ] Add coloration to the `SELECT` button's peak visual
 - [x] Add CGB support to `unit_engage`
 - [x] Add the unit's name above it in a battle
 - [x] Add the stats of the two units to the battle screen
@@ -45,6 +49,7 @@
 ## Bug Fixes:
 - [ ] Fix newline graphical bug in `print()` function
 - [ ] Enemy units can be seen during movement when fog is enabled (**HIGH**)
+- [ ] One unit on team 1 is invisible on the third map (**HIGH**)
 - [ ] Remove `useFog` static variable in `menu.c`
   - this was used as a hacky way to enable fog on any map
 - [ ] Fix units that spawn outside of the map

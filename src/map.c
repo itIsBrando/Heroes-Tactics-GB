@@ -20,6 +20,7 @@ const uint8_t map_widths[] = {10, 9,  7, 7, 12};
 const uint8_t map_heights[]= {10, 8,  8, 6, 6};
 static map_t internalMap;
 static map_t *activeMap;
+static uint8_t internal_map_data[MAP_MAX_SIZE];
 static uint8_t map_fog[MAP_MAX_SIZE];
 static bool mapHasFog = false;
 
@@ -154,7 +155,11 @@ map_t *map_load_from_data(uint8_t *data, uint8_t w, uint8_t h, bool useFog)
 {
     internalMap.width = w;
     internalMap.height = h;
-    internalMap.data = data;
+    
+    // stinky hack we need to do incase `data` gets freed
+    memcpy(internal_map_data, data, MAP_MAX_SIZE);
+    internalMap.data = internal_map_data;
+    
     map_load(&internalMap, useFog);
     return &internalMap;
 }

@@ -10,7 +10,9 @@ typedef enum
     LNK_SEND_UNIT,
     LNK_END_TURN,
     LNK_SEND_ATTACK,
-    LNK_SEND_MAP
+    LNK_SEND_MAP,
+    LNK_SEND_HEAL,
+    LNK_SEND_POSITION,
 } lnk_command_types;
 
 
@@ -26,9 +28,12 @@ typedef struct {
 typedef struct {
     uint8_t attackerIndex;
     uint8_t defenderIndex;
-    
 } packet_attack_t;
 
+typedef struct {
+    uint8_t x, y;
+    uint8_t unitIndex;
+} packet_position_t;
 
 typedef struct {
     uint8_t width, height;
@@ -38,14 +43,18 @@ typedef struct {
 
 
 bool lnk_is_multiplayer_battle();
+bool lnk_is_leading();
 void lnk_init(match_t *);
 
 void lnk_do_turn();
 void lnk_change_turn();
 
 void lnk_send_unit(unit_t *unit);
+void lnk_send_unit_position(unit_t *unit);
 void lnk_send_attack(unit_t *attacker, unit_t *defender);
+void lnk_send_heal(unit_t *healer, unit_t *other);
 void lnk_send_map(map_t *map);
+
 
 void lnk_wait_attack_complete();
 
@@ -61,6 +70,8 @@ bool lnk_validate_checksum(const packet_t *);
 void lnk_gen_checksum(packet_t *);
 
 void lnk_decode_attack(packet_t *packet);
+void lnk_decode_heal(packet_t *packet);
+void lnk_decode_position(packet_t *packet);
 void lnk_decode_map(packet_t *packet);
 
 #endif

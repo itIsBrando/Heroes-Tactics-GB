@@ -244,7 +244,7 @@ void unit_engage(unit_t *u1, unit_t *u2)
 bool unit_attack(unit_t *attacker, unit_t *defender)
 {
 
-    if(lnk_is_multiplayer_battle() && mth_get_current_team()->control == CONTROLLER_PLAYER)
+    if(lnk_is_leading())
         lnk_send_attack(attacker, defender);
 
     uint8_t i = 0;
@@ -459,10 +459,8 @@ bool unit_move_path_find(unit_t *unit, position_t *destination)
         map_update_fog();
 
     // if we are in multiplayer and this is a LOCALLY stored unit
-    if(lnk_is_multiplayer_battle() && mth_get_current_team()->control == CONTROLLER_PLAYER)
-    {
+    if(lnk_is_leading())
         lnk_send_unit(unit);
-    }
 
     return true;
 }
@@ -565,6 +563,9 @@ bool unit_heal(unit_t *unit, unit_t *healer)
     if(unit_get_distance(unit, healer) > healer->stats.damageRadius)
         return false;
 
+    if(lnk_is_leading())
+        lnk_send_heal(healer, unit);
+
     cur_hide();
 
     unit_engage(unit, healer);
@@ -598,6 +599,10 @@ bool unit_heal(unit_t *unit, unit_t *healer)
     // redraw all teams
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
        mth_draw_team(currentMatch.teams[i]);
+
+    // resync players
+    if(lnk_is_multiplayer_battle())
+        lnk_wait_attack_complete();
 
     return true;
 }

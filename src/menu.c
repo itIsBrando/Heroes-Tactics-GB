@@ -17,11 +17,11 @@ static inline const char *mnu_getControllerType(control_t t)
 
 static void mnu_choose_team_draw(match_t *match)
 {
-    for(uint8_t i = 1; i <= match->numTeams; i++)
+    for(uint8_t i = 0; i < match->numTeams; i++)
     {
         const uint8_t y = i + 3;
         print("team", 1, y);
-        printInt(i, 6, y, false);
+        printInt(i+1, 6, y, false);
         print("<   >", 8, y);
         print(mnu_getControllerType(match->teams[i]->control), 9, y);
     }

@@ -1,0 +1,261 @@
+<html>
+<style>
+    body {
+        background-color: darkslategrey;
+    }
+
+    input[type=file] {
+        display: none;
+    }
+
+    canvas {
+        width: 100%;
+    }
+
+    p {
+        color: aliceblue;
+        background-color: darkcyan;
+        border-radius: 10px;
+        padding: 3px;
+    }
+</style>
+
+<body>
+    <button onclick="document.getElementById('picFile').click();">Upload tileset</button>
+    <input id="picFile" type="file" accepts="*.png">
+    <canvas id="canvas"></canvas>
+
+    <h3>SPRITE.C file</h3>
+    <button onclick="download('sprite.c', document.getElementById('cFileOutput').innerText)">download</button>
+    <p id="cFileOutput"></p>
+    <h3>SPRITE.H file</h3>
+    <button onclick="">download</button>
+    <p id="hFileOutput"></p>
+
+    <a id="downloadFile"></a>
+</body>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext("2d");
+    let palette = [];
+
+    /**
+     * @param w width of context
+     * @param h height of context
+     * @param context 
+     */
+    function makePalette(w, h, context) {
+        let index = 0;
+
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                const rgb = context.getImageData(x, y, 1, 1).data;
+                let isFound = false;
+                const r = rgb[0];
+                const g = rgb[1];
+                const b = rgb[2];
+                Object.keys(palette).forEach(element => {
+                    if (element == toRGBString(r, g, b))
+                        isFound = true;
+                });
+
+                if (!isFound)
+                    palette[toRGBString(r, g, b)] = index++;
+            }
+        }
+
+        console.log("Found " + index + " colors");
+        console.log(palette);
+        if (index > 4)
+            alert("Number of colors in this image exceeds 4");
+
+        sortPaletteByBrightness();
+    }
+
+    function RGBStringToDict(str) {
+        str = str.substring(4, str.length - 1);
+        let array = str.split(",");
+
+        for (let i = 0; i < 3; i++) {
+            array[i] = parseInt(array[i]);
+        }
+
+        return array;
+    }
+
+
+    // local function
+    function isLessThan(arr1, arr2) {
+        let sum1 = 0, sum2 = 0;
+        for (let i = 0; i < arr1.length; i++)
+            sum1 += arr1[i], sum2 += arr2[i];
+
+        return sum1 < sum2;
+    }
+
+    function sortPaletteByBrightness() {
+        let colors = [];
+        Object.keys(palette).forEach(c => {
+            colors.push(c);
+        });
+
+        let array = [];
+        for (let i = 0; i < 4; i++) {
+            const dict = RGBStringToDict(colors[i]);
+            array[i] = dict;
+        }
+
+        // sort array
+        for (let i = 0; i < array.length - 1; i++) {
+            for (let j = 0; j < array.length - i - 1; j++) {
+
+                if (isLessThan(array[j], array[j + 1])) {
+
+                    let t = array[j].splice(0);
+                    array[j] = array[j + 1].splice(0);
+                    array[j + 1] = t;
+                }
+            }
+        }
+
+        palette = [];
+        let index = 0;
+
+        for (let i = 0; i < array.length; i++) {
+            palette["rgb(" + array[i] + ")"] = index++;
+        }
+
+    }
+
+    function toRGBString(r, g, b) {
+        return "rgb(" + r + "," + g + "," + b + ")";
+    }
+
+
+    /**
+     * @returns the index of the color in the palette
+     */
+    function getPalette(r, g, b) {
+        return palette[toRGBString(r, g, b)];
+    }
+
+    /**
+     * Coverts the tile at (x, y) to an 8bpp image based on the palette
+     * @returns paletted array
+     */
+    function to8bpp(x, y) {
+        const rgbData = context.getImageData(x << 3, y << 3, 8, 8).data;
+        let array = new Uint8Array(rgbData.length >> 2);
+
+        for (let i = 0; i < rgbData.length; i += 4) {
+            const r = rgbData[i];
+            const g = rgbData[i + 1];
+            const b = rgbData[i + 2];
+            const pal = getPalette(r, g, b);
+            if (pal == null) {
+                alert("Color found in image that is not in palette");
+                return;
+            }
+            array[i >> 2] = pal;
+        }
+
+        return array;
+    }
+
+
+    function getBit(byte, bit) {
+        return (byte >> bit) & 1;
+    }
+
+    function setBit(byte, bit) {
+        return byte | (1 << bit);
+    }
+
+    /**
+     * Converts a tile encoded in 8bpp to 2bpp in gameboy format 
+     */
+    function to4bppGB(array) {
+        let output = new Uint8Array(16); // each tile is 16 bytes
+
+        for (let i = 0; i < 16; i += 2) {
+            for (let j = 0; j < 8; j++) {
+                const pal = array[i * 4 + j];
+
+                if (getBit(pal, 0) == 1)
+                    output[i] = setBit(output[i], 7 - j);
+                if (getBit(pal, 1) == 1)
+                    output[i + 1] = setBit(output[i + 1], 7 - j);
+            }
+        }
+
+        return output;
+    }
+
+    function toHex(num) {
+        num = num.toString(16);
+        while (num.length < 2) num = "0" + num;
+        return num;
+    }
+
+
+    function exportArray(array) {
+        const c = "#include \"sprite.h\"\n\nconst unsigned char SPRITE_DATA[] = {\n" + array + "\n};";
+        const h = "#ifndef SPRITE_H\n\
+        #define SPRITE_H\n\n\
+        extern unsigned char SPRITE_DATA[];\n\n\
+        #endif";
+
+        document.getElementById('cFileOutput').innerText = c;
+        document.getElementById('hFileOutput').innerText = h;
+    }
+
+
+    function download(filename, text)
+    {
+        const element = document.getElementById('downloadFile');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.click();
+
+    }
+
+
+    function loadTileset(data) {
+        const img = new Image();
+
+        img.onload = function () {
+            context.drawImage(img, 0, 0);
+            makePalette(img.width, img.height, context);
+
+            let out = [];
+            for (let y = 0; y < 3; y++) {
+                for (let x = 0; x < img.width / 8; x++)
+                    out.push.apply(out, to4bppGB(to8bpp(x, y)));
+            }
+
+            exportArray(out);
+        }
+
+
+        img.src = data;
+    }
+
+
+    document.getElementById("picFile").onchange = function (event) {
+        const file = event.target.files[0];
+        if (!file)
+            return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            loadTileset(event.target.result);
+        }
+
+        reader.readAsDataURL(file);
+    }
+</script>
+
+</html>

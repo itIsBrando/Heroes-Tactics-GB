@@ -66,14 +66,25 @@ void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow)
     }
 
     for(int8_t i = 0; i < unit->stats.maxHealth; i++)
-        {
-            uint8_t tile = (i < unit->stats.health) ? 0x11 : 0x12; // heart tile
-            // use either filled or unfilled heart
-            if(useWindow)
-                set_win_tiles(x + i, y, 1, 1, &tile);
-            else
-                set_bkg_tiles(x + i, y, 1, 1, &tile);
-        }
+    {
+        uint8_t tile = (i < unit->stats.health) ? 0x11 : 0x12; // heart tile
+        // use either filled or unfilled heart
+        if(useWindow)
+            fill_win_rect(x + i, y, 1, 1, tile);
+        else
+            fill_bkg_rect(x + i, y, 1, 1, tile);
+    }
+
+    if(is_cgb())
+    {
+        VBK_REG = 1;
+        if(useWindow)
+            fill_win_rect(x, y, unit->stats.maxHealth, 1, CGB_BG_HEART);
+        else
+            fill_bkg_rect(x, y, unit->stats.maxHealth, 1, CGB_BG_HEART);
+        
+        VBK_REG = 0;
+    }
 }
 
 
@@ -255,6 +266,7 @@ static void hud_unit_attack_draw(uint8_t cur)
 {
     print_window(" ATK END", 0, 3);
     fill_win_rect(cur << 2, 3, 1, 1, 158); // '>'
+    waitjoypad(J_LEFT | J_RIGHT);
 }
 
 

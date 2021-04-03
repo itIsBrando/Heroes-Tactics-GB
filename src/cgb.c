@@ -159,11 +159,9 @@ void cgb_draw_hud()
     if(!is_cgb())
         return;
 
-    VBK_REG = 1;
-    fill_win_rect(0, 0, 20, 2, 0);
-    fill_win_rect(0, 2, 20, 1, CGB_BG_HEART);
-    fill_win_rect(0, 3, 20, 2, 0);
-    VBK_REG = 0;
+    // VBK_REG = 1;
+
+    // VBK_REG = 0;
 }
 
 

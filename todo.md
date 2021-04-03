@@ -35,7 +35,9 @@
 - [ ] Add a menu to return to the main menu when in the game (**HIGH**)
 - [ ] Allow link cable units to use the pathfinding algorithm
 - [ ] Only send new position when a unit moves over link cable
-- [ ] Add coloration to the `SELECT` button's peak visual
+- [ ] Make opponents wait for each other over link cable when the turn has changed (**HIGH**)
+- [ ] Add a flying unit
+- [x] Add coloration to the `SELECT` button's peak visual
 - [x] Add CGB support to `unit_engage`
 - [x] Add the unit's name above it in a battle
 - [x] Add the stats of the two units to the battle screen
@@ -48,6 +50,7 @@
 
 ## Bug Fixes:
 - [ ] Fix newline graphical bug in `print()` function
+- [x] Draw the map before the first turn has occurred
 - [ ] Enemy units can be seen during movement when fog is enabled (**HIGH**)
 - [ ] One unit on team 1 is invisible on the third map (**HIGH**)
 - [ ] Remove `useFog` static variable in `menu.c`
@@ -55,8 +58,9 @@
 - [ ] Fix units that spawn outside of the map
 - [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy
 - [ ] Palettes during unit healing is messed up (**HIGH**)
+- [ ] A unit's turn wrongly ends when it tries to attack on its own tile (**HIGH**)
 - [ ] Healers do not switch to `AI RUN`, instead stay on`HEAL`
-- [x] AI run crashes on the 5th map (**HIGH**)
+- [x] AI run crashes on the 5th map
 - [x] Enemy units can be exposed by peaking at tiles in fog
 - [x] Healer must move otherwise it cannot heal an ally
 - [x] Fix the unit's ability to move 1 tile additional outside its `movePoints`

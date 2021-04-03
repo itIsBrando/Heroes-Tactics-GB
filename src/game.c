@@ -32,6 +32,7 @@ static gme_status_t game_state;
 void gme_run()
 {
     add_VBL(unit_vbl_int);
+    // add_VBL(map_vbl_int);
 
     // draw background
     clear_bg();
@@ -40,7 +41,12 @@ void gme_run()
     for(uint8_t i = 0; i < currentMatch.numTeams; i++)
         mth_draw_team(currentMatch.teams[i]);
 
-    // sneakily set the turn to player 0
+    currentTeam = currentMatch.teams[0];
+    map_draw();
+    cgb_map();
+
+
+    // sneakily set the turn to team 0
     currentTeam = currentMatch.teams[1];
     mth_change_turn();
     
@@ -49,9 +55,6 @@ void gme_run()
     // initialize cursor
     cur_init();
     mth_print_team();
-
-    map_draw();
-    cgb_map();
 
     int8_t win;
 

@@ -44,12 +44,7 @@ void map_blit(map_t *map)
  */
 void map_draw()
 {
-    uint8_t *data;
-
-    if(map_has_fog())
-        data = map_fog;
-    else
-        data = activeMap->data;
+    uint8_t *data = map_has_fog() ? map_fog : activeMap->data;
 
     set_bkg_tiles(0, 0,activeMap->width,activeMap->height, data);
 }
@@ -128,9 +123,6 @@ void map_update_fog()
 {
     team_t *team = mth_get_current_team();
 
-    if(!map_has_fog())
-        return;
-
     if(team->control != CONTROLLER_PLAYER)
     {
         map_fog_hide_units(team);
@@ -187,6 +179,38 @@ void map_load(map_t *map, bool useFog)
 }
 
 
+/* const uint8_t map_waters[] = {TILE_WATER, 0x7, 0x8};
+static uint8_t vblankCounter, water_counter = 0;
+
+void map_animate()
+{
+    uint8_t i, x = 0, y = 0;
+
+    if(++vblankCounter < 20)
+        return;
+    
+    vblankCounter = 0;
+    if(++water_counter >=3)
+        water_counter = 0;
+
+
+    for(i = 0; i < activeMap->size; i++)
+    {
+        if(activeMap->data[i] == TILE_WATER)
+            fill_bkg_rect(x, y, 1, 1, map_waters[water_counter]);
+
+        if(++x >= map_get_width())
+            x = 0, y++;
+    }
+}
+
+
+inline void map_vbl_int()
+{
+    map_animate();
+}
+ */
+
 /**
  * Sets the spawnpoint of each unit in this team
  * @param team team of units to setup
@@ -236,7 +260,7 @@ void map_init_spawn(team_t *team, bool searchBackwards)
         {
             const uint8_t px = x + dx[j],
               py = y + dy[j];
-            bool isValid = !map_is_solid(px, py);
+            bool isValid = map_in_bounds(px, py) && !map_is_solid(px, py);
             // make sure that no other unit will occupy this space
             for(int8_t k = 0; k < i; k++)
             {

@@ -21,7 +21,7 @@ void cur_init()
     cur_draw();
     cur_show();
 
-    set_sprite_prop(csn, 1); // set palette to 1
+    set_sprite_prop(csn, 2); // set palette to 2
 }
 
 /**

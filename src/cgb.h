@@ -9,6 +9,7 @@
 #define CGB_BG_TREE     2
 #define CGB_BG_HEART    3
 #define CGB_BG_SAND     3
+#define CGB_BG_BRIDGE   4
 
 #define CGB_SPR_BLUE    0
 #define CGB_SPR_RED     1
@@ -24,6 +25,7 @@ void cgb_write_tile(uint8_t x, uint8_t y);
 
 void cgb_draw_hud();
 void cgb_draw_battle();
+void cgb_draw_heal();
 
 void cgb_cleanup_battle();
 #endif

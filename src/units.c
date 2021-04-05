@@ -571,7 +571,8 @@ bool unit_heal(unit_t *unit, unit_t *healer)
     unit_engage(unit, healer);
 
     clear_bg();
-    print("HEAL", 0, 0);
+    cgb_draw_heal();
+    print("HEAL", 8, 0);
     
     unit_draw_at(unit, 68, 40);
     hud_draw_health(unit, x, y, false);

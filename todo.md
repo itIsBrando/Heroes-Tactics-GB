@@ -8,7 +8,7 @@
 - [ ] Add movement arrows that track the cursor (*optional*)
 - [ ] Add campaign world map
 - [ ] Add a map editor (**low**)
-- [ ] Add healing to link cable support (**HIGH**)
+- [x] Add healing to link cable support (**HIGH**)
 - [x] Link cable multiplayer (gloriously implemented 03/11/21)
 - [x] Create a map packet for link cable support. This will prevent two different maps from being chosen (**HIGH**)
 - [x] Force both players to finish watching an attack to prevent desync (**HIGH**)
@@ -30,13 +30,13 @@
 - [ ] Improve visuals on the banner that appear when changing turns
 - [ ] Add game over screen (**HIGH**)
 - [ ] Add a visual on the HUD to indicate unit selection
-- [ ] Change palette for house and bridge
 - [ ] Add how-to screen (**low**)
 - [ ] Add a menu to return to the main menu when in the game (**HIGH**)
 - [ ] Allow link cable units to use the pathfinding algorithm
 - [ ] Only send new position when a unit moves over link cable
 - [ ] Make opponents wait for each other over link cable when the turn has changed (**HIGH**)
 - [ ] Add a flying unit
+- [x] Change palette for house and bridge
 - [x] Add coloration to the `SELECT` button's peak visual
 - [x] Add CGB support to `unit_engage`
 - [x] Add the unit's name above it in a battle
@@ -50,15 +50,16 @@
 
 ## Bug Fixes:
 - [ ] Fix newline graphical bug in `print()` function
-- [x] Draw the map before the first turn has occurred
 - [ ] Enemy units can be seen during movement when fog is enabled (**HIGH**)
-- [ ] One unit on team 1 is invisible on the third map (**HIGH**)
+- [ ] Units prefer attacking a brawn over any other unit (**HIGH**)
 - [ ] Remove `useFog` static variable in `menu.c`
   - this was used as a hacky way to enable fog on any map
 - [ ] Fix units that spawn outside of the map
 - [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy
-- [ ] Palettes during unit healing is messed up (**HIGH**)
 - [ ] A unit's turn wrongly ends when it tries to attack on its own tile (**HIGH**)
+- [x] Palettes during unit healing is messed up (**HIGH**)
+- [x] One unit on team 1 is invisible on the third map (**HIGH**)
+- [x] Draw the map before the first turn has occurred
 - [ ] Healers do not switch to `AI RUN`, instead stay on`HEAL`
 - [x] AI run crashes on the 5th map
 - [x] Enemy units can be exposed by peaking at tiles in fog

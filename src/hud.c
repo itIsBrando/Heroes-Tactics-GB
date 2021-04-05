@@ -94,10 +94,11 @@ void hud_draw_health(unit_t *unit, uint8_t x, uint8_t y, const bool useWindow)
  */
 void hud_show_action(const hud_action_t action)
 {
-    char ACTIONS[][5] = {
+    const char ACTIONS[][5] = {
         "MOVE",
         "ATK ",
-        "PEAK"
+        "PEAK",
+        "RNGE"
     };
 
     hud_force_hide_warn();
@@ -264,7 +265,7 @@ void hud_force_hide_warn()
  */
 static void hud_unit_attack_draw(uint8_t cur)
 {
-    print_window(" ATK END", 0, 3);
+    print_window(" ATK END BACK", 0, 3);
     fill_win_rect(cur << 2, 3, 1, 1, 158); // '>'
     waitjoypad(J_LEFT | J_RIGHT);
 }
@@ -272,7 +273,7 @@ static void hud_unit_attack_draw(uint8_t cur)
 
 /**
  * The menu that appears after a unit has moved
- * @returns 1 for END TURN or 0 for ATTACK
+ * @returns 1 for END TURN, 2 for BACK, or 0 for ATTACK
  */
 uint8_t hud_unit_attack_menu()
 {
@@ -284,16 +285,21 @@ uint8_t hud_unit_attack_menu()
     do {
         pad = joypad();
 
-        if(pad & J_LEFT)
-            hud_unit_attack_draw(cur = 0);
-        else if(pad & J_RIGHT)
-            hud_unit_attack_draw(cur = 1);
+        if((pad & J_LEFT) && cur > 0)
+            hud_unit_attack_draw(--cur);
+        else if((pad & J_RIGHT) && cur < 2)
+            hud_unit_attack_draw(++cur);
+        else if(pad & J_B)
+        {
+            cur = 2;
+            break;
+        }
 
         wait_vbl_done();
     } while(pad != J_A);
 
     // clear the menu
-    fill_win_rect(0, 3, 8, 1, 0);
+    fill_win_rect(0, 3, 13, 1, 0);
     
     return cur;
 }

@@ -11,13 +11,14 @@
 #include "data/map3.h"
 #include "data/map4.h"
 #include "data/map5.h"
+#include "data/map6.h"
 #include "diamond.h"
 #include "units.h"
 #include "cgb.h"
 
-uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA, MAP4_DATA, MAP5_DATA};
-const uint8_t map_widths[] = {10, 9,  7, 7, 12};
-const uint8_t map_heights[]= {10, 8,  8, 6, 6};
+uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA, MAP4_DATA, MAP5_DATA, MAP6_DATA};
+const uint8_t map_widths[] = {10, 9,  7, 7, 12, 10};
+const uint8_t map_heights[]= {10, 8,  8, 6, 6, 10};
 static map_t internalMap;
 static map_t *activeMap;
 static uint8_t internal_map_data[MAP_MAX_SIZE];

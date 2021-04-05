@@ -21,6 +21,7 @@ typedef struct {
     unit_t *selectedUnit;
     bool isAttacking; // false if moving, true if attacking
     bool isSelected;
+    position_t oPos; // position of the unit when it was first selected
 } gme_status_t;
 
 static gme_status_t game_state;
@@ -70,6 +71,11 @@ void gme_run()
 
     remove_VBL(unit_vbl_int);
     cur_destroy();
+
+    print_window("(A) to continue", 0, 3);
+
+    waitPressed(0xff);
+    reset();
 }
 
 
@@ -126,6 +132,8 @@ void gme_select_unit(unit_t *unit, bool shouldAttack)
     }
 
     game_state.selectedUnit = unit;
+    game_state.oPos.x = unit->row;
+    game_state.oPos.y = unit->column;
     game_state.isAttacking = shouldAttack;
     game_state.isSelected = true;
 }
@@ -270,43 +278,52 @@ static void gme_attack()
 void gme_select_a()
 {
     const uint8_t cx = cur_get_x(), cy = cur_get_y();
+    position_t pos;
+    pos.x = cx;
+    pos.y = cy;
 
     // performs a move
-    if(gme_is_unit_selected())
-    {
-        position_t pos;
-        pos.x = cx;
-        pos.y = cy;
-
-        if(game_state.isAttacking)
-        {
-            gme_attack();
-        } else {
-            unit_t *enemy = unit_get(mth_get_opponent(), cx, cy);
-
-            unit_hide_triangle();
-            
-            // check if we can attack without moving
-            if(unit_in_atk_range(game_state.selectedUnit, enemy))
-            {
-                gme_attack();
-            // check to see if we can move somewhere
-            } else if(unit_move_path_find(game_state.selectedUnit, &pos))
-                if(hud_unit_attack_menu()) {
-                    game_state.selectedUnit->hasAttacked = true;
-                    gme_deselect_unit();                
-                }
-                else
-                    gme_select_unit(game_state.selectedUnit, true);
-            else { // if we cannot move to the tile at the cursor
-                if(game_state.selectedUnit->type == UNIT_TYPE_HEALER)
-                    gme_attack();
-                gme_deselect_unit();
-            }
-        }
-    } else
+    if(!gme_is_unit_selected())
     {
         gme_select_unit(unit_get(mth_get_current_team(), cx, cy), false);
+        return;
+    }
+
+    if(game_state.isAttacking)
+    {
+        gme_attack();
+        return;
+    }
+
+    unit_t *enemy = unit_get(mth_get_opponent(), cx, cy);
+
+    unit_hide_triangle();
+    
+    // check if we can attack without moving
+    if(unit_in_atk_range(game_state.selectedUnit, enemy))
+    {
+        gme_attack();
+    // check to see if we can move somewhere
+    } else if(unit_move_path_find(game_state.selectedUnit, &pos))
+        // show menu to determine what we do after moving
+        switch (hud_unit_attack_menu())
+        {
+        case 1:   
+            game_state.selectedUnit->hasAttacked = true;
+            gme_deselect_unit();                
+            break;
+        case 2:
+            unit_move_to(game_state.selectedUnit, game_state.oPos.x, game_state.oPos.y);
+            game_state.selectedUnit->hasMoved = false;
+            gme_deselect_unit();
+            break;
+        default:
+            gme_select_unit(game_state.selectedUnit, true);
+        }
+    else { // if we cannot move to the tile at the cursor
+        if(game_state.selectedUnit->type == UNIT_TYPE_HEALER)
+            gme_attack();
+        gme_deselect_unit();
     }
 }
 
@@ -335,6 +352,7 @@ void gme_select_b()
         if(!unit)
             return;
         
+        hud_show_action(HUD_ACTION_RANGE);
         uint8_t range = unit->stats.damageRadius + unit->stats.movePoints;
         tri_make(unit->row, unit->column, range);
         tri_clip();
@@ -343,6 +361,7 @@ void gme_select_b()
 
         waitjoypad(J_B);
         tri_hide();
+        hud_hide_action();
     }
 
 }
@@ -458,14 +477,19 @@ void mth_change_turn()
 void mth_print_team()
 {
     // draw team number
-    uint8_t teamNum = mth_get_team_number();
-    print("TEAM", map_get_width(), 0);
-    printInt(teamNum, map_get_width() + 4, 0, false);
+    const uint8_t w = map_get_width();
+    print("TEAM", w, 0);
+    printInt(mth_get_team_number(), w + 4, 0, false);
+
+    print(
+        mth_get_current_team()->control == CONTROLLER_PLAYER ? "YOU" : "OPP",
+         w + 1, 1
+    );
 
     if(is_cgb())
     {
         VBK_REG = 1;
-        fill_bkg_rect(map_get_width(), 0, 5, 1, cgb_get_team_palette(mth_get_current_team()));
+        fill_bkg_rect(w, 0, 5, 1, cgb_get_team_palette(mth_get_current_team()));
         VBK_REG = 0;
     }
 }

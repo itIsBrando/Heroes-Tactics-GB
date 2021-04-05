@@ -10,10 +10,11 @@
 
 
 uint16_t palette_background[] = {
-    /*RGB_WHITE*/ RGB_DARKYELLOW, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_BLACK,
-    RGB_DARKYELLOW, RGB_PINK, RGB_BLUE, RGB_PURPLE,
-    RGB_DARKYELLOW, RGB_DARKGRAY, RGB_GREEN, RGB_BROWN,
-    RGB_DARKYELLOW, RGB_WHITE, RGB_RED, RGB_DARKRED
+    RGB_DARKYELLOW, RGB_LIGHTGRAY,  RGB_DARKGRAY, RGB_BLACK,
+    RGB_DARKYELLOW, RGB_PINK,       RGB_BLUE,   RGB_PURPLE,
+    RGB_DARKYELLOW, RGB_DARKGRAY,   RGB_GREEN,  RGB_BROWN,
+    RGB_DARKYELLOW, RGB_WHITE,      RGB_RED,    RGB_DARKRED,
+    RGB_DARKYELLOW, RGB_YELLOW,     RGB_BROWN,  RGB_CYAN,
 };
 
 uint16_t palette_sprite[] = {
@@ -46,7 +47,7 @@ void cgb_init()
  */
 uint8_t cgb_get_team_palette(team_t *team)
 {
-    return (team == mth_get_match()->teams[0]) ? 1 : 3; // blue : red;
+    return (team == mth_get_match()->teams[0]) ? 4 : 3; // blue : red;
 }
 
 
@@ -71,7 +72,10 @@ void cgb_write_tile(uint8_t x, uint8_t y)
     case TILE_TREE:
         pal = CGB_BG_TREE;
         break;
-    case 0x14: // bridge
+    case TILE_BRIDGE:
+    case TILE_HOUSE:
+        pal = CGB_BG_BRIDGE;
+        break;
     default:
         pal = CGB_BG_DEFAULT;
     }
@@ -176,9 +180,25 @@ void cgb_draw_battle()
 
     VBK_REG = 1;
     // fill bg
-    fill_bkg_rect(0, 0, 20, 13, CGB_BG_SAND);
+    fill_bkg_rect(0, 0, 20, 13, CGB_BG_DEFAULT);
     // fill row with heart palette
     fill_bkg_rect(2, 7, 16, 1, CGB_BG_HEART);
+    VBK_REG = 0;
+}
+
+
+/**
+ * @note hooked in `unit_heal`
+ */
+void cgb_draw_heal()
+{
+    if(!is_cgb())
+        return;
+    
+    VBK_REG = 1;
+
+    fill_bkg_rect(0, 10, 18, 1, CGB_BG_DEFAULT); // fill text row
+
     VBK_REG = 0;
 }
 
@@ -189,17 +209,16 @@ void cgb_draw_battle()
  */
 void cgb_cleanup_battle()
 {
-    if(!is_cgb())
-        return;
+    if(is_cgb())
+        cgb_map();
 
-    cgb_map();
 }
 
 
 /**
  * @returns true if we are running on a CGB
  */
-bool is_cgb()
+restrict bool is_cgb()
 {
      return _cpu == CGB_TYPE;
 }

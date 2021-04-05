@@ -4,7 +4,8 @@
 typedef enum {
     HUD_ACTION_MOVE,
     HUD_ACTION_ATK,
-    HUD_ACTION_PEAK
+    HUD_ACTION_PEAK,
+    HUD_ACTION_RANGE
 } hud_action_t;
 
 void hud_draw_hotbar(team_t *);

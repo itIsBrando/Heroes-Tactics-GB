@@ -12,13 +12,26 @@
 #define TILE_HOUSE  16
 #define TILE_FOG    23
 
+#define TILE_ICON_START 26 // 26-28
+#define TILE_ICON_A     29
+#define TILE_ICON_B     30
+#define TILE_ICON_LEFT  31
+#define TILE_ICON_UP    32
+#define TILE_ICON_RIGHT 33
+#define TILE_ICON_DOWN  34
+#define TILE_ARROW      35
+
+#define TILE_ICON_YOU   40 // 40-41
+#define TILE_ICON_CPU   42 // 42-43
+
 #define MAX_TEAM_SIZE 4
 
 
 typedef enum {
     UNIT_TYPE_BRAWN,
     UNIT_TYPE_ARCHER,
-    UNIT_TYPE_HEALER
+    UNIT_TYPE_HEALER,
+    UNIT_TYPE_BOAT,
 } type_of_unit;
 
 
@@ -48,7 +61,6 @@ typedef struct {
     uint8_t damageRadius;
 } stat_t;
 
-
 typedef struct {
     uint8_t row, column;
     bool isDead;
@@ -59,6 +71,8 @@ typedef struct {
     ai_strat_t strategy;
     type_of_unit type;
     stat_t stats;
+    void *heldUnit;   // pointer to the other unit that this unit is holding, NULL if none
+    bool isHeld;        // true if this unit is being carried by another
     // void (*idk);
 } unit_t;
 

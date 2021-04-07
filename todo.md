@@ -1,19 +1,23 @@
 # **To-Do List**
 
 ## Features:
-- [ ] Add support for more than 3 units per team (**low**)
+- [ ] Add support for more than 3 units per team (**high**)
 - [ ] Replace `map select` with an open world map
-- [ ] Detect winning/losing condition immediately after battle, not at the end of a turn
-- [ ] Allow player to press `B` button after it has moved (but still has attack diamond shown) to return unit to its position pre-movement (**high**)
+- [ ] Detect winning/losing condition immediately after battle, not at the end of a turn (**high**)
 - [ ] Add movement arrows that track the cursor (*optional*)
 - [ ] Add campaign world map
+- [ ] Add a flying unit
+- [ ] Add a boat to transport units across the ocean
+- [ ] Procedurally generated maps (*maybe*)
+- [ ] Add a turrent that is present on the map and can be riden. It has high range but cannot be moved
 - [ ] Add a map editor (**low**)
-- [x] Add healing to link cable support (**HIGH**)
+- [x] Allow player to press `B` button after it has moved (but still has attack diamond shown) to return unit to its position pre-movement
+- [x] Add healing to link cable support
 - [x] Link cable multiplayer (gloriously implemented 03/11/21)
-- [x] Create a map packet for link cable support. This will prevent two different maps from being chosen (**HIGH**)
-- [x] Force both players to finish watching an attack to prevent desync (**HIGH**)
+- [x] Create a map packet for link cable support. This will prevent two different maps from being chosen
+- [x] Force both players to finish watching an attack to prevent desync
 - [x] Hold **`B`** to view attack range
-- [x] Unit spawning on map (**high**)
+- [x] Unit spawning on map
 - [x] Add fog
   - [x] Make fog optional
 - [x] Add title screen
@@ -27,15 +31,15 @@
 ## Polish:
 - [ ] Remove much white-space from *match set up screen*
 - [ ] Water animation
-- [ ] Improve visuals on the banner that appear when changing turns
 - [ ] Add game over screen (**HIGH**)
 - [ ] Add a visual on the HUD to indicate unit selection
 - [ ] Add how-to screen (**low**)
 - [ ] Add a menu to return to the main menu when in the game (**HIGH**)
+- [ ] Add a menu selection item for link cable
 - [ ] Allow link cable units to use the pathfinding algorithm
 - [ ] Only send new position when a unit moves over link cable
-- [ ] Make opponents wait for each other over link cable when the turn has changed (**HIGH**)
-- [ ] Add a flying unit
+- [x] Make opponents wait for each other over link cable when the turn has changed (**HIGH**)
+- [x] Improve visuals on the banner that appear when changing turns
 - [x] Change palette for house and bridge
 - [x] Add coloration to the `SELECT` button's peak visual
 - [x] Add CGB support to `unit_engage`
@@ -55,6 +59,7 @@
 - [ ] Remove `useFog` static variable in `menu.c`
   - this was used as a hacky way to enable fog on any map
 - [ ] Fix units that spawn outside of the map
+- [ ] Modify functions to use `const` when applicable
 - [ ] Remove debug function `get_strat_string` in `hud.c`. This function shows the AI's strategy
 - [ ] A unit's turn wrongly ends when it tries to attack on its own tile (**HIGH**)
 - [x] Palettes during unit healing is messed up (**HIGH**)

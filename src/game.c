@@ -33,7 +33,7 @@ static gme_status_t game_state;
 void gme_run()
 {
     add_VBL(unit_vbl_int);
-    // add_VBL(map_vbl_int);
+    add_VBL(map_vbl_int);
 
     // draw background
     clear_bg();
@@ -45,13 +45,14 @@ void gme_run()
     currentTeam = currentMatch.teams[0];
     map_draw();
     cgb_map();
+    hud_draw_hotbar(currentTeam);
+    move_win(7, 144 - 40); // set window position
 
 
     // sneakily set the turn to team 0
     currentTeam = currentMatch.teams[1];
     mth_change_turn();
     
-    hud_draw_hotbar(currentTeam);
     
     // initialize cursor
     cur_init();
@@ -72,7 +73,7 @@ void gme_run()
     remove_VBL(unit_vbl_int);
     cur_destroy();
 
-    print_window("(A) to continue", 0, 3);
+    print_window("\x1D to continue", 0, 3);
 
     waitPressed(0xff);
     reset();
@@ -200,8 +201,13 @@ void gme_player_turn()
         if(pad & J_SELECT)
         {
             hud_show_details(cur_get_x(), cur_get_y());
+            hud_show_unit_control_type(mth_get_current_team());
+            hud_show_unit_control_type(mth_get_opponent());
             waitjoypad(J_SELECT);
+
             hud_hide_details();
+            hud_hide_unit_control_type(mth_get_opponent());
+            hud_hide_unit_control_type(mth_get_current_team());
         }
 
         // select a unit
@@ -448,13 +454,9 @@ void mth_change_turn()
     for(uint8_t i = 0; i < currentTeam->size; i++)
         currentTeam->units[i]->hasAttacked = currentTeam->units[i]->hasMoved = false;
 
-    // make a banner
-    //@todo improve!!!
-    print(currentTeam->control == CONTROLLER_PLAYER ? "PLR" : "CPU", 0, 10);
-    printInt(currentTeam == currentMatch.teams[0] ? 1 : 2, 4, 10, false);
-    print("turn.\n (A) to continue", 6, 10);
-
+    
     // redraw old team (necessary for CGB pal & fog)
+    hud_change_turn_banner();
     mth_draw_team(prevTeam);
     map_changed_turns();
 
@@ -468,6 +470,7 @@ void mth_change_turn()
     waitPressed(J_A | J_START);
 
     fill_bkg_rect(0, 10, 20, 2, 0);
+    hud_change_turn_banner_cleanup();
 }
 
 

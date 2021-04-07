@@ -6,7 +6,7 @@
 #include <gb/gb.h>
 #include <string.h>
 
-#include "data/mapdata.h"
+#include "data/map1.h"
 #include "data/map2.h"
 #include "data/map3.h"
 #include "data/map4.h"
@@ -26,7 +26,7 @@ static uint8_t map_fog[MAP_MAX_SIZE];
 static bool mapHasFog = false;
 
 static const uint8_t map_tile_flags[] = {
-    0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0
+    0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
 };
 
 
@@ -180,29 +180,23 @@ void map_load(map_t *map, bool useFog)
 }
 
 
-/* const uint8_t map_waters[] = {TILE_WATER, 0x7, 0x8};
+const uint8_t map_waters[] = {0x6, 0x7};
 static uint8_t vblankCounter, water_counter = 0;
 
 void map_animate()
 {
     uint8_t i, x = 0, y = 0;
 
-    if(++vblankCounter < 20)
+    if(++vblankCounter < 30)
         return;
     
     vblankCounter = 0;
-    if(++water_counter >=3)
-        water_counter = 0;
+    water_counter ^= 1;
 
+    uint8_t data[16];
+    get_bkg_data(map_waters[water_counter], 1, data);
 
-    for(i = 0; i < activeMap->size; i++)
-    {
-        if(activeMap->data[i] == TILE_WATER)
-            fill_bkg_rect(x, y, 1, 1, map_waters[water_counter]);
-
-        if(++x >= map_get_width())
-            x = 0, y++;
-    }
+    set_bkg_data(TILE_WATER, 1, data);
 }
 
 
@@ -210,7 +204,7 @@ inline void map_vbl_int()
 {
     map_animate();
 }
- */
+
 
 /**
  * Sets the spawnpoint of each unit in this team

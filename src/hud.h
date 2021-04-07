@@ -25,4 +25,9 @@ void hud_vbl_int();
 
 uint8_t hud_unit_attack_menu();
 
+void hud_change_turn_banner();
+void hud_change_turn_banner_cleanup();
+
+void hud_show_unit_control_type(const team_t *team);
+void hud_hide_unit_control_type(const team_t *team);
 #endif

@@ -230,7 +230,7 @@
             makePalette(img.width, img.height, context);
 
             let out = [];
-            for (let y = 0; y < 3; y++) {
+            for (let y = 0; y < 4; y++) {
                 for (let x = 0; x < img.width / 8; x++)
                     out.push.apply(out, to4bppGB(to8bpp(x, y)));
             }

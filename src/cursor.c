@@ -2,7 +2,6 @@
 #include "cursor.h"
 #include "map.h"
 #include "structs.h"
-#include "data/mapdata.h"
 
 #include <gb/gb.h>
 

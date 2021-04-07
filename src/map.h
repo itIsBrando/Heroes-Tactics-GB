@@ -10,8 +10,9 @@ extern uint8_t *all_maps[];
 extern const uint8_t map_widths[];
 extern const uint8_t map_heights[];
 
-/* void map_vbl_int();
-void map_animate(); */
+void map_vbl_int();
+void map_animate();
+
 void map_draw();
 bool map_has_fog();
 map_t *map_load_from_data(uint8_t *data, uint8_t w, uint8_t h, bool useFog);

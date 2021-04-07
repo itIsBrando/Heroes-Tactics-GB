@@ -5,6 +5,7 @@
 #include "map.h"
 #include "game.h"
 #include "cgb.h"
+#include "oam.h"
 
 #include <gb/gb.h>
 
@@ -30,7 +31,6 @@ void hud_draw_hotbar(team_t *team)
     fill_win_rect(0, 0, 20, 1, 4); // set window border
     fill_win_rect(0, 4, 20, 1, 4); // set window border
     fill_win_rect(0, 1, 19, 3, 0); // clear visible window
-    move_win(7, 144 - 40); // set window position
 
     for(uint8_t x = 0; x < team->size; x++)
     {
@@ -302,4 +302,91 @@ uint8_t hud_unit_attack_menu()
     fill_win_rect(0, 3, 13, 1, 0);
     
     return cur;
+}
+
+
+/**
+ * Scrolls the window upwards by `pixels` pixels
+ * @param number of pixels to scroll
+ */
+void scroll_win_up(const uint8_t pixels)
+{
+    for(uint8_t i = 0; i < pixels; i++)
+    {
+        WY_REG--;
+        __asm__("HALT");
+    }
+}
+
+
+/**
+ * Scrolls the window downwards by `pixels` pixels
+ * @param number of pixels to scroll
+ */
+void scroll_win_down(const uint8_t pixels)
+{
+    for(uint8_t i = 0; i < pixels; i++)
+    {
+        WY_REG++;
+        __asm__("HALT");
+    }
+}
+
+
+void hud_change_turn_banner()
+{
+    fill_win_rect(0, 7, 20, 1, 4); // draw a horizontal line
+    print_window("Team   turn.\n\x1D to continue", 1, 5);
+    printInt(mth_get_team_number(), 6, 5, true);
+
+    // create a little border
+    fill_win_rect(0, 5, 1, 2, 4);
+    fill_win_rect(19, 5, 1, 2, 4);
+
+    scroll_win_up(24);
+}
+
+
+inline void hud_change_turn_banner_cleanup()
+{
+    scroll_win_down(24);
+}
+
+
+static uint8_t sprite_indexes[MAX_TEAM_SIZE << 2];
+static uint8_t hud_global_pos = 0;
+
+/**
+ * Shows a little icon above each unit to show ownership
+ */
+void hud_show_unit_control_type(const team_t *team)
+{
+    const uint8_t tile = team->control == CONTROLLER_PLAYER ? TILE_ICON_YOU : TILE_ICON_CPU;
+
+    for(uint8_t i = 0; i < team->size; i++)
+    {
+        const unit_t *unit = team->units[i];
+        uint8_t s1, s2;
+        s1 = sprite_indexes[hud_global_pos++] = spr_allocate();
+        s2 = sprite_indexes[hud_global_pos++] = spr_allocate();
+
+        const uint8_t x = (unit->row << 3) + 4;
+        const uint8_t y = (unit->column << 3) + 8;
+        move_sprite(s1, x, y);
+        move_sprite(s2, x + 8, y);
+        set_sprite_prop(s1, 0);
+        set_sprite_prop(s2, 0);
+        set_sprite_tile(s1, tile);
+        set_sprite_tile(s2, tile + 1);
+    }
+}
+
+
+void hud_hide_unit_control_type(const team_t *team)
+{
+    for(uint8_t i = 0; i < (team->size << 1); i++)
+    {
+        move_sprite(sprite_indexes[--hud_global_pos], 0, 0);
+        spr_free(sprite_indexes[hud_global_pos]);
+    }
 }

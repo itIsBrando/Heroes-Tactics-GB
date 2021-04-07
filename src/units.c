@@ -241,6 +241,45 @@ void unit_engage(unit_t *u1, unit_t *u2)
 }
 
 
+static const uint8_t atk_x = 32, atk_y = 40;
+static const uint8_t def_x = 120, def_y = 40;
+
+static void draw_atkr_health(const unit_t *attacker)
+{
+    hud_draw_health(attacker, 4 - (attacker->stats.maxHealth >> 1), 7, false);
+
+}
+
+static void draw_def_health(const unit_t *defender)
+{
+    hud_draw_health(defender, 15 - (defender->stats.maxHealth >> 1), 7, false);
+}
+
+/** @param isOnLeft true if the unit attacking is on the left */
+static void do_attack_animation(const bool isOnLeft)
+{
+    uint8_t s = spr_allocate();
+    uint8_t x = (isOnLeft ? atk_x : def_x) + 8;
+    uint8_t y = atk_y + 16;
+    int8_t dir = isOnLeft ? 2 : -2;
+
+    set_sprite_prop(s, isOnLeft ? 0 : (1 << 5));
+    set_sprite_tile(s, TILE_ARROW);
+
+    move_sprite(s, x, y);
+
+    for(uint8_t i = 0; i < ((def_x - atk_x) >> 1); i++)
+    {
+        move_sprite(s, x, y);
+        x += dir;
+        wait_vbl_done();
+    }
+
+    move_sprite(s, 0, 0);
+    spr_free(s);
+}
+
+
 bool unit_attack(unit_t *attacker, unit_t *defender)
 {
 
@@ -264,20 +303,29 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
     printInt(defender->stats.damagePoints, 19, 6, false);
 
     // set up battle screen
-    unit_draw_at(attacker, 32, 40);
-    unit_draw_at(defender, 120, 40);
+    unit_draw_at(attacker, atk_x, atk_y);
+    unit_draw_at(defender, def_x, def_y);
     print(atkName, 2, 3);
     print(defName, 13, 3);
     cgb_draw_battle();
-    hud_draw_health(attacker, 4 - (attacker->stats.maxHealth >> 1), 7, false);
+    draw_atkr_health(attacker);
+    draw_def_health(defender);
     
     print("BATTLE", 7, 0);
     fill_bkg_rect(0, 1, 20, 1, 0xE0);
 
+    // Show 'atker vs defndr' text
+    print(atkName, 0, 10);
+    print("vs", 6, 10);
+    print(defName, 9, 10);
+    waitPressed(J_A | J_START);
+    fill_bkg_rect(6, 10, 8, 1, 0);
+
     bool death = unit_do_damage(defender, attacker->stats.damagePoints);
 
-    hud_draw_health(defender, 15 - (defender->stats.maxHealth >> 1), 7, false);
-    print(atkName, 0, 10);
+    do_attack_animation(true); // do an animation
+    draw_def_health(defender);
+    // print(atkName, 0, 10);
     print("did", 6, 10);
     printInt(attacker->stats.damagePoints, 10, 10, false);
 
@@ -293,12 +341,14 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
         uint8_t dmg = defender->stats.damagePoints;
 
         // if defender is out of attack range, do not do any damage
-        if(unit_get_distance(attacker, defender) > defender->stats.damageRadius)
+        if(unit_get_distance(attacker, defender) > defender->stats.damageRadius || map_is_solid(attacker->row, attacker->column))
             dmg = 0;
 
         death |= unit_do_damage(attacker, dmg);
 
-       hud_draw_health(attacker, 4 - (attacker->stats.maxHealth >> 1), 7, false);
+        if(dmg != 0)
+            do_attack_animation(false); // do an animation
+        draw_atkr_health(attacker);
 
         print(defName, 0, 10);
 
@@ -327,18 +377,6 @@ bool unit_attack(unit_t *attacker, unit_t *defender)
         lnk_wait_attack_complete();
     
     return death;
-}
-
-
-/**
- * probably quite slow
- * @returns the square root of an unsigned 8-bit number
- */
-uint8_t sqrt(uint8_t a) {
-    uint8_t i = 1;
-    for(; i * i <= a; ++i);
-    i--;
-    return i;
 }
 
 

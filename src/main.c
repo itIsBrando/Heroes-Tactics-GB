@@ -14,7 +14,6 @@
 #include "game.h"
 #include "oam.h"
 #include "cgb.h"
-#include "data/mapdata.h"
 
 
 match_t currentMatch;
@@ -25,9 +24,9 @@ void main(void) {
     // load the font
     set_bkg_1bit_data(0x80, 102, font_ibm + 130, 3);
 
-    OBP1_REG = 0b01011000; // set other sprite palette
-    set_sprite_data(1, 35, SPRITE_DATA);
-    set_bkg_data(1, 35, SPRITE_DATA);
+    OBP1_REG = 0b10110100; // set other sprite palette
+    set_sprite_data(1, 1024 >> 4, SPRITE_DATA);
+    set_bkg_data(1, 1024 >> 4, SPRITE_DATA);
 
     SHOW_BKG; SHOW_SPRITES;
 
@@ -128,9 +127,9 @@ static void _print_(const char *str, uint8_t x, uint8_t y, bool isWindow)
             x = 0, y++;
 
         if(isWindow)
-            set_win_tiles(x++, y, 1, 1, &c);
+            fill_win_rect(x++, y, 1, 1, c);
         else
-            set_bkg_tiles(x++, y, 1, 1, &c);
+            fill_bkg_rect(x++, y, 1, 1, c);
 
     }
 

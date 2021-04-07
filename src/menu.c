@@ -36,7 +36,7 @@ void mnu_choose_teams_init(match_t *match)
 {
     clear_bg();
     print("MATCH SET UP:", 0, 0);
-    print("(A) to start game", 0, 144 / 8 - 1);
+    print("\x1D to start game", 0, 144 / 8 - 1);
 
     mnu_cursor_init(0, match->numTeams, NULL);
 

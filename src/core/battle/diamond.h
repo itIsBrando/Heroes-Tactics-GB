@@ -1,8 +1,8 @@
 #ifndef DIAMOND_H
 #define DIAMOND_H
 
-#include "defines.h"
-#include "structs.h"
+#include "../../defines.h"
+#include "../../structs.h"
 
 extern uint8_t tri_active_diamond[MAP_MAX_SIZE];
 

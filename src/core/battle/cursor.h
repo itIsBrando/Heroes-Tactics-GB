@@ -1,7 +1,7 @@
 #ifndef CURSOR_H
 #define CURSOR_H
 
-#include "structs.h"
+#include "../../structs.h"
 
 void cur_move(int8_t, int8_t);
 void cur_draw();

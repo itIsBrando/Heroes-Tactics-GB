@@ -1,10 +1,10 @@
-#include "defines.h"
-#include "main.h"
+#include "../../defines.h"
+#include "../../main.h"
 #include "hud.h"
-#include "units.h"
-#include "map.h"
-#include "game.h"
-#include "cgb.h"
+#include "../unit/units.h"
+#include "../world/map.h"
+#include "../game.h"
+#include "../gfx/cgb.h"
 #include "oam.h"
 
 #include <gb/gb.h>

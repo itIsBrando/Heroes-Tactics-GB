@@ -1,10 +1,10 @@
 #include <gb/gb.h>
 
 #include "menu.h"
-#include "main.h"
-#include "map.h"
-#include "game.h"
-#include "link.h"
+#include "../../main.h"
+#include "../world/map.h"
+#include "../game.h"
+#include "../link.h"
 
 const char control_text[][4] = {"PLR", "CPU", "LNK"};
 static uint8_t cursor, maxCursor, cur_x = 0;

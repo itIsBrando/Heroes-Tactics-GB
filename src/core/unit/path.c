@@ -1,9 +1,8 @@
 
 #include "path.h"
-#include "map.h"
-// #include "units.h"
-#include "game.h"
-#include "main.h"
+#include "../../main.h"
+#include "../world/map.h"
+#include "../game.h"
 
 #include <string.h>
 #include <gb/gb.h>

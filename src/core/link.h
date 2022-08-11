@@ -1,7 +1,7 @@
 #ifndef LINK_H
 #define LINK_H
 
-#include "structs.h"
+#include "../structs.h"
 
 
 typedef enum

@@ -1,11 +1,10 @@
 #include "ai.h"
-#include "game.h"
-#include "units.h"
-#include "diamond.h"
 #include "path.h"
-#include "structs.h"
-#include "map.h"
-#include "main.h"
+#include "../game.h"
+#include "../unit/units.h"
+#include "../world/map.h"
+#include "../battle/diamond.h"
+#include "../../main.h"
 
 #include <limits.h>
 #include <gb/gb.h>

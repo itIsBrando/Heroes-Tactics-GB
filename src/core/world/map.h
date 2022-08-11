@@ -1,8 +1,8 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "defines.h"
-#include "structs.h"
+#include "../../defines.h"
+#include "../../structs.h"
 
 #define MAPS_TOTAL 6
 

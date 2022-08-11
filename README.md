@@ -11,3 +11,13 @@
  - Hold **B** to view a unit's attack range
  - Hold **SELECT** view details about a tile
  - **START** end turn
+
+
+Main Menu
+![main menu](screenshots/menu.png)
+
+Early stages of a battle
+![battle](screenshots/battle.png)
+
+Battle on another map (emulated on the original Gameboy)
+![battle in DMG mode](screenshots/battle2.png)

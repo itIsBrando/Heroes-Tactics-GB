@@ -1,7 +1,7 @@
 #ifndef AI_H
 #define AI_H
 
-#include "structs.h"
+#include "../../structs.h"
 
 typedef struct {
     unit_t *unit; // pointer to unit that has this priority

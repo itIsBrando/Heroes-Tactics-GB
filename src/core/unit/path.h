@@ -1,8 +1,8 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include "defines.h"
-#include "structs.h"
+#include "../../defines.h"
+#include "../../structs.h"
 
 position_t *pf_find(position_t *, position_t *, uint8_t *);
 position_t *pf_find_xy(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t *);

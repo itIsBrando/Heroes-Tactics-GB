@@ -1,7 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "structs.h"
+#include "../../structs.h"
 
 void mnu_choose_teams_init(match_t *);
 void mnu_choose_map_init();

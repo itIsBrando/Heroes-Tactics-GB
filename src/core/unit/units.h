@@ -1,7 +1,8 @@
 #ifndef UNITS_H
 #define UNITS_H
 
-#include "structs.h"
+#include "../../structs.h"
+#include "../../defines.h"
 
 extern unit_t UNIT_ARCHER;
 extern unit_t UNIT_BRAWN;

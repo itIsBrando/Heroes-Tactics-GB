@@ -1,20 +1,18 @@
-#include "defines.h"
-#include "map.h"
-#include "game.h"
-#include "structs.h"
 
 #include <gb/gb.h>
 #include <string.h>
 
-#include "data/map1.h"
-#include "data/map2.h"
-#include "data/map3.h"
-#include "data/map4.h"
-#include "data/map5.h"
-#include "data/map6.h"
-#include "diamond.h"
-#include "units.h"
-#include "cgb.h"
+#include "map.h"
+#include "../game.h"
+#include "../battle/diamond.h"
+#include "../unit/units.h"
+#include "../gfx/cgb.h"
+#include "../../data/map1.h"
+#include "../../data/map2.h"
+#include "../../data/map3.h"
+#include "../../data/map4.h"
+#include "../../data/map5.h"
+#include "../../data/map6.h"
 
 uint8_t *all_maps[MAPS_TOTAL] = {MAP_DATA, MAP2_DATA, MAP3_DATA, MAP4_DATA, MAP5_DATA, MAP6_DATA};
 const uint8_t map_widths[] = {10, 9,  7, 7, 12, 10};

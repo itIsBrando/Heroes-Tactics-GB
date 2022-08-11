@@ -2,11 +2,11 @@
 #include <gb/cgb.h>
 #include <gb/gb.h>
 
-#include "units.h"
-#include "diamond.h"
-#include "game.h"
-#include "map.h"
 #include "cgb.h"
+#include "../unit/units.h"
+#include "../battle/diamond.h"
+#include "../game.h"
+#include "../world/map.h"
 
 
 #ifdef RGB_DARKYELLOW

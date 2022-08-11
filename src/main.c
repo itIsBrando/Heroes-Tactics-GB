@@ -8,13 +8,13 @@
 
 #include "structs.h"
 #include "main.h"
-#include "menu.h"
-#include "units.h"
-#include "hud.h"
-#include "game.h"
-#include "oam.h"
-#include "cgb.h"
-#include "world.h"
+#include "core/gfx/menu.h"
+#include "core/unit/units.h"
+#include "core/gfx/hud.h"
+#include "core/gfx/oam.h"
+#include "core/gfx/cgb.h"
+#include "core/game.h"
+#include "core/world/world.h"
 
 
 match_t currentMatch;

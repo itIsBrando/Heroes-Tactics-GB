@@ -1,7 +1,6 @@
-#include "oam.h"
 #include "cursor.h"
-#include "map.h"
-#include "structs.h"
+#include "../gfx/oam.h"
+#include "../world/map.h"
 
 #include <gb/gb.h>
 

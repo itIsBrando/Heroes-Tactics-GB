@@ -1,10 +1,11 @@
 #include <gb/gb.h>
 #include <string.h>
+
 #include "diamond.h"
-#include "game.h"
-#include "units.h"
-#include "map.h"
-#include "cgb.h"
+#include "../game.h"
+#include "../unit/units.h"
+#include "../world/map.h"
+#include "../gfx/cgb.h"
 
 uint8_t tri_active_diamond[MAP_MAX_SIZE];
 static bool tri_is_shown;

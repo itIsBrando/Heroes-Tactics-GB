@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "structs.h"
+#include "../structs.h"
 
 extern team_t *currentTeam;
 

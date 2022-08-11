@@ -1,7 +1,7 @@
 #ifndef CGB_H
 #define CGB_H
 
-#include "structs.h"
+#include "../../structs.h"
 
 
 #define CGB_BG_DEFAULT  0

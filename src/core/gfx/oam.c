@@ -1,7 +1,7 @@
 
-#include "defines.h"
 #include "oam.h"
-#include "main.h"
+#include "../../defines.h"
+#include "../../main.h"
 
 #include <string.h>
 

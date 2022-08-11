@@ -2,13 +2,13 @@
 #include <gb/gb.h>
 
 #include "world.h"
-#include "data/worldMapData.h"
-#include "main.h"
-#include "structs.h"
-#include "map.h"
-#include "cgb.h"
-#include "units.h"
-#include "oam.h"
+#include "../../structs.h"
+#include "../../data/worldMapData.h"
+#include "../../main.h"
+#include "../world/map.h"
+#include "../gfx/cgb.h"
+#include "../gfx/oam.h"
+#include "../unit/units.h"
 
 
 #define NUM_WORLD_MAPS (sizeof(wld_map_y))

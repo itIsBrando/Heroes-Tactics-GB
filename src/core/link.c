@@ -2,12 +2,12 @@
 #include <string.h>
 
 #include "link.h"
-#include "map.h"
-#include "main.h"
-#include "units.h"
+#include "world/map.h"
+#include "../main.h"
+#include "unit/units.h"
 #include "game.h"
-#include "cursor.h"
-#include "hud.h"
+#include "battle/cursor.h"
+#include "gfx/hud.h"
 
 static bool isMulti = false;
 static bool isMaster;

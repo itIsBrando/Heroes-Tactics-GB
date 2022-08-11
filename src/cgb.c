@@ -9,6 +9,12 @@
 #include "cgb.h"
 
 
+#ifdef RGB_DARKYELLOW
+#undef RGB_DARKYELLOW
+#endif
+
+#define RGB_DARKYELLOW 0x02ba
+
 uint16_t palette_background[] = {
     RGB_DARKYELLOW, RGB_LIGHTGRAY,  RGB_DARKGRAY, RGB_BLACK,
     RGB_DARKYELLOW, RGB_PINK,       RGB_BLUE,   RGB_PURPLE,
@@ -74,6 +80,7 @@ void cgb_write_tile(uint8_t x, uint8_t y)
         break;
     case TILE_BRIDGE:
     case TILE_HOUSE:
+    case 45:
         pal = CGB_BG_BRIDGE;
         break;
     default:
@@ -91,15 +98,17 @@ void cgb_map()
     if(!is_cgb())
         return;
     
-    uint8_t x = 0, y = 0;
+    const uint8_t h = map_get_height(), w = map_get_width();
 
     VBK_REG = 1;
 
-    for(uint8_t i = 0; i < sizeof(tri_active_diamond); i++)
+    uint8_t x = 0;
+
+    for(uint8_t y = 0; y < h; )
     {
         cgb_write_tile(x, y);
 
-        if(++x >= tri_get_width())
+        if(++x >= w)
             x = 0, y++;
     }
 

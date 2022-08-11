@@ -1,6 +1,6 @@
 #include <gb/gb.h>
-#include <gb/console.h>
-#include <gb/font.h>
+#include <gbdk/console.h>
+#include <gbdk/font.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -14,6 +14,7 @@
 #include "game.h"
 #include "oam.h"
 #include "cgb.h"
+#include "world.h"
 
 
 match_t currentMatch;
@@ -22,7 +23,7 @@ void main(void) {
     uint8_t x = 0, y = 0;
 
     // load the font
-    set_bkg_1bit_data(0x80, 102, font_ibm + 130, 3);
+    set_bkg_1bpp_data(0x80, 102, font_ibm + 130);
 
     OBP1_REG = 0b10110100; // set other sprite palette
     set_sprite_data(1, 1024 >> 4, SPRITE_DATA);
@@ -39,8 +40,10 @@ void main(void) {
     
     cgb_init();
 
-    mnu_main_menu();
-    initGame();
+    if(mnu_main_menu() == 0)
+        initGame();
+    else
+        wld_init();
 }
 
 

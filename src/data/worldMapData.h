@@ -1,0 +1,10 @@
+#ifndef WORLD_MAP_DATA_H
+#define WORLD_MAP_DATA_H
+
+#define WORLD_MAP_DATA_SIZE 212
+#define WORLD_MAP_DATA_WIDTH 20
+#define WORLD_MAP_DATA_HEIGHT 10
+
+extern const unsigned char WORLD_MAP_DATA[WORLD_MAP_DATA_SIZE];
+
+#endif

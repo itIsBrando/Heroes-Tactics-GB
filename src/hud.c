@@ -370,6 +370,9 @@ void hud_show_unit_control_type(const team_t *team)
         s1 = sprite_indexes[hud_global_pos++] = spr_allocate();
         s2 = sprite_indexes[hud_global_pos++] = spr_allocate();
 
+        if(unit->isDead)
+            continue;
+
         const uint8_t x = (unit->row << 3) + 4;
         const uint8_t y = (unit->column << 3) + 8;
         move_sprite(s1, x, y);

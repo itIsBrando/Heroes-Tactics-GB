@@ -101,6 +101,7 @@ unit_t *unit_new(type_of_unit type) {
     unit->type = type;
     unit->strategy = AI_TARGET_NONE;
 
+    // generates a random position
     do {
         unit->row = (rand() & 0x7) + 1;
         unit->column = (rand() & 0x7) + 1;

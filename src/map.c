@@ -185,7 +185,7 @@ static uint8_t vblankCounter, water_counter = 0;
 
 void map_animate()
 {
-    uint8_t i, x = 0, y = 0;
+    uint8_t x = 0, y = 0;
 
     if(++vblankCounter < 30)
         return;

@@ -1,10 +1,9 @@
-# Heroes Tactics for Gameboy
+# Heroes Tactics
 
-### A turn-based strategy game for the Gameboy
+### A turn-based strategy game for the Nintendo GameBoy inspired by the Fire Emblem series
  
- - written in C and compiled using GBDK
+ - written in C and compiled using [GBDK](https://github.com/gbdk-2020/gbdk-2020)
  - features AI and link cable support
-
 
 ## Controls
  - **A** select unit
